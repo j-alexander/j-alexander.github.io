@@ -1,9 +1,16 @@
 ---
 layout: default
+comments: true
 ---
 <h1>{{ page.title }}</h1>
-<p class="meta">{{ page.date | date_to_string }}</p>
+<p class="meta">
+  {% if page.date %}
+    {{ page.date | date_to_string }}
+  {% endif %}
+</p>
 
 <div class="post">
   {{ content }}
 </div>
+
+{% include disqus.html %}

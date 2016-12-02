@@ -1,2 +1,3 @@
 name: Jonathan Leaver
 markdown: kramdown
+permalink: /entry/:year/:month/:day/:title

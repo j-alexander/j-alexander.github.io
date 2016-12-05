@@ -1,0 +1,12 @@
+FRAMEWORK: >= NET452
+NUGET
+  remote: http://api.nuget.org/v3/index.json
+    FSharp.Compiler.Service (2.0.0.6)
+    FSharp.Formatting (2.14.4)
+      FSharp.Compiler.Service (2.0.0.6)
+      FSharpVSPowerTools.Core (>= 2.3 < 2.4)
+    FSharpVSPowerTools.Core (2.3)
+      FSharp.Compiler.Service (>= 2.0.0.3)
+    RdKafka (0.9.1)
+      RdKafka.Internal.librdkafka (>= 0.9.1)
+    RdKafka.Internal.librdkafka (0.9.1)

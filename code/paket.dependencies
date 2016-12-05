@@ -1,0 +1,8 @@
+source https://jet.myget.org/F/jenkins/auth/171ef4d0-bb9b-4332-b54b-0f255e105e48
+source https://api.nuget.org/v3/index.json
+framework >= net452
+
+nuget FSharp.Compiler.Service 2.0.0.6
+nuget FSharp.Formatting 2.14.4
+nuget FSharpVSPowerTools.Core 2.3.0
+nuget RdKafka

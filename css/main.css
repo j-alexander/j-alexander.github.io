@@ -105,3 +105,7 @@ footer ul li.icon {
 footer ul li:last-child {
 	border-left: none;
 }
+
+#container, .post, .meta {
+	font-size: 90%;
+}

@@ -8,6 +8,11 @@ publish: false
 ---
 
 (**
+## Objective
+We want to use the RdKafka library from F#. etc
+
+*)
+(**
 # Dependencies
 Add nuget package "RdKafka", e.g. using Paket:
 ```.\.paket\paket.exe add nuget RdKafka project MyProject```

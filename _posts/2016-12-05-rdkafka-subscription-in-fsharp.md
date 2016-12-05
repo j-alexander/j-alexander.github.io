@@ -9,7 +9,6 @@ publish: false
 
 ```ocaml
 (*
-(*
 Add nuget package "RdKafka", e.g. using Paket:
 .\.paket\paket.exe add nuget RdKafka project MyProject
 

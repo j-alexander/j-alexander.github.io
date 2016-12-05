@@ -64,7 +64,9 @@ let fromConsumerToLog (consumer:EventConsumer) =
 let fromProducerToLog (source:ConsumerName) (producer:Producer) =
   producer.OnError.Add(ofError >> Event.Error >> toLog)
   producer.OnStatistics.Add(Event.Statistics >> toLog)
+```
 
+```ocaml
 let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   let config = new Config()
   config.GroupId <- group
@@ -74,12 +76,15 @@ let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   config.["log.connection.close"] <- "false" // reaper causes close events
   config.["metadata.broker.list"] <- brokerCsv // query metadata (fix for null in wrapper)
   config.DefaultTopicConfig <- new TopicConfig()
-  config.DefaultTopicConfig.["auto.offset.reset"] <- "smallest" (* if new group, start at oldest msg? by default starts at newest *)
+  config.DefaultTopicConfig.["auto.offset.reset"] <- "smallest"
+    (* if new group, start at oldest msg? by default starts at newest *)
 
   new EventConsumer(config, brokerCsv),
   new Producer(config, brokerCsv)
+```
 
 
+```ocaml
 let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   let autoCommit = true
   let consumer,producer = connect brokerCsv group autoCommit
@@ -101,8 +106,10 @@ let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   Seq.initInfinite(fun _ ->
     let message = messages.Take()
     message.Partition, message.Offset, message.Payload)  // or asyncseq :)
+```
 
 
+```ocaml
 let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   let consumer,producer = connect brokerCsv group false
   let topic = producer.Topic(topic)
@@ -110,8 +117,10 @@ let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
     let! report = Async.AwaitTask(topic.Produce(payload=payload,key=key))
     return report.Partition, report.Offset
   }
+```
 
 
+```ocaml
 type Offsets =
   { Next : Offset option       // the next offset to be committed
     Active : Offset list       // offsets of active messages (started processing)
@@ -130,9 +139,11 @@ module Offsets =
   let start  (x:Offset) (xs:Offsets) = update { xs with Active = x :: xs.Active }
   let finish (x:Offset) (xs:Offsets) = update { xs with Active = List.filter ((<>) x) xs.Active
                                                         Processed = x :: xs.Processed }
+```
 
               
     
+```ocaml
 type Watermark =               // watermark high/low offset for each partition of a topic
   { Topic : string             // topic
     Partition : int            // partition of the topic
@@ -157,7 +168,10 @@ module Watermark =
         |> Seq.map queryWatermark
         |> Async.Parallel // use open source AsyncSeq, instead :)
     }
-                     
+```
+                   
+
+```ocaml  
 type Checkpoint = List<Partition*Offset>
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -181,7 +195,10 @@ module Checkpoint =
         |> Seq.sortBy fst
         |> Seq.toList
     }
+```
 
+
+```ocaml
 module OffsetMonitor =
   let assign _ = ()
   let revoke _ = ()
@@ -210,5 +227,4 @@ let subscribe (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   consumer.Start()
   
   ()
-  
 ```

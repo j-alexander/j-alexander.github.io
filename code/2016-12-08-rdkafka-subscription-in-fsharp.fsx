@@ -20,7 +20,7 @@ We want to use the RdKafka library from F#. etc
    ./.paket/paket.exe add nuget RdKafka project MyProject
  ```
 
-2. *Pre-build event* to transfer native libraries:
+2. *Pre-build event* to transfer native libraries (64-bit):
 
  ```powershell
    xcopy /y /d /f
@@ -33,7 +33,10 @@ We want to use the RdKafka library from F#. etc
 #r "../packages/RdKafka/lib/net451/RdKafka.dll"
 
 open RdKafka
+(*** hide ***)
 open System
+open System.Collections.Concurrent
+
 (**
 ## Terminology
 *)

@@ -14,15 +14,16 @@ We want to use the RdKafka library from F#. etc
 *)
 (**
 ## Dependencies
-1. *RdKafka* from NuGet
+1. *RdKafka* from NuGet, or using Paket:
 
- Using Paket:
- `.\.paket\paket.exe add nuget RdKafka project MyProject`
-
-2. *Pre-build event* for native libraries:
-
+ ```powershell
+   ./.paket/paket.exe add nuget RdKafka project MyProject
  ```
-    xcopy /y /d /f
+
+2. *Pre-build event* to transfer native libraries:
+
+ ```powershell
+   xcopy /y /d /f
         "$(ProjectDir)..\packages\RdKafka.Internal.librdkafka\runtimes\win7-x64\native\*.*"
         "$(TargetDir)"
  ```

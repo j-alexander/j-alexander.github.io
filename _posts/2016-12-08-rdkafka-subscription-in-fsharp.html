@@ -10,16 +10,16 @@ publish: false
 <h2>Dependencies</h2>
 <ol>
 <li>
-<p><em>RdKafka</em> from NuGet</p>
-<p>Using Paket:
-<code>.\.paket\paket.exe add nuget RdKafka project MyProject</code></p>
+<p><em>RdKafka</em> from NuGet, or using Paket:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="powershell">./.paket/paket.exe add nuget RdKafka project MyProject
+</code></pre></td></tr></table>
 </li>
 <li>
 <p><em>Pre-build event</em> for native libraries:</p>
-<pre class="fssnip highlighted"><code lang="fsharp"> <span class="i">xcopy</span> <span class="o">/</span><span class="i">y</span> <span class="o">/</span><span class="i">d</span> <span class="o">/</span><span class="i">f</span>
-     <span class="s">&quot;$(ProjectDir)..\packages\RdKafka.Internal.librdkafka</span><span class="e">\r</span><span class="s">untimes\win7-x64</span><span class="e">\n</span><span class="s">ative\*.*&quot;</span>
-     <span class="s">&quot;$(TargetDir)&quot;</span>
-</code></pre>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="powershell">xcopy /y /d /f
+     "$(ProjectDir)..\packages\RdKafka.Internal.librdkafka\runtimes\win7-x64\native\*.*"
+     "$(TargetDir)"
+</code></pre></td></tr></table>
 </li>
 <li><p><em>Reference</em> and open the C# wrapper:</p></li>
 </ol>

@@ -75,9 +75,10 @@ let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   config.["offset.store.method"] <- "broker" // save offsets on broker
   config.["log.connection.close"] <- "false" // reaper causes close events
   config.["metadata.broker.list"] <- brokerCsv // query metadata (fix for null in wrapper)
-  config.DefaultTopicConfig <- new TopicConfig()
-  config.DefaultTopicConfig.["auto.offset.reset"] <- "smallest"
-    (* if new group, start at oldest msg? by default starts at newest *)
+  config.DefaultTopicConfig <-
+    let topicConfig = new TopicConfig()
+    topicConfig.["auto.offset.reset"] <- "smallest" // if new group, start at oldest msg? by default starts at newest
+    topicConfig
 
   new EventConsumer(config, brokerCsv),
   new Producer(config, brokerCsv)

@@ -13,20 +13,29 @@ We want to use the RdKafka library from F#. etc
 
 *)
 (**
-# Dependencies
-Add nuget package "RdKafka", e.g. using Paket:
-```.\.paket\paket.exe add nuget RdKafka project MyProject```
+## Dependencies
+1. *RdKafka* from NuGet
 
-Pre-build event for native libraries:
-```xcopy /y /d /f "$(ProjectDir)..\packages\RdKafka.Internal.librdkafka\runtimes\win7-x64\native\*.*" "$(TargetDir)"```
+ Using Paket:
+ `.\.paket\paket.exe add nuget RdKafka project MyProject`
 
-Also include the C# wrapper:
+2. *Pre-build event* for native libraries:
+
+ ```
+    xcopy /y /d /f
+        "$(ProjectDir)..\packages\RdKafka.Internal.librdkafka\runtimes\win7-x64\native\*.*"
+        "$(TargetDir)"
+ ```
+
+3. *Reference* and open the C# wrapper:
 *)
 #r "../packages/RdKafka/lib/net451/RdKafka.dll"
 
 open RdKafka
 open System
-
+(**
+## Terminology
+*)
 type Topic = string
 and Partition = int
 and Offset = int64

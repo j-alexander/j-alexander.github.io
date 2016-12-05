@@ -7,18 +7,29 @@ publish: false
 ---
 <h2>Objective</h2>
 <p>We want to use the RdKafka library from F#. etc</p>
-<h1>Dependencies</h1>
-<p>Add nuget package "RdKafka", e.g. using Paket:
+<h2>Dependencies</h2>
+<ol>
+<li>
+<p><em>RdKafka</em> from NuGet</p>
+<p>Using Paket:
 <code>.\.paket\paket.exe add nuget RdKafka project MyProject</code></p>
-<p>Pre-build event for native libraries:
-<code>xcopy /y /d /f "$(ProjectDir)..\packages\RdKafka.Internal.librdkafka\runtimes\win7-x64\native\*.*" "$(TargetDir)"</code></p>
-<p>Also include the C# wrapper:</p>
+</li>
+<li>
+<p><em>Pre-build event</em> for native libraries:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"> <span class="i">xcopy</span> <span class="o">/</span><span class="i">y</span> <span class="o">/</span><span class="i">d</span> <span class="o">/</span><span class="i">f</span>
+     <span class="s">&quot;$(ProjectDir)..\packages\RdKafka.Internal.librdkafka</span><span class="e">\r</span><span class="s">untimes\win7-x64</span><span class="e">\n</span><span class="s">ative\*.*&quot;</span>
+     <span class="s">&quot;$(TargetDir)&quot;</span>
+</code></pre>
+</li>
+<li><p><em>Reference</em> and open the C# wrapper:</p></li>
+</ol>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;../packages/RdKafka/lib/net451/RdKafka.dll&quot;</span>
 
 <span class="k">open</span> <span class="i">RdKafka</span>
 <span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">System</span>
-
-<span class="k">type</span> <span class="i">Topic</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">string</span>
+</code></pre>
+<h2>Terminology</h2>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span class="i">Topic</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">string</span>
 <span class="k">and</span> <span class="i">Partition</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="i">int</span>
 <span class="k">and</span> <span class="i">Offset</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="i">int64</span>
 <span class="k">and</span> <span class="i">ErrorReason</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs2', 5)" onmouseover="showTip(event, 'fs2', 5)" class="i">string</span>

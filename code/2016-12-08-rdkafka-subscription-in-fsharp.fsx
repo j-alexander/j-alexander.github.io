@@ -63,13 +63,14 @@ let ofError (ea:Handle.ErrorArgs) =
   ea.ErrorCode, ea.Reason
 (**
 ### Logging RdKafka Events
-RdKafka provides much better visibility than other .NET kafka libraries.
+RdKafka provides much better transparency than other .NET kafka libraries.
 Let the consumer handle all of the cases that can be logged for Event types.
-Consider using an exhaustive match on the Event union type.
+Consider using an exhaustive pattern match on the Event union type.
 *)
-// 
 let toLog = function
-  | Event.Error _ -> ()
+  | Event.Error _ -> () 
+//| ...
+(*** hide ***)
   | _ -> ()
 (**
 You can easily attach your `toLog` function to callbacks from both the producer and consumer:

@@ -72,6 +72,7 @@
   <ItemGroup>
     <Content Include="paket.references" />
     <Compile Include="AssemblyInfo.fs" />
+    <None Include="2016-12-08-rdkafka-subscription-in-fsharp.html" />
     <None Include="2016-12-08-rdkafka-subscription-in-fsharp.fsx" />
     <None Include="Generate.fsx" />
   </ItemGroup>
@@ -85,10 +86,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <Target Name="BeforeBuild">
-	<DownloadFile
-		Address="https://github.com/fsprojects/Paket/releases/download/3.31.0/paket.bootstrapper.exe"
-		FileName=".paket\paket.bootstrapper.exe" />
-    <Exec Command=".paket\paket.bootstrapper.exe" />  
+    <DownloadFile Address="https://github.com/fsprojects/Paket/releases/download/3.31.0/paket.bootstrapper.exe" FileName=".paket\paket.bootstrapper.exe" />
+    <Exec Command=".paket\paket.bootstrapper.exe" />
   </Target>
   <Import Project=".paket\paket.targets" />
   <Choose>

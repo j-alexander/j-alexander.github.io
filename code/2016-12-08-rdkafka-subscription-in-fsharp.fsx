@@ -1,12 +1,4 @@
-﻿(*** raw ***)
----
-layout: post
-title: "RdKafka Subscription in F#"
-date: 2016-12-08
-comments: false
-publish: false
----
-(**
+﻿(**
 ## Objective
 We want to use the RdKafka library from F#. etc
 
@@ -100,14 +92,14 @@ When you connect to RdKafka, you can configure any of the defaults in the underl
 In particular, there are several settings you may want to consider:
 
 1. a consumer _GroupId_, shared by all cooperating instances of a microservice
-  * note for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()
+  * note: for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()
 2. whether or not to _EnableAutoCommit_ for tracking your current offset position
 3. whether to save the offsets on the _broker_ for coordination
 4. if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle
-5. a _metadata broker list_ enables you to query metadata using the RdKafka C# wrapper
+5. a _metadata broker list_ workaround enables you to query additional metadata using the native wrapper
 6. where to start a _brand new_ consumer group:
-  * `smallest` starts processing from the earliet offset in the topic
-  * `largest`, the default, starts from the newest message
+  * `smallest` starts processing from the earliet offsets in the topic
+  * `largest`, the default, starts from the newest message offsets
 *)
 let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   let config = new Config()

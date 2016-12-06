@@ -12,11 +12,13 @@ let source name =
 let target name =
     Path.Combine(__SOURCE_DIRECTORY__, "..\_posts", name)
 let generate name =
+    let template = source <| sprintf "%s.html" name
     let input = source <| sprintf "%s.fsx" name
     let output = target <| sprintf "%s.html" name
     Literate.ProcessScriptFile(
         input=input,
         output=output,
+        templateFile=template,
         format=OutputKind.Html,
         lineNumbers=false)
     

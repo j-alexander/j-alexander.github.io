@@ -213,54 +213,6 @@ module Offsets =
 
               
     
-type Watermark =               // watermark high/low offset for each partition of a topic
-  { Topic : string             // topic
-    Partition : int            // partition of the topic
-    High : int64               // the highest offset available in that partition
-    Low : int64 }              // the lowest offset available in that partition
-
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module Watermark =
-  let queryWithTimeout (timeout) (producer:Producer) (consumer:Consumer) (topic:Topic) =
-    let queryWatermark(t, p) =
-      async {
-        let! w = Async.AwaitTask <| consumer.QueryWatermarkOffsets(TopicPartition(t, p), timeout)
-        return { Topic=t; Partition=p; High=w.High; Low=w.Low }
-      }
-    async {
-      let topic = producer.Topic(topic)
-      let! metadata = Async.AwaitTask <| producer.Metadata(onlyForTopic=topic, timeout=timeout)
-      return!
-        metadata.Topics
-        |> Seq.collect(fun t -> t.Partitions |> Seq.map (fun p -> t.Topic, p.PartitionId))
-        |> Seq.sort
-        |> Seq.map queryWatermark
-        |> Async.Parallel // use open source AsyncSeq, instead :)
-    }
-                     
-type Checkpoint = List<Partition*Offset>
-
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module Checkpoint =
-  let queryWithTimeout (timeout) (producer:Producer) (consumer:Consumer) (topic:Topic) : Async<Checkpoint> =
-    async {
-      let! metadata = 
-        producer.Metadata(onlyForTopic=producer.Topic(topic), timeout=timeout)
-        |> Async.AwaitTask
-      let partitions =
-        metadata.Topics
-        |> Seq.collect(fun t -> t.Partitions |> Seq.map (fun p -> t.Topic, p.PartitionId))
-        |> Seq.sort
-        |> Seq.map (fun (t,p) -> new TopicPartition(t,p))
-      let! committed =
-        consumer.Committed(new Collections.Generic.List<_>(partitions), timeout)
-        |> Async.AwaitTask
-      return
-        committed
-        |> Seq.map (fun tpo -> tpo.Partition, tpo.Offset)
-        |> Seq.sortBy fst
-        |> Seq.toList
-    }
 
 module OffsetMonitor =
   let assign _ = ()
@@ -290,5 +242,86 @@ let subscribe (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   consumer.Start()
   
   ()
+(**
+## Supervision
 
-  
+Supervising progress of a microservice running RdKafka depends on monitoring two things:
+1. the range of messages available in topic (i.e. its `Watermark` offsets), and
+2. the current `Checkpoint` offsets for a consumer group relative to those `Watermarks`
+
+### Watermarks
+
+A line drawn on the side of an empty ship is its low water line.  When you put cargo on the
+ship, it sits lower in water.  The line drawn on the side of a fully loaded ship is its
+high water line.  The same terminology is used here:
+*)
+type Watermark =     // watermark high/low offset for each partition of a topic
+  { Topic : string   // topic
+    Partition : int  // partition of the topic
+    High : int64     // highest offset available in this partition (newest message)
+    Low : int64 }    // lowest offset available in this partition (oldest message)
+(**
+To query these watermarks:
+*)
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Watermark =
+  let queryWithTimeout (timeout) (producer:Producer) (consumer:Consumer) (topic:Topic) =
+    let queryWatermark(t, p) =
+      async {
+        let! w = Async.AwaitTask <| consumer.QueryWatermarkOffsets(TopicPartition(t, p), timeout)
+        return { Topic=t; Partition=p; High=w.High; Low=w.Low }
+      }
+    async {
+      let topic = producer.Topic(topic)
+      let! metadata = Async.AwaitTask <| producer.Metadata(onlyForTopic=topic, timeout=timeout)
+      return!
+        metadata.Topics
+        |> Seq.collect(fun t -> t.Partitions |> Seq.map (fun p -> t.Topic, p.PartitionId))
+        |> Seq.sort
+        |> Seq.map queryWatermark
+        |> Async.Parallel // again, consider AsyncSeq instead :)
+    }
+(**
+### Checkpoints
+Your consumer group's current position is composed of an offset position within each partition
+of the topic:
+*) 
+type Checkpoint = List<Partition*Offset>
+(**
+If you're monitoring within an active consumer, you have access to the absolute latest offsets
+completed for each partition.  When multiple consumers are working together in a group, however,
+each has only a partial view of the overall progress.
+
+It's possible to query the broker for the latest committed checkpoint for a consumer group
+across all partitions of the topic:
+*)
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Checkpoint =
+  let queryWithTimeout (timeout) (producer:Producer) (consumer:Consumer) (topic:Topic) : Async<Checkpoint> =
+    async {
+      let! metadata = 
+        producer.Metadata(onlyForTopic=producer.Topic(topic), timeout=timeout)
+        |> Async.AwaitTask
+      let partitions =
+        metadata.Topics
+        |> Seq.collect(fun t -> t.Partitions |> Seq.map (fun p -> t.Topic, p.PartitionId))
+        |> Seq.sort
+        |> Seq.map (fun (t,p) -> new TopicPartition(t,p))
+      let! committed =
+        consumer.Committed(new Collections.Generic.List<_>(partitions), timeout)
+        |> Async.AwaitTask
+      return
+        committed
+        |> Seq.map (fun tpo -> tpo.Partition, tpo.Offset)
+        |> Seq.sortBy fst
+        |> Seq.toList
+    }
+(**
+Over time, your current offset in each partition should increase as your consumer group
+processes messages.  Similarly, the high watermark will also increase as new messages are
+added.  The difference between your high watermark and your current position is your lag.
+
+Using these figures, you can measure your performance relative to any service level agreement
+in effect for your microservice, and potentially take corrective action - such as scaling
+the number of consumer instances or size of machines.
+*)

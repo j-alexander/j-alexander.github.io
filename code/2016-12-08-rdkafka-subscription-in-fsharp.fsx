@@ -289,7 +289,7 @@ To tie all of this together, we create a hybrid of `subscribeCallback` and `subs
 functions above. It accepts an onMessage callback, tracks all offsets, and executes using
 some degree of concurrency.
 *)
-let subscribe (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (onMessage, concurrency) =
+let subscribeParallel concurrency brokerCsv group topic onMessage =
 (*** hide ***)
   let autoCommit = false
   let consumer,producer = connect brokerCsv group autoCommit

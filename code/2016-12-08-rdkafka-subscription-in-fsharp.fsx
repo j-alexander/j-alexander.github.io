@@ -37,6 +37,7 @@ open RdKafka
 (*** hide ***)
 open System
 open System.Collections.Concurrent
+open System.Diagnostics
 
 (**
 ## Terminology
@@ -273,12 +274,50 @@ The client then records completion of all messages up to that point.
 (**
 ### Committing Offsets
 *)
+type OffsetMonitor = OffsetMonitorMessage->unit
+and OffsetMonitorMessage =
+  | Start of Partition*Offset  // processing has started on a message at _Offset_ of _Partition_
+  | Finish of Partition*Offset // processing has completed on a message at _Offset_ of _Partition_
+  | Assign of Partition list   // active _Partitions_ have been assigned to us
+  | Revoke of Partition list   // active _Partitions_ have been revoked from us (and assigned to another consumer)
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module OffsetMonitor =
-  let start _ _ = ()
-  let finish _ _ = ()
-  let assign _ _ = ()
-  let revoke _ _ = ()
-  let create _ _ = ()
+    open System.Threading
+    open System.Threading.Tasks
+
+    let assign m = List.map (fun (_,p,_) -> p) >> Assign >> m 
+    let revoke m = List.map (fun (_,p,_) -> p) >> Revoke >> m
+    let start  m (x:Message) = (x.Partition, x.Offset) |> Start |> m
+    let finish m (x:Message) = (x.Partition, x.Offset) |> Finish |> m
+
+    let create (consumer:EventConsumer) (topic:Topic) =
+
+      let integrate = function
+        | Start  (p,o) -> Partitions.start  (p,o)
+        | Finish (p,o) -> Partitions.finish (p,o)
+        | Assign (ps)  -> List.foldBack Partitions.assign (ps)
+        | Revoke (ps)  -> List.foldBack Partitions.revoke (ps)
+
+      MailboxProcessor<OffsetMonitorMessage>.Start(fun inbox ->
+        let rec loop(watch:Stopwatch,partitions:Partitions) = async {
+            if watch.Elapsed.TotalSeconds > 45. then
+              let! result =
+                Partitions.checkpoint partitions
+                |> List.map (fun (p,o) -> TopicPartitionOffset(topic,p,o))
+                |> Collections.Generic.List
+                |> consumer.Commit
+                |> Async.AwaitTask
+                |> Async.Catch
+              return! loop(Stopwatch.StartNew(),partitions)
+            else
+              let! message = inbox.TryReceive(1000)
+              return!
+                match message with
+                | None -> loop(watch, partitions)
+                | Some m -> loop(watch, partitions |> integrate m)
+          }
+        loop(Stopwatch.StartNew(),Map.empty)).Post
 (*** hide ***)
 module AsyncSeq =
   let ofSeq (xs:seq<'a>) = ()

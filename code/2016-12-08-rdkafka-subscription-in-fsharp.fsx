@@ -1,7 +1,17 @@
 ﻿(**
 ## Objective
-We want to use the RdKafka library from F#. etc
 
+Apache Kafka represents a powerful tool for linking microservices in a distributed
+system with a focus on processing and producing streams of interesting data.
+
+If you're new, check out a [quick introduction](https://kafka.apache.org/intro) to the important concepts
+in Apache Kafka.
+
+[RdKafka](https://github.com/edenhill/librdkafka) is a C-native library for interacting with
+Apache Kafka that is used in a wide variety of systems and a nice [C# wrapper](https://github.com/ah-/rdkafka-dotnet)
+is available for it.
+
+Let's look at how to use these from [F#](http://fsharp.org/) to support coordinated, high-performance microservices.
 *)
 (**
 ## Dependencies

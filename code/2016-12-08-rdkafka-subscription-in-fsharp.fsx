@@ -271,6 +271,7 @@ The client then records completion of all messages up to that point.
   let checkpoint : Partitions -> List<Partition*Offset> =
     Map.toList >> List.choose (fun (p,o) -> o.Next |> Option.map(fun o -> p,1L+o))
 (**
+### Committing Offsets
 *)
 module OffsetMonitor =
   let start _ _ = ()
@@ -283,6 +284,7 @@ module AsyncSeq =
   let ofSeq (xs:seq<'a>) = ()
   let iterAsyncParThrottled _ _ _ = async.Return()
 (**
+### Subscribing (Parallelism + Manual Offset Management)
 Let's suppose we want to process multiple messages at a time on multiple threads.
 
 To tie all of this together, we create a hybrid of `subscribeCallback` and `subscribeSeq`

@@ -118,7 +118,7 @@ let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   new Producer(config, brokerCsv)
 (**
 A partition key and payload can then be published to a topic.  The response
-includes a partition and offset cposition onfirming the write.  Consider
+includes a partition and offset position confirming the write.  Consider
 `Encoding.UTF8.GetBytes` if your message is text.
 *)
 let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
@@ -129,8 +129,8 @@ let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
     return report.Partition, report.Offset
   }
 (**
-To consume, on partition assignment we select `Offset.Stored` - (6) that now defaults
-to `smallest` if no stored offset exists.  Messages are then sent to the onMessage callback
+To consume, on partition assignment we select `Offset.Stored`, which defaults to the value of
+`auto.offset.reset`, if no stored offset exists.  Messages are then sent to the onMessage callback
 once the topic subscription is started.
 *)
 let subscribeCallback (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (onMessage) =

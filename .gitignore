@@ -194,7 +194,8 @@ FakesAssemblies/
 gh-pages/
 
 # Current Packet Version
-.paket/paket.exe
+**/.paket/paket.exe
+**/.paket/paket.bootstrapper.exe
 
 # Visual Studio Config Files
 .vs/

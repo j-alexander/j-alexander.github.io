@@ -148,11 +148,12 @@ let subscribeCallback (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (
 (**
 The above works quite well _assuming you process the message to completion within the callback_.
 
-If you want to process larger batches of messages using a sequence instead, a blocking
-collection can used to buffer incoming messages as they're received.  A sequence generator
-is returned allowing the consumer to iterate or batch the topic's messages.
+You may want to process larger batches of messages asynchronously, however.
+To use a sequence instead, a blocking collection can buffer incoming messages as they're received.
+A sequence generator yielding messages from this buffer is returned to the client:
 *)
-let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
+let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) : seq<Message> =
+(*** hide ***)
   let autoCommit = true
   let consumer,producer = connect brokerCsv group autoCommit
   consumer.OnPartitionsAssigned.Add(
@@ -161,12 +162,15 @@ let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
     >> List.map TopicPartitionOffset
     >> Collections.Generic.List<_>
     >> consumer.Assign)
-
+(**
+More than _3000_ messages in the buffer will hold+block the callback until the client has
+consumed from the sequence.
+*)
   let buffer = 3000
   let messages =
     new Collections.Concurrent.BlockingCollection<Message>(
       new Collections.Concurrent.ConcurrentQueue<Message>(), buffer)
-  consumer.OnMessage.Add(messages.Add) // > 3000 messages in the buffer will hold/block the callback
+  consumer.OnMessage.Add(messages.Add) 
   consumer.Subscribe(new Collections.Generic.List<string>([topic]))
   consumer.Start()
   
@@ -175,14 +179,11 @@ let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
     message.Partition, message.Offset, message.Payload)  // or AsyncSeq :)
 (**
 At this point, we make an important observation: the client may commit offsets
-acknowledging that a message in the buffer has been processed _even though this
-may not have been dequeued_ yet.  From RdKafka's point of view it's complete,
-however.
+acknowledging that a message in the buffer has been processed _even though it
+may not have been dequeued_.  From RdKafka's point of view, the callback for
+that message has completed!
 
-If you process messages sequentially on a single thread, using a buffer size of 1
-is an adequate workaround.  However, if you're processing messages in larger groups
-or with multiple threads (using `AsyncSeq.iterAsyncParallel`, for instance), you'll
-want to manage offsets yourself.
+This is when you'll want to manage offsets yourself.
 
 ## Manual Offsets
 

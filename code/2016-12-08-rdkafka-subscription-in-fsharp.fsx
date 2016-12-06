@@ -43,14 +43,18 @@ open System.Collections.Concurrent
 
 ### Kafka
 *)
-type Topic = string
-and Partition = int
-and Offset = int64
-and ErrorReason = string
-and BrokerCsv = string  // remove protocol {http://,tcp://}
-and ConsumerName = string
+type Topic = string       // https://kafka.apache.org/intro#intro_topics
+and Partition = int       //   partition of a topic
+and Offset = int64        //   offset position within a partition of a topic
+and BrokerCsv = string    // connection string of "broker1,broker2"
+                          //   with protocol {http://,tcp://} removed
+and ConsumerName = string // https://kafka.apache.org/intro#intro_consumers
+and ErrorReason = string  
 (**
 ### RdKafka Events
+RdKafka provides much better transparency than other .NET kafka libraries by
+exposing a wide variety of events using callbacks.  Here we define an F# union
+type of all the different cases.
 *)
 type Event =
   | Statistics of string
@@ -62,20 +66,24 @@ type Event =
   | Error of ErrorCode*string
 (**
 ### Converting RdKafka Types
+Following are some simple conversions to F# datatypes that are used throughput
+our samples:
 *)
-let ofTopicPartitionOffset (tpo:TopicPartitionOffset) : Topic*Partition*Offset =
+let ofTopicPartitionOffset (tpo:TopicPartitionOffset) =
   tpo.Topic,tpo.Partition,tpo.Offset
+
 let ofTopicPartitionOffsets =
   Seq.map ofTopicPartitionOffset >> Seq.toList
-let ofCommit (oca:Consumer.OffsetCommitArgs) : ErrorCode*List<Topic*Partition*Offset> =
-  oca.Error, ofTopicPartitionOffsets oca.Offsets
+
+let ofCommit (oca:Consumer.OffsetCommitArgs) =
+  oca.Error,ofTopicPartitionOffsets oca.Offsets
+
 let ofError (ea:Handle.ErrorArgs) =
-  ea.ErrorCode, ea.Reason
+  ea.ErrorCode,ea.Reason
 (**
 ### Logging RdKafka Events
-RdKafka provides much better transparency than other .NET kafka libraries.
-Let the consumer handle all of the cases that can be logged for Event types.
-Consider using an exhaustive pattern match on the Event union type.
+Consider using an exhaustive pattern match on the Event union type to provide highly granular
+logging. As you're working with the library, these cases will give you valuable insight:
 *)
 let toLog = function
   | Event.Error _ -> () 

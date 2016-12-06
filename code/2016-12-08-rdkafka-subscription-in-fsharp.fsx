@@ -39,6 +39,8 @@ open System.Collections.Concurrent
 
 (**
 ## Terminology
+
+### Kafka
 *)
 type Topic = string
 and Partition = int
@@ -46,7 +48,9 @@ and Offset = int64
 and ErrorReason = string
 and BrokerCsv = string  // remove protocol {http://,tcp://}
 and ConsumerName = string
-
+(**
+### RdKafka Events
+*)
 type Event =
   | Statistics of string
   | OffsetCommit of ErrorCode*List<Topic*Partition*Offset>
@@ -55,7 +59,9 @@ type Event =
   | PartitionsRevoked of List<Topic*Partition*Offset>
   | ConsumerError of ErrorCode
   | Error of ErrorCode*string
-
+(**
+### Converting RdKafka Types
+*)
 let ofTopicPartitionOffset (tpo:TopicPartitionOffset) : Topic*Partition*Offset =
   tpo.Topic,tpo.Partition,tpo.Offset
 let ofTopicPartitionOffsets =
@@ -64,12 +70,19 @@ let ofCommit (oca:Consumer.OffsetCommitArgs) : ErrorCode*List<Topic*Partition*Of
   oca.Error, ofTopicPartitionOffsets oca.Offsets
 let ofError (ea:Handle.ErrorArgs) =
   ea.ErrorCode, ea.Reason
-
-// let the consumer handle all of the cases that can be logged in Event
+(**
+### Logging RdKafka Events
+RdKafka provides much better visibility than other .NET kafka libraries.
+Let the consumer handle all of the cases that can be logged for Event types.
+Consider using an exhaustive match on the Event union type.
+*)
+// 
 let toLog = function
   | Event.Error _ -> ()
   | _ -> ()
-    
+(**
+You can easily attach your `toLog` function to callbacks from both the producer and consumer:
+*)
 let fromConsumerToLog (consumer:EventConsumer) =
   consumer.OnStatistics.Add(Event.Statistics >> toLog)
   consumer.OnOffsetCommit.Add(ofCommit >> Event.OffsetCommit >> toLog)
@@ -82,7 +95,20 @@ let fromConsumerToLog (consumer:EventConsumer) =
 let fromProducerToLog (source:ConsumerName) (producer:Producer) =
   producer.OnError.Add(ofError >> Event.Error >> toLog)
   producer.OnStatistics.Add(Event.Statistics >> toLog)
+(**
+## Configuration and Connection
+When you connect to RdKafka, you can configure any of the defaults in the underlying native library.
+In particular, there are several settings you want to consider:
 
+* a consumer _GroupId_, shared by all instances of a microservice consuming from a topic
+* whether or not to _EnableAutoCommit_ for tracking your current offset position
+* whether to save the offsets on the _"broker"_ for coordination
+* if your Kafka cluster runs a connection reaper, whether to log these frequent disconnect messages
+* your _metadata broker list_ to enable you to query metadata using the RdKafka C# wrapper
+* where to start a brand new consumer group:
+  * _"smallest"_ starts processing from the earliet offset in the topic
+  * and the default starting at the newest message
+*)
 let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   let config = new Config()
   config.GroupId <- group

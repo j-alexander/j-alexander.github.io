@@ -28,14 +28,16 @@ publish: false
 <span class="k">open</span> <span class="i">RdKafka</span>
 </code></pre>
 <h2>Terminology</h2>
+<h3>Kafka</h3>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span class="i">Topic</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 5)" onmouseover="showTip(event, 'fs4', 5)" class="i">string</span>
 <span class="k">and</span> <span class="i">Partition</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 6)" onmouseover="showTip(event, 'fs5', 6)" class="i">int</span>
 <span class="k">and</span> <span class="i">Offset</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 7)" onmouseover="showTip(event, 'fs6', 7)" class="i">int64</span>
 <span class="k">and</span> <span class="i">ErrorReason</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 8)" onmouseover="showTip(event, 'fs4', 8)" class="i">string</span>
 <span class="k">and</span> <span class="i">BrokerCsv</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 9)" onmouseover="showTip(event, 'fs4', 9)" class="i">string</span>  <span class="c">// remove protocol {http://,tcp://}</span>
 <span class="k">and</span> <span class="i">ConsumerName</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 10)" onmouseover="showTip(event, 'fs4', 10)" class="i">string</span>
-
-<span class="k">type</span> <span onmouseout="hideTip(event, 'fs7', 11)" onmouseover="showTip(event, 'fs7', 11)" class="i">Event</span> <span class="o">=</span>
+</code></pre>
+<h3>RdKafka Events</h3>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs7', 11)" onmouseover="showTip(event, 'fs7', 11)" class="i">Event</span> <span class="o">=</span>
   | <span class="i">Statistics</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs4', 12)" onmouseover="showTip(event, 'fs4', 12)" class="i">string</span>
   | <span class="i">OffsetCommit</span> <span class="k">of</span> <span class="i">ErrorCode</span><span class="o">*</span><span onmouseout="hideTip(event, 'fs8', 13)" onmouseover="showTip(event, 'fs8', 13)" class="i">List</span><span class="o">&lt;</span><span class="i">Topic</span><span class="o">*</span><span class="i">Partition</span><span class="o">*</span><span class="i">Offset</span><span class="o">&gt;</span>
   | <span class="i">EndReached</span> <span class="k">of</span> <span class="i">Topic</span><span class="o">*</span><span class="i">Partition</span><span class="o">*</span><span class="i">Offset</span>
@@ -43,8 +45,9 @@ publish: false
   | <span class="i">PartitionsRevoked</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs8', 15)" onmouseover="showTip(event, 'fs8', 15)" class="i">List</span><span class="o">&lt;</span><span class="i">Topic</span><span class="o">*</span><span class="i">Partition</span><span class="o">*</span><span class="i">Offset</span><span class="o">&gt;</span>
   | <span class="i">ConsumerError</span> <span class="k">of</span> <span class="i">ErrorCode</span>
   | <span class="i">Error</span> <span class="k">of</span> <span class="i">ErrorCode</span><span class="o">*</span><span onmouseout="hideTip(event, 'fs4', 16)" onmouseover="showTip(event, 'fs4', 16)" class="i">string</span>
-
-<span class="k">let</span> <span class="i">ofTopicPartitionOffset</span> (<span class="i">tpo</span><span class="o">:</span><span class="i">TopicPartitionOffset</span>) <span class="o">:</span> <span class="i">Topic</span><span class="o">*</span><span class="i">Partition</span><span class="o">*</span><span class="i">Offset</span> <span class="o">=</span>
+</code></pre>
+<h3>Converting RdKafka Types</h3>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="i">ofTopicPartitionOffset</span> (<span class="i">tpo</span><span class="o">:</span><span class="i">TopicPartitionOffset</span>) <span class="o">:</span> <span class="i">Topic</span><span class="o">*</span><span class="i">Partition</span><span class="o">*</span><span class="i">Offset</span> <span class="o">=</span>
   <span class="i">tpo</span><span class="o">.</span><span class="i">Topic</span>,<span class="i">tpo</span><span class="o">.</span><span class="i">Partition</span>,<span class="i">tpo</span><span class="o">.</span><span class="i">Offset</span>
 <span class="k">let</span> <span class="i">ofTopicPartitionOffsets</span> <span class="o">=</span>
   <span onmouseout="hideTip(event, 'fs9', 17)" onmouseover="showTip(event, 'fs9', 17)" class="i">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs10', 18)" onmouseover="showTip(event, 'fs10', 18)" class="i">map</span> <span class="i">ofTopicPartitionOffset</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span onmouseout="hideTip(event, 'fs9', 19)" onmouseover="showTip(event, 'fs9', 19)" class="i">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs11', 20)" onmouseover="showTip(event, 'fs11', 20)" class="i">toList</span>
@@ -52,13 +55,18 @@ publish: false
   <span class="i">oca</span><span class="o">.</span><span class="i">Error</span>, <span class="i">ofTopicPartitionOffsets</span> <span class="i">oca</span><span class="o">.</span><span class="i">Offsets</span>
 <span class="k">let</span> <span class="i">ofError</span> (<span class="i">ea</span><span class="o">:</span><span class="i">Handle</span><span class="o">.</span><span class="i">ErrorArgs</span>) <span class="o">=</span>
   <span class="i">ea</span><span class="o">.</span><span class="i">ErrorCode</span>, <span class="i">ea</span><span class="o">.</span><span class="i">Reason</span>
-
-<span class="c">// let the consumer handle all of the cases that can be logged in Event</span>
+</code></pre>
+<h3>Logging RdKafka Events</h3>
+<p>RdKafka provides much better visibility than other .NET kafka libraries.
+Let the consumer handle all of the cases that can be logged for Event types.
+Consider using an exhaustive match on the Event union type.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// </span>
 <span class="k">let</span> <span class="i">toLog</span> <span class="o">=</span> <span class="k">function</span>
   | <span onmouseout="hideTip(event, 'fs7', 22)" onmouseover="showTip(event, 'fs7', 22)" class="i">Event</span><span class="o">.</span><span class="i">Error</span> _ <span class="k">-&gt;</span> ()
   | _ <span class="k">-&gt;</span> ()
-    
-<span class="k">let</span> <span class="i">fromConsumerToLog</span> (<span class="i">consumer</span><span class="o">:</span><span class="i">EventConsumer</span>) <span class="o">=</span>
+</code></pre>
+<p>You can easily attach your <code>toLog</code> function to callbacks from both the producer and consumer:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="i">fromConsumerToLog</span> (<span class="i">consumer</span><span class="o">:</span><span class="i">EventConsumer</span>) <span class="o">=</span>
   <span class="i">consumer</span><span class="o">.</span><span class="i">OnStatistics</span><span class="o">.</span><span class="i">Add</span>(<span onmouseout="hideTip(event, 'fs7', 23)" onmouseover="showTip(event, 'fs7', 23)" class="i">Event</span><span class="o">.</span><span class="i">Statistics</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="i">toLog</span>)
   <span class="i">consumer</span><span class="o">.</span><span class="i">OnOffsetCommit</span><span class="o">.</span><span class="i">Add</span>(<span class="i">ofCommit</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span onmouseout="hideTip(event, 'fs7', 24)" onmouseover="showTip(event, 'fs7', 24)" class="i">Event</span><span class="o">.</span><span class="i">OffsetCommit</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="i">toLog</span>)
   <span class="i">consumer</span><span class="o">.</span><span class="i">OnEndReached</span><span class="o">.</span><span class="i">Add</span>(<span class="i">ofTopicPartitionOffset</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span onmouseout="hideTip(event, 'fs7', 25)" onmouseover="showTip(event, 'fs7', 25)" class="i">Event</span><span class="o">.</span><span class="i">EndReached</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="i">toLog</span>)
@@ -70,8 +78,25 @@ publish: false
 <span class="k">let</span> <span class="i">fromProducerToLog</span> (<span class="i">source</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">producer</span><span class="o">:</span><span class="i">Producer</span>) <span class="o">=</span>
   <span class="i">producer</span><span class="o">.</span><span class="i">OnError</span><span class="o">.</span><span class="i">Add</span>(<span class="i">ofError</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span onmouseout="hideTip(event, 'fs7', 30)" onmouseover="showTip(event, 'fs7', 30)" class="i">Event</span><span class="o">.</span><span class="i">Error</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="i">toLog</span>)
   <span class="i">producer</span><span class="o">.</span><span class="i">OnStatistics</span><span class="o">.</span><span class="i">Add</span>(<span onmouseout="hideTip(event, 'fs7', 31)" onmouseover="showTip(event, 'fs7', 31)" class="i">Event</span><span class="o">.</span><span class="i">Statistics</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="i">toLog</span>)
-
-<span class="k">let</span> <span class="i">connect</span> (<span class="i">brokerCsv</span><span class="o">:</span><span class="i">BrokerCsv</span>) (<span class="i">group</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">autoCommit</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 32)" onmouseover="showTip(event, 'fs12', 32)" class="i">bool</span>) <span class="o">=</span>
+</code></pre>
+<h2>Configuration and Connection</h2>
+<p>When you connect to RdKafka, you can configure any of the defaults in the underlying native library.
+In particular, there are several settings you want to consider:</p>
+<ul>
+<li>a consumer <em>GroupId</em>, shared by all instances of a microservice consuming from a topic</li>
+<li>whether or not to <em>EnableAutoCommit</em> for tracking your current offset position</li>
+<li>whether to save the offsets on the <em>"broker"</em> for coordination</li>
+<li>if your Kafka cluster runs a connection reaper, whether to log these frequent disconnect messages</li>
+<li>your <em>metadata broker list</em> to enable you to query metadata using the RdKafka C# wrapper</li>
+<li>
+where to start a brand new consumer group:
+<ul>
+<li><em>"smallest"</em> starts processing from the earliet offset in the topic</li>
+<li>and the default starting at the newest message</li>
+</ul>
+</li>
+</ul>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="i">connect</span> (<span class="i">brokerCsv</span><span class="o">:</span><span class="i">BrokerCsv</span>) (<span class="i">group</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">autoCommit</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 32)" onmouseover="showTip(event, 'fs12', 32)" class="i">bool</span>) <span class="o">=</span>
   <span class="k">let</span> <span class="i">config</span> <span class="o">=</span> <span class="k">new</span> <span class="i">Config</span>()
   <span class="i">config</span><span class="o">.</span><span class="i">GroupId</span> <span class="o">&lt;-</span> <span class="i">group</span>
   <span class="i">config</span><span class="o">.</span><span class="i">StatisticsInterval</span> <span class="o">&lt;-</span> <span class="i">TimeSpan</span><span class="o">.</span><span class="i">FromSeconds</span>(<span class="n">1.0</span>)

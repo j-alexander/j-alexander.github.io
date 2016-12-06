@@ -82,12 +82,17 @@ Consider using an exhaustive match on the Event union type.</p>
 <h2>Configuration and Connection</h2>
 <p>When you connect to RdKafka, you can configure any of the defaults in the underlying native library.
 In particular, there are several settings you want to consider:</p>
+<ol>
+<li>
+a consumer <em>GroupId</em>, shared by all cooperating instances of a microservice
 <ul>
-<li>a consumer <em>GroupId</em>, shared by all instances of a microservice consuming from a topic</li>
+<li>note for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()</li>
+</ul>
+</li>
 <li>whether or not to <em>EnableAutoCommit</em> for tracking your current offset position</li>
-<li>whether to save the offsets on the <em>"broker"</em> for coordination</li>
-<li>if your Kafka cluster runs a connection reaper, whether to log these frequent disconnect messages</li>
-<li>your <em>metadata broker list</em> to enable you to query metadata using the RdKafka C# wrapper</li>
+<li>whether to save the offsets on the <em>broker</em> for coordination</li>
+<li>if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle</li>
+<li>a <em>metadata broker list</em> enables you to query metadata using the RdKafka C# wrapper</li>
 <li>
 where to start a brand new consumer group:
 <ul>
@@ -95,18 +100,18 @@ where to start a brand new consumer group:
 <li>and the default starting at the newest message</li>
 </ul>
 </li>
-</ul>
+</ol>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="i">connect</span> (<span class="i">brokerCsv</span><span class="o">:</span><span class="i">BrokerCsv</span>) (<span class="i">group</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">autoCommit</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 32)" onmouseover="showTip(event, 'fs12', 32)" class="i">bool</span>) <span class="o">=</span>
   <span class="k">let</span> <span class="i">config</span> <span class="o">=</span> <span class="k">new</span> <span class="i">Config</span>()
-  <span class="i">config</span><span class="o">.</span><span class="i">GroupId</span> <span class="o">&lt;-</span> <span class="i">group</span>
+  <span class="i">config</span><span class="o">.</span><span class="i">GroupId</span> <span class="o">&lt;-</span> <span class="i">group</span>                                <span class="c">// (1)</span>
   <span class="i">config</span><span class="o">.</span><span class="i">StatisticsInterval</span> <span class="o">&lt;-</span> <span class="i">TimeSpan</span><span class="o">.</span><span class="i">FromSeconds</span>(<span class="n">1.0</span>)
-  <span class="i">config</span><span class="o">.</span><span class="i">EnableAutoCommit</span> <span class="o">&lt;-</span> <span class="i">autoCommit</span> <span class="c">// or commit offsets ourselves?</span>
-  <span class="i">config</span><span class="o">.</span>[<span class="s">&quot;offset.store.method&quot;</span>] <span class="o">&lt;-</span> <span class="s">&quot;broker&quot;</span> <span class="c">// save offsets on broker</span>
-  <span class="i">config</span><span class="o">.</span>[<span class="s">&quot;log.connection.close&quot;</span>] <span class="o">&lt;-</span> <span class="s">&quot;false&quot;</span> <span class="c">// reaper causes close events</span>
-  <span class="i">config</span><span class="o">.</span>[<span class="s">&quot;metadata.broker.list&quot;</span>] <span class="o">&lt;-</span> <span class="i">brokerCsv</span> <span class="c">// query metadata (fix for null in wrapper)</span>
+  <span class="i">config</span><span class="o">.</span><span class="i">EnableAutoCommit</span> <span class="o">&lt;-</span> <span class="i">autoCommit</span>                  <span class="c">// (2)</span>
+  <span class="i">config</span><span class="o">.</span>[<span class="s">&quot;offset.store.method&quot;</span>] <span class="o">&lt;-</span> <span class="s">&quot;broker&quot;</span>             <span class="c">// (3)</span>
+  <span class="i">config</span><span class="o">.</span>[<span class="s">&quot;log.connection.close&quot;</span>] <span class="o">&lt;-</span> <span class="s">&quot;false&quot;</span>             <span class="c">// (4)</span>
+  <span class="i">config</span><span class="o">.</span>[<span class="s">&quot;metadata.broker.list&quot;</span>] <span class="o">&lt;-</span> <span class="i">brokerCsv</span>           <span class="c">// (5)</span>
   <span class="i">config</span><span class="o">.</span><span class="i">DefaultTopicConfig</span> <span class="o">&lt;-</span>
     <span class="k">let</span> <span class="i">topicConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="i">TopicConfig</span>()
-    <span class="i">topicConfig</span><span class="o">.</span>[<span class="s">&quot;auto.offset.reset&quot;</span>] <span class="o">&lt;-</span> <span class="s">&quot;smallest&quot;</span> <span class="c">// if new group, start at oldest msg? by default starts at newest</span>
+    <span class="i">topicConfig</span><span class="o">.</span>[<span class="s">&quot;auto.offset.reset&quot;</span>] <span class="o">&lt;-</span> <span class="s">&quot;smallest&quot;</span>      <span class="c">// (6)</span>
     <span class="i">topicConfig</span>
 
   <span class="k">new</span> <span class="i">EventConsumer</span>(<span class="i">config</span>, <span class="i">brokerCsv</span>),

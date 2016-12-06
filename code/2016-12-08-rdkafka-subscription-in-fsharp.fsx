@@ -100,26 +100,27 @@ let fromProducerToLog (source:ConsumerName) (producer:Producer) =
 When you connect to RdKafka, you can configure any of the defaults in the underlying native library.
 In particular, there are several settings you want to consider:
 
-* a consumer _GroupId_, shared by all instances of a microservice consuming from a topic
-* whether or not to _EnableAutoCommit_ for tracking your current offset position
-* whether to save the offsets on the _"broker"_ for coordination
-* if your Kafka cluster runs a connection reaper, whether to log these frequent disconnect messages
-* your _metadata broker list_ to enable you to query metadata using the RdKafka C# wrapper
-* where to start a brand new consumer group:
+1. a consumer _GroupId_, shared by all cooperating instances of a microservice
+  * note for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()
+2. whether or not to _EnableAutoCommit_ for tracking your current offset position
+3. whether to save the offsets on the _broker_ for coordination
+4. if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle
+5. a _metadata broker list_ enables you to query metadata using the RdKafka C# wrapper
+6. where to start a brand new consumer group:
   * _"smallest"_ starts processing from the earliet offset in the topic
   * and the default starting at the newest message
 *)
 let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   let config = new Config()
-  config.GroupId <- group
+  config.GroupId <- group                                // (1)
   config.StatisticsInterval <- TimeSpan.FromSeconds(1.0)
-  config.EnableAutoCommit <- autoCommit // or commit offsets ourselves?
-  config.["offset.store.method"] <- "broker" // save offsets on broker
-  config.["log.connection.close"] <- "false" // reaper causes close events
-  config.["metadata.broker.list"] <- brokerCsv // query metadata (fix for null in wrapper)
+  config.EnableAutoCommit <- autoCommit                  // (2)
+  config.["offset.store.method"] <- "broker"             // (3)
+  config.["log.connection.close"] <- "false"             // (4)
+  config.["metadata.broker.list"] <- brokerCsv           // (5)
   config.DefaultTopicConfig <-
     let topicConfig = new TopicConfig()
-    topicConfig.["auto.offset.reset"] <- "smallest" // if new group, start at oldest msg? by default starts at newest
+    topicConfig.["auto.offset.reset"] <- "smallest"      // (6)
     topicConfig
 
   new EventConsumer(config, brokerCsv),

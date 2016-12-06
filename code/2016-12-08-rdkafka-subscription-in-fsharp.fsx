@@ -199,7 +199,7 @@ consumed from the sequence.
     let message = messages.Take()
     message.Partition, message.Offset, message.Payload)  // or AsyncSeq :)
 (**
-At this point, we make an important observation: the client may commit offsets
+At this point, we make an important observation: the native client will autocommit offsets
 acknowledging that a message in the buffer has been processed _even though it
 may not have been dequeued_.  From RdKafka's point of view, the callback for
 that message has completed!
@@ -223,7 +223,7 @@ type Offsets =
 In the following module:
 
 * `start` adds a message to the `Active` set
-* `finish` move a message from the `Active` set to `Processed`
+* `finish` moves a message from the `Active` set to `Processed`
 * `update` adjusts the `Next` offset to commit (based on any changes above)
 *)
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -273,10 +273,24 @@ The client then records completion of all messages up to that point.
 (**
 *)
 module OffsetMonitor =
-  let assign _ = ()
-  let revoke _ = ()
-    
-let subscribe (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
+  let start _ _ = ()
+  let finish _ _ = ()
+  let assign _ _ = ()
+  let revoke _ _ = ()
+  let create _ _ = ()
+(*** hide ***)
+module AsyncSeq =
+  let ofSeq (xs:seq<'a>) = ()
+  let iterAsyncParThrottled _ _ _ = async.Return()
+(**
+Let's suppose we want to process multiple messages at a time on multiple threads.
+
+To tie all of this together, we create a hybrid of `subscribeCallback` and `subscribeSeq`
+functions above. It accepts an onMessage callback, tracks all offsets, and executes using
+some degree of concurrency.
+*)
+let subscribe (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (onMessage, concurrency) =
+(*** hide ***)
   let autoCommit = false
   let consumer,producer = connect brokerCsv group autoCommit
   consumer.OnPartitionsAssigned.Add(
@@ -285,21 +299,38 @@ let subscribe (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
     >> List.map TopicPartitionOffset
     >> Collections.Generic.List<_>
     >> consumer.Assign)
-
-  consumer.OnPartitionsAssigned.Add(ofTopicPartitionOffsets >> OffsetMonitor.assign)
-  consumer.OnPartitionsRevoked.Add(ofTopicPartitionOffsets >> OffsetMonitor.revoke)
-
   let messageSeq =
     let buffer = 3000
-    let messages =
-      new Collections.Concurrent.BlockingCollection<Message>(
-        new Collections.Concurrent.ConcurrentQueue<Message>(), buffer)
+    let messages = new BlockingCollection<Message>(new ConcurrentQueue<Message>(), buffer)
     consumer.OnMessage.Add(messages.Add)
     Seq.initInfinite(fun _ -> messages.Take())
+(**
+1. when a partition is assigned, we start tracking its offsets
+2. before business logic, offsets are marked as active
+3. after business logic, offsets are marked as processed
+4. when a partition is revoked, we stop tracking its offsets 
+*)
+  let monitor = OffsetMonitor.create consumer topic
+
+  consumer.OnPartitionsAssigned.Add(
+    ofTopicPartitionOffsets >> OffsetMonitor.assign monitor) // (1)
+  consumer.OnPartitionsRevoked.Add(
+    ofTopicPartitionOffsets >> OffsetMonitor.revoke monitor) // (4)
+
+  let onMessage(message:Message) = async {
+      OffsetMonitor.start monitor message                    // (2)
+      do! onMessage(message)
+      OffsetMonitor.finish monitor message }                 // (3)
+
   consumer.Subscribe(new Collections.Generic.List<string>([topic]))
   consumer.Start()
-  
-  ()
+(**
+Finally, take the messageSeq from subscribeSeq, and apply `onMessage` with
+the specified degree of concurrency. (using AsyncSeq, this time :) )
+*)
+  messageSeq
+  |> AsyncSeq.ofSeq
+  |> AsyncSeq.iterAsyncParThrottled concurrency onMessage
 (**
 ## Supervision
 

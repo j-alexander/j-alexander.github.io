@@ -221,12 +221,15 @@ type Offsets =
                                // message (e.g., still working on 4L, but 5L & 6L are processed)
 (**
 In the following module:
+
 * `start` adds a message to the `Active` set
 * `finish` move a message from the `Active` set to `Processed`
-* `update` adjusts the `Next` offset to commit based on any changes above
+* `update` adjusts the `Next` offset to commit (based on any changes above)
 *)
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Offsets =
+  let empty = { Next=None; Processed=[]; Active=[] }
+
   let private update = function
     | { Processed=[] } as x -> x
     | { Active=[] } as x -> { x with Processed=[]; Next=List.max x.Processed |> Some }
@@ -237,10 +240,38 @@ module Offsets =
   let start  (x:Offset) (xs:Offsets) = update { xs with Active = x :: xs.Active }
   let finish (x:Offset) (xs:Offsets) = update { xs with Active = List.filter ((<>) x) xs.Active
                                                         Processed = x :: xs.Processed }
+(**
+Since the `Offsets` above apply to an individual partition, we want to be able to track
+all _current_ partitions.  This follows the same lifecycle we've seen so far:
 
-              
-    
+1. a partition is _assigned_ to us
+2. a message _starts_ processing
+3. a message _finishes_ processing
+4. a partition may be _revoked_ (and assigned to another instance)
+*)
+type Partitions = Map<Partition, Offsets>
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Partitions =  
+  let assign (p:Partition) (xs:Partitions) : Partitions =
+    match Map.tryFind p xs with Some _ -> xs | None -> Map.add p Offsets.empty xs
+
+  let start (p:Partition, o:Offset) (xs:Partitions) : Partitions =
+    match Map.tryFind p xs with Some offsets -> Map.add p (Offsets.start o offsets) xs | None -> xs
+
+  let finish (p:Partition, o:Offset) (xs:Partitions) : Partitions =
+    match Map.tryFind p xs with Some offsets -> Map.add p (Offsets.finish o offsets) xs | None -> xs
+
+  let revoke (p:Partition) (xs:Partitions) : Partitions =
+    Map.remove p xs
+(**
+Finally, we want the next offset to commit for each partition assigned to us.
+The client then records completion of all messages up to that point.
+*)
+  let checkpoint : Partitions -> List<Partition*Offset> =
+    Map.toList >> List.choose (fun (p,o) -> o.Next |> Option.map(fun o -> p,1L+o))
+(**
+*)
 module OffsetMonitor =
   let assign _ = ()
   let revoke _ = ()

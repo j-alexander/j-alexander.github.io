@@ -246,6 +246,7 @@ let subscribe (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
 ## Supervision
 
 Supervising progress of a microservice running RdKafka depends on monitoring two things:
+
 1. the range of messages available in topic (i.e. its `Watermark` offsets), and
 2. the current `Checkpoint` offsets for a consumer group relative to those `Watermarks`
 

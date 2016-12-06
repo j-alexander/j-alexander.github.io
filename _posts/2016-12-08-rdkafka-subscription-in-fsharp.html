@@ -224,9 +224,11 @@ that message has completed!</p>
   ()
 </code></pre>
 <h2>Supervision</h2>
-<p>Supervising progress of a microservice running RdKafka depends on monitoring two things:
-1. the range of messages available in topic (i.e. its <code>Watermark</code> offsets), and
-2. the current <code>Checkpoint</code> offsets for a consumer group relative to those <code>Watermarks</code></p>
+<p>Supervising progress of a microservice running RdKafka depends on monitoring two things:</p>
+<ol>
+<li>the range of messages available in topic (i.e. its <code>Watermark</code> offsets), and</li>
+<li>the current <code>Checkpoint</code> offsets for a consumer group relative to those <code>Watermarks</code></li>
+</ol>
 <h3>Watermarks</h3>
 <p>A line drawn on the side of an empty ship is its low water line.  When you put cargo on the
 ship, it sits lower in water.  The line drawn on the side of a fully loaded ship is its

@@ -97,7 +97,7 @@ let fromProducerToLog (source:ConsumerName) (producer:Producer) =
 (**
 ## Configuration and Connection
 When you connect to RdKafka, you can configure any of the defaults in the underlying native library.
-In particular, there are several settings you want to consider:
+In particular, there are several settings you may want to consider:
 
 1. a consumer _GroupId_, shared by all cooperating instances of a microservice
   * note for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()
@@ -105,9 +105,9 @@ In particular, there are several settings you want to consider:
 3. whether to save the offsets on the _broker_ for coordination
 4. if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle
 5. a _metadata broker list_ enables you to query metadata using the RdKafka C# wrapper
-6. where to start a brand new consumer group:
-  * _"smallest"_ starts processing from the earliet offset in the topic
-  * and the default starting at the newest message
+6. where to start a _brand new_ consumer group:
+  * `smallest` starts processing from the earliet offset in the topic
+  * `largest`, the default, starts from the newest message
 *)
 let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   let config = new Config()
@@ -125,12 +125,40 @@ let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   new EventConsumer(config, brokerCsv),
   new Producer(config, brokerCsv)
 (**
-To start consuming, we can simply apply the stored position (`Offset.Stored` which will default to
-`smallest` if none is currently stored) when partitions are assigned.
+A partition key and payload can then be published to a topic.  The response
+includes a partition and offset cposition onfirming the write.  Consider
+`Encoding.UTF8.GetBytes` if your message is text.
+*)
+let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
+  let consumer,producer = connect brokerCsv group false
+  let topic = producer.Topic(topic)
+  fun (key:byte[], payload:byte[]) -> async {
+    let! report = Async.AwaitTask(topic.Produce(payload=payload,key=key))
+    return report.Partition, report.Offset
+  }
+(**
+To consume, on partition assignment we select `Offset.Stored` - (6) that now defaults
+to `smallest` if no stored offset exists.  Messages are then sent to the onMessage callback
+once the topic subscription is started.
+*)
+let subscribeCallback (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (onMessage) =
+  let autoCommit = true
+  let consumer,producer = connect brokerCsv group autoCommit
+  consumer.OnPartitionsAssigned.Add(
+    ofTopicPartitionOffsets
+    >> List.map (fun (t,p,o) -> t,p,Offset.Stored)
+    >> List.map TopicPartitionOffset
+    >> Collections.Generic.List<_>
+    >> consumer.Assign)
+  consumer.OnMessage.Add(onMessage)
+  consumer.Subscribe(new Collections.Generic.List<string>([topic]))
+  consumer.Start()
+(**
+The above works quite well _assuming you process the message to completion within the callback_.
 
-A blocking collection is used to buffer incoming messages received on callback, the subscription
-is started, and a sequence generator is returned to allow a consumer to iterate the topic's
-messages.
+If you want to process larger batches of messages using a sequence instead, a blocking
+collection can used to buffer incoming messages as they're received.  A sequence generator
+is returned allowing the consumer to iterate or batch the topic's messages.
 *)
 let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   let autoCommit = true
@@ -153,18 +181,6 @@ let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   Seq.initInfinite(fun _ ->
     let message = messages.Take()
     message.Partition, message.Offset, message.Payload)  // or AsyncSeq :)
-(**
-Similarly, a partition key and payload can be published to a topic.  The response
-includes a partition and offset confirming the write.  Consider `Encoding.UTF8.GetBytes`
-if your message is text.
-*)
-let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
-  let consumer,producer = connect brokerCsv group false
-  let topic = producer.Topic(topic)
-  fun (key:byte[], payload:byte[]) -> async {
-    let! report = Async.AwaitTask(topic.Produce(payload=payload,key=key))
-    return report.Partition, report.Offset
-  }
 (**
 At this point, we make an important observation: the client may commit offsets
 acknowledging that a message in the buffer has been processed _even though this

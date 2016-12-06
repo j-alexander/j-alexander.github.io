@@ -57,13 +57,12 @@ publish: false
   <span onmouseout="hideTip(event, 'fs41', 82)" onmouseover="showTip(event, 'fs41', 82)" class="i">ea</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs44', 83)" onmouseover="showTip(event, 'fs44', 83)" class="i">ErrorCode</span>, <span onmouseout="hideTip(event, 'fs41', 84)" onmouseover="showTip(event, 'fs41', 84)" class="i">ea</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs45', 85)" onmouseover="showTip(event, 'fs45', 85)" class="i">Reason</span>
 </code></pre>
 <h3>Logging RdKafka Events</h3>
-<p>RdKafka provides much better visibility than other .NET kafka libraries.
+<p>RdKafka provides much better transparency than other .NET kafka libraries.
 Let the consumer handle all of the cases that can be logged for Event types.
-Consider using an exhaustive match on the Event union type.</p>
-<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// </span>
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs46', 86)" onmouseover="showTip(event, 'fs46', 86)" class="f">toLog</span> <span class="o">=</span> <span class="k">function</span>
-  | <span onmouseout="hideTip(event, 'fs14', 87)" onmouseover="showTip(event, 'fs14', 87)" class="t">Event</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs23', 88)" onmouseover="showTip(event, 'fs23', 88)" class="p">Error</span> _ <span class="k">-&gt;</span> ()
-  | _ <span class="k">-&gt;</span> ()
+Consider using an exhaustive pattern match on the Event union type.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs46', 86)" onmouseover="showTip(event, 'fs46', 86)" class="f">toLog</span> <span class="o">=</span> <span class="k">function</span>
+  | <span onmouseout="hideTip(event, 'fs14', 87)" onmouseover="showTip(event, 'fs14', 87)" class="t">Event</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs23', 88)" onmouseover="showTip(event, 'fs23', 88)" class="p">Error</span> _ <span class="k">-&gt;</span> () 
+<span class="c">//| ...</span>
 </code></pre>
 <p>You can easily attach your <code>toLog</code> function to callbacks from both the producer and consumer:</p>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs47', 89)" onmouseover="showTip(event, 'fs47', 89)" class="f">fromConsumerToLog</span> (<span onmouseout="hideTip(event, 'fs48', 90)" onmouseover="showTip(event, 'fs48', 90)" class="i">consumer</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs49', 91)" onmouseover="showTip(event, 'fs49', 91)" class="t">EventConsumer</span>) <span class="o">=</span>

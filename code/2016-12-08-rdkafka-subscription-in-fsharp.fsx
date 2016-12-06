@@ -117,6 +117,7 @@ let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
   new EventConsumer(config, brokerCsv),
   new Producer(config, brokerCsv)
 (**
+### Publishing
 A partition key and payload can then be published to a topic.  The response
 includes a partition and offset position confirming the write.  Consider
 `Encoding.UTF8.GetBytes` if your message is text.
@@ -129,9 +130,10 @@ let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
     return report.Partition, report.Offset
   }
 (**
+### Subscribing
 To consume, on partition assignment we select `Offset.Stored`, which defaults to the value of
 `auto.offset.reset`, if no stored offset exists.  Messages are then sent to the onMessage callback
-once the topic subscription is started.
+once the topic subscription starts.
 *)
 let subscribeCallback (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (onMessage) =
   let autoCommit = true
@@ -152,7 +154,7 @@ You may want to process larger batches of messages asynchronously, however.
 To use a sequence instead, a blocking collection can buffer incoming messages as they're received.
 A sequence generator yielding messages from this buffer is returned to the client:
 *)
-let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) : seq<Message> =
+let subscribeSeq brokerCsv group topic : seq<Partition*Offset*byte[]> =
 (*** hide ***)
   let autoCommit = true
   let consumer,producer = connect brokerCsv group autoCommit

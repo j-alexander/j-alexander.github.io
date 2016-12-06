@@ -6,7 +6,6 @@ date: 2016-12-08
 comments: false
 publish: false
 ---
-
 (**
 ## Objective
 We want to use the RdKafka library from F#. etc
@@ -30,7 +29,7 @@ We want to use the RdKafka library from F#. etc
 
 3. *Reference* and open the C# wrapper:
 *)
-#r "../packages/RdKafka/lib/net451/RdKafka.dll"
+#r "./packages/RdKafka/lib/net451/RdKafka.dll"
 
 open RdKafka
 (*** hide ***)
@@ -125,8 +124,14 @@ let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
 
   new EventConsumer(config, brokerCsv),
   new Producer(config, brokerCsv)
+(**
+To start consuming, we can simply apply the stored position (`Offset.Stored` which will default to
+`smallest` if none is currently stored) when partitions are assigned.
 
-
+A blocking collection is used to buffer incoming messages received on callback, the subscription
+is started, and a sequence generator is returned to allow a consumer to iterate the topic's
+messages.
+*)
 let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   let autoCommit = true
   let consumer,producer = connect brokerCsv group autoCommit
@@ -141,15 +146,18 @@ let subscribeSeq (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   let messages =
     new Collections.Concurrent.BlockingCollection<Message>(
       new Collections.Concurrent.ConcurrentQueue<Message>(), buffer)
-  consumer.OnMessage.Add(messages.Add)
+  consumer.OnMessage.Add(messages.Add) // > 3000 messages in the buffer will hold/block the callback
   consumer.Subscribe(new Collections.Generic.List<string>([topic]))
   consumer.Start()
   
   Seq.initInfinite(fun _ ->
     let message = messages.Take()
-    message.Partition, message.Offset, message.Payload)  // or asyncseq :)
-
-
+    message.Partition, message.Offset, message.Payload)  // or AsyncSeq :)
+(**
+Similarly, a partition key and payload can be published to a topic.  The response
+includes a partition and offset confirming the write.  Consider `Encoding.UTF8.GetBytes`
+if your message is text.
+*)
 let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
   let consumer,producer = connect brokerCsv group false
   let topic = producer.Topic(topic)
@@ -157,8 +165,20 @@ let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
     let! report = Async.AwaitTask(topic.Produce(payload=payload,key=key))
     return report.Partition, report.Offset
   }
+(**
+At this point, we make an important observation: the client may commit offsets
+acknowledging that a message in the buffer has been processed _even though this
+may not have been dequeued_ yet.  From RdKafka's point of view it's complete,
+however.
 
+If you process messages sequentially on a single thread, using a buffer size of 1
+is an adequate workaround.  However, if you're processing messages in larger groups
+or with multiple threads (using `AsyncSeq.iterAsyncParallel`, for instance), you'll
+want to manage offsets yourself.
 
+## Manual Offsets
+
+*)
 type Offsets =
   { Next : Offset option       // the next offset to be committed
     Active : Offset list       // offsets of active messages (started processing)

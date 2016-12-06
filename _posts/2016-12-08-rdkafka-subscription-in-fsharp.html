@@ -23,7 +23,7 @@ publish: false
 </li>
 <li><p><em>Reference</em> and open the C# wrapper:</p></li>
 </ol>
-<pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;../packages/RdKafka/lib/net451/RdKafka.dll&quot;</span>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;./packages/RdKafka/lib/net451/RdKafka.dll&quot;</span>
 
 <span class="k">open</span> <span class="i">RdKafka</span>
 </code></pre>
@@ -116,9 +116,13 @@ where to start a brand new consumer group:
 
   <span class="k">new</span> <span class="i">EventConsumer</span>(<span class="i">config</span>, <span class="i">brokerCsv</span>),
   <span class="k">new</span> <span class="i">Producer</span>(<span class="i">config</span>, <span class="i">brokerCsv</span>)
-
-
-<span class="k">let</span> <span class="i">subscribeSeq</span> (<span class="i">brokerCsv</span><span class="o">:</span><span class="i">BrokerCsv</span>) (<span class="i">group</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">topic</span><span class="o">:</span><span class="i">Topic</span>) <span class="o">=</span>
+</code></pre>
+<p>To start consuming, we can simply apply the stored position (<code>Offset.Stored</code> which will default to
+<code>smallest</code> if none is currently stored) when partitions are assigned.</p>
+<p>A blocking collection is used to buffer incoming messages received on callback, the subscription
+is started, and a sequence generator is returned to allow a consumer to iterate the topic's
+messages.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="i">subscribeSeq</span> (<span class="i">brokerCsv</span><span class="o">:</span><span class="i">BrokerCsv</span>) (<span class="i">group</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">topic</span><span class="o">:</span><span class="i">Topic</span>) <span class="o">=</span>
   <span class="k">let</span> <span class="i">autoCommit</span> <span class="o">=</span> <span class="k">true</span>
   <span class="k">let</span> <span class="i">consumer</span>,<span class="i">producer</span> <span class="o">=</span> <span class="i">connect</span> <span class="i">brokerCsv</span> <span class="i">group</span> <span class="i">autoCommit</span>
   <span class="i">consumer</span><span class="o">.</span><span class="i">OnPartitionsAssigned</span><span class="o">.</span><span class="i">Add</span>(
@@ -132,25 +136,35 @@ where to start a brand new consumer group:
   <span class="k">let</span> <span class="i">messages</span> <span class="o">=</span>
     <span class="k">new</span> <span onmouseout="hideTip(event, 'fs14', 39)" onmouseover="showTip(event, 'fs14', 39)" class="i">Collections</span><span class="o">.</span><span class="i">Concurrent</span><span class="o">.</span><span class="i">BlockingCollection</span><span class="o">&lt;</span><span class="i">Message</span><span class="o">&gt;</span>(
       <span class="k">new</span> <span onmouseout="hideTip(event, 'fs14', 40)" onmouseover="showTip(event, 'fs14', 40)" class="i">Collections</span><span class="o">.</span><span class="i">Concurrent</span><span class="o">.</span><span class="i">ConcurrentQueue</span><span class="o">&lt;</span><span class="i">Message</span><span class="o">&gt;</span>(), <span class="i">buffer</span>)
-  <span class="i">consumer</span><span class="o">.</span><span class="i">OnMessage</span><span class="o">.</span><span class="i">Add</span>(<span class="i">messages</span><span class="o">.</span><span class="i">Add</span>)
+  <span class="i">consumer</span><span class="o">.</span><span class="i">OnMessage</span><span class="o">.</span><span class="i">Add</span>(<span class="i">messages</span><span class="o">.</span><span class="i">Add</span>) <span class="c">// &gt; 3000 messages in the buffer will hold/block the callback</span>
   <span class="i">consumer</span><span class="o">.</span><span class="i">Subscribe</span>(<span class="k">new</span> <span onmouseout="hideTip(event, 'fs14', 41)" onmouseover="showTip(event, 'fs14', 41)" class="i">Collections</span><span class="o">.</span><span class="i">Generic</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs8', 42)" onmouseover="showTip(event, 'fs8', 42)" class="i">List</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs4', 43)" onmouseover="showTip(event, 'fs4', 43)" class="i">string</span><span class="o">&gt;</span>([<span class="i">topic</span>]))
   <span class="i">consumer</span><span class="o">.</span><span class="i">Start</span>()
   
   <span onmouseout="hideTip(event, 'fs9', 44)" onmouseover="showTip(event, 'fs9', 44)" class="i">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs15', 45)" onmouseover="showTip(event, 'fs15', 45)" class="i">initInfinite</span>(<span class="k">fun</span> _ <span class="k">-&gt;</span>
     <span class="k">let</span> <span class="i">message</span> <span class="o">=</span> <span class="i">messages</span><span class="o">.</span><span class="i">Take</span>()
-    <span class="i">message</span><span class="o">.</span><span class="i">Partition</span>, <span class="i">message</span><span class="o">.</span><span class="i">Offset</span>, <span class="i">message</span><span class="o">.</span><span class="i">Payload</span>)  <span class="c">// or asyncseq :)</span>
-
-
-<span class="k">let</span> <span class="i">publish</span> (<span class="i">brokerCsv</span><span class="o">:</span><span class="i">BrokerCsv</span>) (<span class="i">group</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">topic</span><span class="o">:</span><span class="i">Topic</span>) <span class="o">=</span>
+    <span class="i">message</span><span class="o">.</span><span class="i">Partition</span>, <span class="i">message</span><span class="o">.</span><span class="i">Offset</span>, <span class="i">message</span><span class="o">.</span><span class="i">Payload</span>)  <span class="c">// or AsyncSeq :)</span>
+</code></pre>
+<p>Similarly, a partition key and payload can be published to a topic.  The response
+includes a partition and offset confirming the write.  Consider <code>Encoding.UTF8.GetBytes</code>
+if your message is text.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="i">publish</span> (<span class="i">brokerCsv</span><span class="o">:</span><span class="i">BrokerCsv</span>) (<span class="i">group</span><span class="o">:</span><span class="i">ConsumerName</span>) (<span class="i">topic</span><span class="o">:</span><span class="i">Topic</span>) <span class="o">=</span>
   <span class="k">let</span> <span class="i">consumer</span>,<span class="i">producer</span> <span class="o">=</span> <span class="i">connect</span> <span class="i">brokerCsv</span> <span class="i">group</span> <span class="k">false</span>
   <span class="k">let</span> <span class="i">topic</span> <span class="o">=</span> <span class="i">producer</span><span class="o">.</span><span class="i">Topic</span>(<span class="i">topic</span>)
   <span class="k">fun</span> (<span class="i">key</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs16', 46)" onmouseover="showTip(event, 'fs16', 46)" class="i">byte</span>[], <span class="i">payload</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs16', 47)" onmouseover="showTip(event, 'fs16', 47)" class="i">byte</span>[]) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs17', 48)" onmouseover="showTip(event, 'fs17', 48)" class="i">async</span> {
     <span class="k">let!</span> <span class="i">report</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs18', 49)" onmouseover="showTip(event, 'fs18', 49)" class="i">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs19', 50)" onmouseover="showTip(event, 'fs19', 50)" class="i">AwaitTask</span>(<span class="i">topic</span><span class="o">.</span><span class="i">Produce</span>(<span class="i">payload</span><span class="o">=</span><span class="i">payload</span>,<span class="i">key</span><span class="o">=</span><span class="i">key</span>))
     <span class="k">return</span> <span class="i">report</span><span class="o">.</span><span class="i">Partition</span>, <span class="i">report</span><span class="o">.</span><span class="i">Offset</span>
   }
-
-
-<span class="k">type</span> <span class="i">Offsets</span> <span class="o">=</span>
+</code></pre>
+<p>At this point, we make an important observation: the client may commit offsets
+acknowledging that a message in the buffer has been processed <em>even though this
+may not have been dequeued</em> yet.  From RdKafka's point of view it's complete,
+however.</p>
+<p>If you process messages sequentially on a single thread, using a buffer size of 1
+is an adequate workaround.  However, if you're processing messages in larger groups
+or with multiple threads (using <code>AsyncSeq.iterAsyncParallel</code>, for instance), you'll
+want to manage offsets yourself.</p>
+<h2>Manual Offsets</h2>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span class="i">Offsets</span> <span class="o">=</span>
   { <span class="i">Next</span> <span class="o">:</span> <span class="i">Offset</span> <span onmouseout="hideTip(event, 'fs20', 51)" onmouseover="showTip(event, 'fs20', 51)" class="i">option</span>       <span class="c">// the next offset to be committed</span>
     <span class="i">Active</span> <span class="o">:</span> <span class="i">Offset</span> <span onmouseout="hideTip(event, 'fs21', 52)" onmouseover="showTip(event, 'fs21', 52)" class="i">list</span>       <span class="c">// offsets of active messages (started processing)</span>
     <span class="i">Processed</span> <span class="o">:</span> <span class="i">Offset</span> <span onmouseout="hideTip(event, 'fs21', 53)" onmouseover="showTip(event, 'fs21', 53)" class="i">list</span> }  <span class="c">// offsets of processed messages newer than (&gt;) any active</span>

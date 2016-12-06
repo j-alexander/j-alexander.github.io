@@ -186,14 +186,22 @@ may not have been dequeued</em>.  From RdKafka's point of view, the callback for
 that message has completed!</p>
 <p>This is when you'll want to manage offsets yourself.</p>
 <h2>Manual Offsets</h2>
+<p>For a given partition, we need to know which messages have started processing. These
+are the <code>Active</code> messages that we do not yet want to commit.  When a message has completed
+we move it to <code>Processed</code>.</p>
+<p>It's possible that processing may complete out of order!  To account for this, the <code>Next</code>
+offset to commit must be less than the oldest <code>Active</code> message.</p>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs119', 339)" onmouseover="showTip(event, 'fs119', 339)" class="t">Offsets</span> <span class="o">=</span>
   { <span onmouseout="hideTip(event, 'fs120', 340)" onmouseover="showTip(event, 'fs120', 340)" class="i">Next</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs9', 341)" onmouseover="showTip(event, 'fs9', 341)" class="t">Offset</span> <span onmouseout="hideTip(event, 'fs121', 342)" onmouseover="showTip(event, 'fs121', 342)" class="t">option</span>       <span class="c">// the next offset to be committed</span>
     <span onmouseout="hideTip(event, 'fs122', 343)" onmouseover="showTip(event, 'fs122', 343)" class="i">Active</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs9', 344)" onmouseover="showTip(event, 'fs9', 344)" class="t">Offset</span> <span onmouseout="hideTip(event, 'fs123', 345)" onmouseover="showTip(event, 'fs123', 345)" class="t">list</span>       <span class="c">// offsets of active messages (started processing)</span>
     <span onmouseout="hideTip(event, 'fs124', 346)" onmouseover="showTip(event, 'fs124', 346)" class="i">Processed</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs9', 347)" onmouseover="showTip(event, 'fs9', 347)" class="t">Offset</span> <span onmouseout="hideTip(event, 'fs123', 348)" onmouseover="showTip(event, 'fs123', 348)" class="t">list</span> }  <span class="c">// offsets of processed messages newer than (&gt;) any active</span>
                                <span class="c">// message (e.g., still working on 4L, but 5L &amp; 6L are processed)</span>
-    
-<span class="c">// start a message, finish a message, update &quot;next&quot; offset to be committed</span>
-[&lt;<span onmouseout="hideTip(event, 'fs125', 349)" onmouseover="showTip(event, 'fs125', 349)" class="t">CompilationRepresentation</span>(<span onmouseout="hideTip(event, 'fs126', 350)" onmouseover="showTip(event, 'fs126', 350)" class="t">CompilationRepresentationFlags</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs127', 351)" onmouseover="showTip(event, 'fs127', 351)" class="i">ModuleSuffix</span>)&gt;]
+</code></pre>
+<p>In the following module:
+<em> <code>start</code> adds a message to the <code>Active</code> set
+</em> <code>finish</code> move a message from the <code>Active</code> set to <code>Processed</code>
+* <code>update</code> adjusts the <code>Next</code> offset to commit based on any changes above</p>
+<pre class="fssnip highlighted"><code lang="fsharp">[&lt;<span onmouseout="hideTip(event, 'fs125', 349)" onmouseover="showTip(event, 'fs125', 349)" class="t">CompilationRepresentation</span>(<span onmouseout="hideTip(event, 'fs126', 350)" onmouseover="showTip(event, 'fs126', 350)" class="t">CompilationRepresentationFlags</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs127', 351)" onmouseover="showTip(event, 'fs127', 351)" class="i">ModuleSuffix</span>)&gt;]
 <span class="k">module</span> <span onmouseout="hideTip(event, 'fs119', 352)" onmouseover="showTip(event, 'fs119', 352)" class="t">Offsets</span> <span class="o">=</span>
   <span class="k">let</span> <span class="k">private</span> <span onmouseout="hideTip(event, 'fs128', 353)" onmouseover="showTip(event, 'fs128', 353)" class="f">update</span> <span class="o">=</span> <span class="k">function</span>
     | { <span class="i">Processed</span><span class="o">=</span>[] } <span class="k">as</span> <span onmouseout="hideTip(event, 'fs129', 354)" onmouseover="showTip(event, 'fs129', 354)" class="i">x</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs129', 355)" onmouseover="showTip(event, 'fs129', 355)" class="i">x</span>

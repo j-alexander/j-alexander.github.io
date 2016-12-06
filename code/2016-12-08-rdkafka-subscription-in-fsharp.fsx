@@ -207,15 +207,24 @@ that message has completed!
 This is when you'll want to manage offsets yourself.
 
 ## Manual Offsets
+For a given partition, we need to know which messages have started processing. These
+are the `Active` messages that we do not yet want to commit.  When a message has completed
+we move it to `Processed`.
 
+It's possible that processing may complete out of order!  To account for this, the `Next`
+offset to commit must be less than the oldest `Active` message.
 *)
 type Offsets =
   { Next : Offset option       // the next offset to be committed
     Active : Offset list       // offsets of active messages (started processing)
     Processed : Offset list }  // offsets of processed messages newer than (>) any active
                                // message (e.g., still working on 4L, but 5L & 6L are processed)
-    
-// start a message, finish a message, update "next" offset to be committed
+(**
+In the following module:
+* `start` adds a message to the `Active` set
+* `finish` move a message from the `Active` set to `Processed`
+* `update` adjusts the `Next` offset to commit based on any changes above
+*)
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Offsets =
   let private update = function

@@ -92,20 +92,21 @@ let toLog = function
 (*** hide ***)
   | _ -> ()
 (**
-You can easily attach your `toLog` function to callbacks from both the producer and consumer:
+You can easily attach your `toLog` function to callbacks from both the producer and consumer
+by mapping the callbacks into cases of the `Event` type:
 *)
-let fromConsumerToLog (consumer:EventConsumer) =
-  consumer.OnStatistics.Add(Event.Statistics >> toLog)
-  consumer.OnOffsetCommit.Add(ofCommit >> Event.OffsetCommit >> toLog)
-  consumer.OnEndReached.Add(ofTopicPartitionOffset >> Event.EndReached >> toLog)
-  consumer.OnPartitionsAssigned.Add(ofTopicPartitionOffsets >> Event.PartitionsAssigned >> toLog)
-  consumer.OnPartitionsRevoked.Add(ofTopicPartitionOffsets >> Event.PartitionsRevoked >> toLog)
-  consumer.OnConsumerError.Add(Event.ConsumerError >> toLog)
-  consumer.OnError.Add(ofError >> Event.Error >> toLog)
+let fromConsumerToLog (c:EventConsumer) =
+  c.OnStatistics.Add(Statistics >> toLog)
+  c.OnOffsetCommit.Add(ofCommit >> OffsetCommit >> toLog)
+  c.OnEndReached.Add(ofTopicPartitionOffset >> EndReached >> toLog)
+  c.OnPartitionsAssigned.Add(ofTopicPartitionOffsets >> PartitionsAssigned >> toLog)
+  c.OnPartitionsRevoked.Add(ofTopicPartitionOffsets >> PartitionsRevoked >> toLog)
+  c.OnConsumerError.Add(ConsumerError >> toLog)
+  c.OnError.Add(ofError >> Error >> toLog)
 
-let fromProducerToLog (source:ConsumerName) (producer:Producer) =
-  producer.OnError.Add(ofError >> Event.Error >> toLog)
-  producer.OnStatistics.Add(Event.Statistics >> toLog)
+let fromProducerToLog (p:Producer) =
+  p.OnError.Add(ofError >> Error >> toLog)
+  p.OnStatistics.Add(Statistics >> toLog)
 (**
 ## Configuration and Connection
 When you connect to RdKafka, you can configure any of the defaults in the underlying native library.
@@ -155,7 +156,7 @@ To consume, on partition assignment we select `Offset.Stored`, which defaults to
 `auto.offset.reset` if no stored offset exists.  Messages are then sent to the onMessage callback
 once the topic subscription starts.
 *)
-let subscribeCallback (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (onMessage) =
+let subscribeCallback (brokerCsv) (group) (topic:Topic) (onMessage) =
   let autoCommit = true
   let consumer,producer = connect brokerCsv group autoCommit
   consumer.OnPartitionsAssigned.Add(
@@ -218,8 +219,9 @@ offset to commit must be less than the oldest `Active` message.
 type Offsets =
   { Next : Offset option       // the next offset to be committed
     Active : Offset list       // offsets of active messages (started processing)
-    Processed : Offset list }  // offsets of processed messages newer than (>) any active
-                               // message (e.g., still working on 4L, but 5L & 6L are processed)
+    Processed : Offset list }  // offsets of processed messages newer than (>) any
+                               // active message, e.g.:
+                               //   still working on 4L, but 5L & 6L are processed
 (**
 In the following module:
 
@@ -255,13 +257,19 @@ type Partitions = Map<Partition, Offsets>
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Partitions =  
   let assign (p:Partition) (xs:Partitions) : Partitions =
-    match Map.tryFind p xs with Some _ -> xs | None -> Map.add p Offsets.empty xs
+    match Map.tryFind p xs with
+    | Some _ -> xs
+    | None -> Map.add p Offsets.empty xs
 
   let start (p:Partition, o:Offset) (xs:Partitions) : Partitions =
-    match Map.tryFind p xs with Some offsets -> Map.add p (Offsets.start o offsets) xs | None -> xs
+    match Map.tryFind p xs with 
+    | Some offsets -> Map.add p (Offsets.start o offsets) xs
+    | None -> xs
 
   let finish (p:Partition, o:Offset) (xs:Partitions) : Partitions =
-    match Map.tryFind p xs with Some offsets -> Map.add p (Offsets.finish o offsets) xs | None -> xs
+    match Map.tryFind p xs with
+    | Some offsets -> Map.add p (Offsets.finish o offsets) xs
+    | None -> xs
 
   let revoke (p:Partition) (xs:Partitions) : Partitions =
     Map.remove p xs
@@ -273,18 +281,17 @@ The client then records completion of all messages up to that point.
     Map.toList >> List.choose (fun (p,o) -> o.Next |> Option.map(fun o -> p,1L+o))
 (**
 ### Committing Offsets
+
+1. processing _started_ or _completed_ on a message at `Offset` of `Partition`
+2. `Partitions` have been assigned to us, or revoked from us (and assigned to another consumer in our group)
 *)
 type OffsetMonitor = OffsetMonitorMessage->unit
 and OffsetMonitorMessage =
-  | Start of Partition*Offset  // processing has started on a message at _Offset_ of _Partition_
-  | Finish of Partition*Offset // processing has completed on a message at _Offset_ of _Partition_
-  | Assign of Partition list   // active _Partitions_ have been assigned to us
-  | Revoke of Partition list   // active _Partitions_ have been revoked from us (and assigned to another consumer)
+  | Start of Partition * Offset | Finish of Partition * Offset // (1)
+  | Assign of Partition list    | Revoke of Partition list     // (2)
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module OffsetMonitor =
-    open System.Threading
-    open System.Threading.Tasks
 
     let assign m = List.map (fun (_,p,_) -> p) >> Assign >> m 
     let revoke m = List.map (fun (_,p,_) -> p) >> Revoke >> m
@@ -300,7 +307,7 @@ module OffsetMonitor =
         | Revoke (ps)  -> List.foldBack Partitions.revoke (ps)
 
       MailboxProcessor<OffsetMonitorMessage>.Start(fun inbox ->
-        let rec loop(watch:Stopwatch,partitions:Partitions) = async {
+        let rec loop(watch:Stopwatch, partitions:Partitions) = async {
             if watch.Elapsed.TotalSeconds > 45. then
               let! result =
                 Partitions.checkpoint partitions
@@ -317,7 +324,7 @@ module OffsetMonitor =
                 | None -> loop(watch, partitions)
                 | Some m -> loop(watch, partitions |> integrate m)
           }
-        loop(Stopwatch.StartNew(),Map.empty)).Post
+        loop(Stopwatch.StartNew(), Map.empty)).Post
 (*** hide ***)
 module AsyncSeq =
   let ofSeq (xs:seq<'a>) = ()
@@ -399,15 +406,19 @@ module Watermark =
   let queryWithTimeout (timeout) (producer:Producer) (consumer:Consumer) (topic:Topic) =
     let queryWatermark(t, p) =
       async {
-        let! w = Async.AwaitTask <| consumer.QueryWatermarkOffsets(TopicPartition(t, p), timeout)
+        let! w =
+          consumer.QueryWatermarkOffsets(TopicPartition(t, p), timeout)
+          |> Async.AwaitTask
         return { Topic=t; Partition=p; High=w.High; Low=w.Low }
       }
     async {
       let topic = producer.Topic(topic)
-      let! metadata = Async.AwaitTask <| producer.Metadata(onlyForTopic=topic, timeout=timeout)
+      let! metadata =
+        producer.Metadata(onlyForTopic=topic, timeout=timeout)
+        |> Async.AwaitTask
       return!
         metadata.Topics
-        |> Seq.collect(fun t -> t.Partitions |> Seq.map (fun p -> t.Topic, p.PartitionId))
+        |> Seq.collect(fun t -> [for p in t.Partitions -> t.Topic, p.PartitionId])
         |> Seq.sort
         |> Seq.map queryWatermark
         |> Async.Parallel // again, consider AsyncSeq instead :)
@@ -428,24 +439,25 @@ across all partitions of the topic:
 *)
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Checkpoint =
-  let queryWithTimeout (timeout) (producer:Producer) (consumer:Consumer) (topic:Topic) : Async<Checkpoint> =
+  let queryWithTimeout (timeout) (producer:Producer) (consumer:Consumer) (topic:Topic) =
     async {
       let! metadata = 
         producer.Metadata(onlyForTopic=producer.Topic(topic), timeout=timeout)
         |> Async.AwaitTask
       let partitions =
         metadata.Topics
-        |> Seq.collect(fun t -> t.Partitions |> Seq.map (fun p -> t.Topic, p.PartitionId))
+        |> Seq.collect(fun t -> [for p in t.Partitions -> t.Topic, p.PartitionId])
         |> Seq.sort
         |> Seq.map (fun (t,p) -> new TopicPartition(t,p))
       let! committed =
         consumer.Committed(new Collections.Generic.List<_>(partitions), timeout)
         |> Async.AwaitTask
-      return
+      let checkpoint : Checkpoint =
         committed
         |> Seq.map (fun tpo -> tpo.Partition, tpo.Offset)
         |> Seq.sortBy fst
         |> Seq.toList
+      return checkpoint
     }
 (**
 Over time, your current offset in each partition should increase as your consumer group

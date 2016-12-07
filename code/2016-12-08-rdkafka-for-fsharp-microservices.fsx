@@ -491,6 +491,6 @@ With an eye to building top-tier microservices, we looked at:
 If you enjoy working with F# and Kafka, I also encourage you to check out [Kafunk](https://jet.github.io/kafunk/) -
 an open source client (written entirely in F# !) under development at [Jet](https://tech.jet.com/).
 
-Thanks for visiting ~ have _fun_!
+Thanks for visiting ~ have _fun_ !
 
 *)

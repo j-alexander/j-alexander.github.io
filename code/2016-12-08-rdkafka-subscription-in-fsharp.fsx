@@ -280,7 +280,7 @@ Our client can then commit a checkpoint to record completion of all messages up 
   let checkpoint : Partitions -> List<Partition*Offset> =
     Map.toList >> List.choose (fun (p,o) -> o.Next |> Option.map(fun o -> p,1L+o))
 (**
-### Committing Offsets
+### Integrating & Committing Offsets
 
 1. processing _started_ or _completed_ on a message at `Offset` of `Partition`
 2. `Partitions` have been assigned to us, or revoked from us (and assigned to another consumer in our group)
@@ -305,7 +305,11 @@ module OffsetMonitor =
         | Finish (p,o) -> Partitions.finish (p,o)
         | Assign (ps)  -> List.foldBack Partitions.assign (ps)
         | Revoke (ps)  -> List.foldBack Partitions.revoke (ps)
-
+(**
+This example uses an F# mailbox processor to aggregate our progress. Here, every 45 seconds our offset
+monitor will commit outstanding checkpoints. A Kafka cluster may reassign your partitions if you wait
+too long to report progress.
+*)
       MailboxProcessor<OffsetMonitorMessage>.Start(fun inbox ->
         let rec loop(watch:Stopwatch, partitions:Partitions) = async {
             if watch.Elapsed.TotalSeconds > 45. then

@@ -106,7 +106,7 @@ a consumer <em>GroupId</em>, shared by all cooperating instances of a microservi
 </li>
 <li>whether or not to <em>EnableAutoCommit</em> for tracking your current offset position</li>
 <li>whether to save the offsets on the <em>broker</em> for coordination</li>
-<li>if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle</li>
+<li>if your Kafka cluster runs an idle connection reaper, disconnection messages <a href="https://github.com/edenhill/librdkafka/issues/437">will appear</a> at even intervals when idle</li>
 <li>a <em>metadata broker list</em> workaround enables you to query additional metadata using the native wrapper</li>
 <li>
 where to start a <em>brand new</em> consumer group:

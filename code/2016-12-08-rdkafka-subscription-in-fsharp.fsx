@@ -116,7 +116,7 @@ In particular, there are several settings you may want to consider:
   * [note](https://github.com/ah-/rdkafka-dotnet/issues/88#issuecomment-264820360): for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()
 2. whether or not to _EnableAutoCommit_ for tracking your current offset position
 3. whether to save the offsets on the _broker_ for coordination
-4. if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle
+4. if your Kafka cluster runs an idle connection reaper, disconnection messages [will appear](https://github.com/edenhill/librdkafka/issues/437) at even intervals when idle
 5. a _metadata broker list_ workaround enables you to query additional metadata using the native wrapper
 6. where to start a _brand new_ consumer group:
   * `smallest` starts processing from the earliest offsets in the topic

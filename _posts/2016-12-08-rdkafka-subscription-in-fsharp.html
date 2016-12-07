@@ -261,7 +261,7 @@ There are several ways to solve this problem! This particular solution can play 
 asynchronous workflows and is fairly concise.</p>
 <p>The actor observes the following:</p>
 <ol>
-<li>processing <em>started</em> or <em>completed</em> on a message at <code>Offset</code> of <code>Partition</code></li>
+<li>processing <em>started</em> or <em>finished</em> on a message at <code>Offset</code> of <code>Partition</code></li>
 <li>active <code>Partitions</code> have been assigned to us, or revoked from us (i.e. assigned to another consumer in our group)</li>
 </ol>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs164', 500)" onmouseover="showTip(event, 'fs164', 500)" class="t">OffsetMonitor</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs165', 501)" onmouseover="showTip(event, 'fs165', 501)" class="t">OffsetMonitorMessage</span><span class="k">-&gt;</span><span onmouseout="hideTip(event, 'fs166', 502)" onmouseover="showTip(event, 'fs166', 502)" class="t">unit</span>
@@ -420,6 +420,18 @@ added.  The difference between your high watermark and your current position is 
 <p>Using these figures, you can measure your performance relative to any service level agreement
 in effect for your microservice, and potentially take corrective action - such as scaling
 the number of consumer instances or size of machines.</p>
+<h2>Summary</h2>
+<p>With an eye to building top-tier microservices, we looked at:</p>
+<ul>
+<li>how to get visibility into the RdKafka client with callback logging</li>
+<li>configuring the client for flexibility in several useful scenarios</li>
+<li>scaling the client as partitions are redistributed</li>
+<li>maintaining an at-least-once guarantee for message processing at scale</li>
+<li>and monitoring overall progress using watermarks and committed checkpoints</li>
+</ul>
+<p>(and we barely even scratched the surface :) )</p>
+<p>If you enjoy working with F# and Kafka, I also encourage you to check out <a href="https://jet.github.io/kafunk/">Kafunk</a> -
+an open source client (written entirely in F# !) under development at <a href="https://tech.jet.com/">Jet</a>.</p>
 
 <div class="tip" id="fs1">namespace RdKafka</div>
 <div class="tip" id="fs2">namespace System</div>

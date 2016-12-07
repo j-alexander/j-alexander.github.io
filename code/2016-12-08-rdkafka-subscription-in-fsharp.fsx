@@ -288,7 +288,7 @@ asynchronous workflows and is fairly concise.
 
 The actor observes the following:
 
-1. processing _started_ or _completed_ on a message at `Offset` of `Partition`
+1. processing _started_ or _finished_ on a message at `Offset` of `Partition`
 2. active `Partitions` have been assigned to us, or revoked from us (i.e. assigned to another consumer in our group)
 *)
 type OffsetMonitor = OffsetMonitorMessage->unit
@@ -476,4 +476,19 @@ added.  The difference between your high watermark and your current position is 
 Using these figures, you can measure your performance relative to any service level agreement
 in effect for your microservice, and potentially take corrective action - such as scaling
 the number of consumer instances or size of machines.
+
+## Summary
+With an eye to building top-tier microservices, we looked at:
+
+* how to get visibility into the RdKafka client with callback logging
+* configuring the client for flexibility in several useful scenarios
+* scaling the client as partitions are redistributed
+* maintaining an at-least-once guarantee for message processing at scale
+* and monitoring overall progress using watermarks and committed checkpoints
+
+(and we barely even scratched the surface :) )
+
+If you enjoy working with F# and Kafka, I also encourage you to check out [Kafunk](https://jet.github.io/kafunk/) -
+an open source client (written entirely in F# !) under development at [Jet](https://tech.jet.com/).
+
 *)

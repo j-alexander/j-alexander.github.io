@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "RdKafka Subscription in F#"
+title: "RdKafka for F# Microservices"
 date: 2016-12-08
 comments: true
-publish: false
+publish: true
 ---
 <h2>Objective</h2>
 <p>Apache Kafka represents a powerful tool for linking microservices in a distributed
@@ -437,23 +437,23 @@ publishing and subscribing, including:
 </ul>
 <p>If you enjoy working with F# and Kafka, I also encourage you to check out <a href="https://jet.github.io/kafunk/">Kafunk</a> -
 an open source client (written entirely in F# !) under development at <a href="https://tech.jet.com/">Jet</a>.</p>
-<p>Good luck!</p>
+<p>Thanks for visiting ~ have <code>fun</code>!</p>
 
 <div class="tip" id="fs1">namespace RdKafka</div>
 <div class="tip" id="fs2">namespace System</div>
 <div class="tip" id="fs3">namespace System.Collections</div>
 <div class="tip" id="fs4">namespace System.Collections.Concurrent</div>
 <div class="tip" id="fs5">namespace System.Diagnostics</div>
-<div class="tip" id="fs6">type Topic = string<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Topic</div>
+<div class="tip" id="fs6">type Topic = string<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Topic</div>
 <div class="tip" id="fs7">Multiple items<br />val string : value:&#39;T -&gt; string<br /><br />Full name: Microsoft.FSharp.Core.Operators.string<br /><br />--------------------<br />type string = String<br /><br />Full name: Microsoft.FSharp.Core.string</div>
-<div class="tip" id="fs8">type Partition = int<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Partition</div>
+<div class="tip" id="fs8">type Partition = int<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Partition</div>
 <div class="tip" id="fs9">Multiple items<br />val int : value:&#39;T -&gt; int (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int<br /><br />--------------------<br />type int = int32<br /><br />Full name: Microsoft.FSharp.Core.int<br /><br />--------------------<br />type int&lt;&#39;Measure&gt; = int<br /><br />Full name: Microsoft.FSharp.Core.int&lt;_&gt;</div>
-<div class="tip" id="fs10">type Offset = int64<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Offset</div>
+<div class="tip" id="fs10">type Offset = int64<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Offset</div>
 <div class="tip" id="fs11">Multiple items<br />val int64 : value:&#39;T -&gt; int64 (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int64<br /><br />--------------------<br />type int64 = Int64<br /><br />Full name: Microsoft.FSharp.Core.int64<br /><br />--------------------<br />type int64&lt;&#39;Measure&gt; = int64<br /><br />Full name: Microsoft.FSharp.Core.int64&lt;_&gt;</div>
-<div class="tip" id="fs12">type BrokerCsv = string<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.BrokerCsv</div>
-<div class="tip" id="fs13">type ConsumerName = string<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.ConsumerName</div>
-<div class="tip" id="fs14">type ErrorReason = string<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.ErrorReason</div>
-<div class="tip" id="fs15">Multiple items<br />module Event<br /><br />from Microsoft.FSharp.Control<br /><br />--------------------<br />type Event =<br />&#160;&#160;| Statistics of string<br />&#160;&#160;| OffsetCommit of ErrorCode * List&lt;Topic * Partition * Offset&gt;<br />&#160;&#160;| EndReached of Topic * Partition * Offset<br />&#160;&#160;| PartitionsAssigned of List&lt;Topic * Partition * Offset&gt;<br />&#160;&#160;| PartitionsRevoked of List&lt;Topic * Partition * Offset&gt;<br />&#160;&#160;| ConsumerError of ErrorCode<br />&#160;&#160;| Error of ErrorCode * string<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Event<br /><br />--------------------<br />type Event&lt;&#39;T&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;T&gt;<br />&#160;&#160;member Trigger : arg:&#39;T -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_&gt;<br /><br />--------------------<br />type Event&lt;&#39;Delegate,&#39;Args (requires delegate and &#39;Delegate :&gt; Delegate)&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;<br />&#160;&#160;member Trigger : sender:obj * args:&#39;Args -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;Delegate,&#39;Args&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_,_&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;T&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;</div>
+<div class="tip" id="fs12">type BrokerCsv = string<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.BrokerCsv</div>
+<div class="tip" id="fs13">type ConsumerName = string<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.ConsumerName</div>
+<div class="tip" id="fs14">type ErrorReason = string<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.ErrorReason</div>
+<div class="tip" id="fs15">Multiple items<br />module Event<br /><br />from Microsoft.FSharp.Control<br /><br />--------------------<br />type Event =<br />&#160;&#160;| Statistics of string<br />&#160;&#160;| OffsetCommit of ErrorCode * List&lt;Topic * Partition * Offset&gt;<br />&#160;&#160;| EndReached of Topic * Partition * Offset<br />&#160;&#160;| PartitionsAssigned of List&lt;Topic * Partition * Offset&gt;<br />&#160;&#160;| PartitionsRevoked of List&lt;Topic * Partition * Offset&gt;<br />&#160;&#160;| ConsumerError of ErrorCode<br />&#160;&#160;| Error of ErrorCode * string<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Event<br /><br />--------------------<br />type Event&lt;&#39;T&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;T&gt;<br />&#160;&#160;member Trigger : arg:&#39;T -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_&gt;<br /><br />--------------------<br />type Event&lt;&#39;Delegate,&#39;Args (requires delegate and &#39;Delegate :&gt; Delegate)&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;<br />&#160;&#160;member Trigger : sender:obj * args:&#39;Args -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;Delegate,&#39;Args&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_,_&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;T&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;</div>
 <div class="tip" id="fs16">union case Event.Statistics: string -&gt; Event</div>
 <div class="tip" id="fs17">union case Event.OffsetCommit: ErrorCode * List&lt;Topic * Partition * Offset&gt; -&gt; Event</div>
 <div class="tip" id="fs18">type ErrorCode =<br />&#160;&#160;| _BEGIN = -200<br />&#160;&#160;| _BAD_MSG = -199<br />&#160;&#160;| _BAD_COMPRESSION = -198<br />&#160;&#160;| _DESTROY = -197<br />&#160;&#160;| _FAIL = -196<br />&#160;&#160;| _TRANSPORT = -195<br />&#160;&#160;| _CRIT_SYS_RESOURCE = -194<br />&#160;&#160;| _RESOLVE = -193<br />&#160;&#160;| _MSG_TIMED_OUT = -192<br />&#160;&#160;| _PARTITION_EOF = -191<br />&#160;&#160;...<br /><br />Full name: RdKafka.ErrorCode</div>
@@ -463,30 +463,30 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs22">union case Event.PartitionsRevoked: List&lt;Topic * Partition * Offset&gt; -&gt; Event</div>
 <div class="tip" id="fs23">union case Event.ConsumerError: ErrorCode -&gt; Event</div>
 <div class="tip" id="fs24">union case Event.Error: ErrorCode * string -&gt; Event</div>
-<div class="tip" id="fs25">val ofTopicPartitionOffset : tpo:TopicPartitionOffset -&gt; string * int * int64<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.ofTopicPartitionOffset</div>
+<div class="tip" id="fs25">val ofTopicPartitionOffset : tpo:TopicPartitionOffset -&gt; string * int * int64<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.ofTopicPartitionOffset</div>
 <div class="tip" id="fs26">val tpo : TopicPartitionOffset</div>
 <div class="tip" id="fs27">Multiple items<br />type TopicPartitionOffset =<br />&#160;&#160;struct<br />&#160;&#160;&#160;&#160;new : topic:string * partition:int * offset:int64 -&gt; TopicPartitionOffset<br />&#160;&#160;&#160;&#160;member Offset : int64 with get, set<br />&#160;&#160;&#160;&#160;member Partition : int with get, set<br />&#160;&#160;&#160;&#160;member ToString : unit -&gt; string<br />&#160;&#160;&#160;&#160;member Topic : string with get, set<br />&#160;&#160;end<br /><br />Full name: RdKafka.TopicPartitionOffset<br /><br />--------------------<br />TopicPartitionOffset()<br />TopicPartitionOffset(topic: string, partition: int, offset: int64) : unit</div>
 <div class="tip" id="fs28">property TopicPartitionOffset.Topic: string</div>
 <div class="tip" id="fs29">property TopicPartitionOffset.Partition: int</div>
 <div class="tip" id="fs30">property TopicPartitionOffset.Offset: int64</div>
-<div class="tip" id="fs31">val ofTopicPartitionOffsets : (Collections.Generic.IList&lt;TopicPartitionOffset&gt; -&gt; (string * int * int64) list)<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.ofTopicPartitionOffsets</div>
+<div class="tip" id="fs31">val ofTopicPartitionOffsets : (Collections.Generic.IList&lt;TopicPartitionOffset&gt; -&gt; (string * int * int64) list)<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.ofTopicPartitionOffsets</div>
 <div class="tip" id="fs32">module Seq<br /><br />from Microsoft.FSharp.Collections</div>
 <div class="tip" id="fs33">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.map</div>
 <div class="tip" id="fs34">val toList : source:seq&lt;&#39;T&gt; -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.Seq.toList</div>
-<div class="tip" id="fs35">val ofCommit : oca:Consumer.OffsetCommitArgs -&gt; ErrorCode * (string * int * int64) list<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.ofCommit</div>
+<div class="tip" id="fs35">val ofCommit : oca:Consumer.OffsetCommitArgs -&gt; ErrorCode * (string * int * int64) list<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.ofCommit</div>
 <div class="tip" id="fs36">val oca : Consumer.OffsetCommitArgs</div>
 <div class="tip" id="fs37">Multiple items<br />type Consumer =<br />&#160;&#160;inherit Handle<br />&#160;&#160;new : config:Config * ?brokerList:string -&gt; Consumer<br />&#160;&#160;member Assign : partitions:List&lt;TopicPartitionOffset&gt; -&gt; unit<br />&#160;&#160;member Assignment : List&lt;TopicPartition&gt;<br />&#160;&#160;member Commit : unit -&gt; Task + 2 overloads<br />&#160;&#160;member Committed : partitions:List&lt;TopicPartition&gt; * timeout:TimeSpan -&gt; Task&lt;List&lt;TopicPartitionOffset&gt;&gt;<br />&#160;&#160;member Consume : timeout:TimeSpan -&gt; Nullable&lt;MessageAndError&gt;<br />&#160;&#160;member Dispose : unit -&gt; unit<br />&#160;&#160;member GetWatermarkOffsets : topicPartition:TopicPartition -&gt; Offsets<br />&#160;&#160;member Position : partitions:List&lt;TopicPartition&gt; -&gt; List&lt;TopicPartitionOffset&gt;<br />&#160;&#160;member Subscribe : topics:List&lt;string&gt; -&gt; unit<br />&#160;&#160;...<br />&#160;&#160;nested type OffsetCommitArgs<br /><br />Full name: RdKafka.Consumer<br /><br />--------------------<br />Consumer(config: Config, ?brokerList: string) : unit</div>
 <div class="tip" id="fs38">type OffsetCommitArgs =<br />&#160;&#160;struct<br />&#160;&#160;&#160;&#160;member Error : ErrorCode with get, set<br />&#160;&#160;&#160;&#160;member Offsets : IList&lt;TopicPartitionOffset&gt; with get, set<br />&#160;&#160;end<br /><br />Full name: RdKafka.Consumer.OffsetCommitArgs</div>
 <div class="tip" id="fs39">property Consumer.OffsetCommitArgs.Error: ErrorCode</div>
 <div class="tip" id="fs40">property Consumer.OffsetCommitArgs.Offsets: Collections.Generic.IList&lt;TopicPartitionOffset&gt;</div>
-<div class="tip" id="fs41">val ofError : ea:Handle.ErrorArgs -&gt; ErrorCode * string<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.ofError</div>
+<div class="tip" id="fs41">val ofError : ea:Handle.ErrorArgs -&gt; ErrorCode * string<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.ofError</div>
 <div class="tip" id="fs42">val ea : Handle.ErrorArgs</div>
 <div class="tip" id="fs43">Multiple items<br />type Handle =<br />&#160;&#160;new : unit -&gt; Handle<br />&#160;&#160;member Dispose : unit -&gt; unit<br />&#160;&#160;member ListGroup : group:string * timeout:TimeSpan -&gt; Task&lt;GroupInfo&gt;<br />&#160;&#160;member ListGroups : timeout:TimeSpan -&gt; Task&lt;List&lt;GroupInfo&gt;&gt;<br />&#160;&#160;member LogLevel : -&gt; int with  set<br />&#160;&#160;member MemberId : string<br />&#160;&#160;member Metadata : ?allTopics:bool * ?onlyForTopic:Topic * ?includeInternal:bool * ?timeout:TimeSpan -&gt; Task&lt;Metadata&gt;<br />&#160;&#160;member Name : string<br />&#160;&#160;member OutQueueLength : int64<br />&#160;&#160;member QueryWatermarkOffsets : topicPartition:TopicPartition * ?timeout:TimeSpan -&gt; Task&lt;Offsets&gt;<br />&#160;&#160;...<br />&#160;&#160;nested type ErrorArgs<br /><br />Full name: RdKafka.Handle<br /><br />--------------------<br />Handle() : unit</div>
 <div class="tip" id="fs44">type ErrorArgs =<br />&#160;&#160;struct<br />&#160;&#160;&#160;&#160;member ErrorCode : ErrorCode with get, set<br />&#160;&#160;&#160;&#160;member Reason : string with get, set<br />&#160;&#160;end<br /><br />Full name: RdKafka.Handle.ErrorArgs</div>
 <div class="tip" id="fs45">property Handle.ErrorArgs.ErrorCode: ErrorCode</div>
 <div class="tip" id="fs46">property Handle.ErrorArgs.Reason: string</div>
-<div class="tip" id="fs47">val toLog : _arg1:Event -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.toLog</div>
-<div class="tip" id="fs48">val fromConsumerToLog : c:EventConsumer -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.fromConsumerToLog</div>
+<div class="tip" id="fs47">val toLog : _arg1:Event -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.toLog</div>
+<div class="tip" id="fs48">val fromConsumerToLog : c:EventConsumer -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.fromConsumerToLog</div>
 <div class="tip" id="fs49">val c : EventConsumer</div>
 <div class="tip" id="fs50">Multiple items<br />type EventConsumer =<br />&#160;&#160;inherit Consumer<br />&#160;&#160;new : config:Config * ?brokerList:string -&gt; EventConsumer<br />&#160;&#160;member Dispose : unit -&gt; unit<br />&#160;&#160;member Start : unit -&gt; unit<br />&#160;&#160;member Stop : unit -&gt; Task<br />&#160;&#160;event OnMessage : EventHandler&lt;Message&gt;<br />&#160;&#160;event OnConsumerError : EventHandler&lt;ErrorCode&gt;<br />&#160;&#160;event OnEndReached : EventHandler&lt;TopicPartitionOffset&gt;<br /><br />Full name: RdKafka.EventConsumer<br /><br />--------------------<br />EventConsumer(config: Config, ?brokerList: string) : unit</div>
 <div class="tip" id="fs51">event Handle.OnStatistics: IEvent&lt;EventHandler&lt;string&gt;,string&gt;</div>
@@ -497,10 +497,10 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs56">event Consumer.OnPartitionsRevoked: IEvent&lt;EventHandler&lt;Collections.Generic.List&lt;TopicPartitionOffset&gt;&gt;,Collections.Generic.List&lt;TopicPartitionOffset&gt;&gt;</div>
 <div class="tip" id="fs57">event EventConsumer.OnConsumerError: IEvent&lt;EventHandler&lt;ErrorCode&gt;,ErrorCode&gt;</div>
 <div class="tip" id="fs58">event Handle.OnError: IEvent&lt;EventHandler&lt;Handle.ErrorArgs&gt;,Handle.ErrorArgs&gt;</div>
-<div class="tip" id="fs59">val fromProducerToLog : p:Producer -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.fromProducerToLog</div>
+<div class="tip" id="fs59">val fromProducerToLog : p:Producer -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.fromProducerToLog</div>
 <div class="tip" id="fs60">val p : Producer</div>
 <div class="tip" id="fs61">Multiple items<br />type Producer =<br />&#160;&#160;inherit Handle<br />&#160;&#160;new : brokerList:string -&gt; Producer + 1 overload<br />&#160;&#160;member Topic : topic:string * ?config:TopicConfig -&gt; Topic<br /><br />Full name: RdKafka.Producer<br /><br />--------------------<br />Producer(brokerList: string) : unit<br />Producer(config: Config, ?brokerList: string) : unit</div>
-<div class="tip" id="fs62">val connect : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; autoCommit:bool -&gt; EventConsumer * Producer<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.connect</div>
+<div class="tip" id="fs62">val connect : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; autoCommit:bool -&gt; EventConsumer * Producer<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.connect</div>
 <div class="tip" id="fs63">val brokerCsv : BrokerCsv</div>
 <div class="tip" id="fs64">val group : ConsumerName</div>
 <div class="tip" id="fs65">val autoCommit : bool</div>
@@ -515,7 +515,7 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs74">property Config.DefaultTopicConfig: TopicConfig</div>
 <div class="tip" id="fs75">val topicConfig : TopicConfig</div>
 <div class="tip" id="fs76">Multiple items<br />type TopicConfig =<br />&#160;&#160;new : unit -&gt; TopicConfig<br />&#160;&#160;member CustomPartitioner : Partitioner with get, set<br />&#160;&#160;member Dump : unit -&gt; Dictionary&lt;string, string&gt;<br />&#160;&#160;member Item : string -&gt; string with get, set<br />&#160;&#160;nested type Partitioner<br /><br />Full name: RdKafka.TopicConfig<br /><br />--------------------<br />TopicConfig() : unit</div>
-<div class="tip" id="fs77">val publish : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:Topic -&gt; (byte [] * byte [] -&gt; Async&lt;int * int64&gt;)<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.publish</div>
+<div class="tip" id="fs77">val publish : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:Topic -&gt; (byte [] * byte [] -&gt; Async&lt;int * int64&gt;)<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.publish</div>
 <div class="tip" id="fs78">val topic : Topic</div>
 <div class="tip" id="fs79">val consumer : EventConsumer</div>
 <div class="tip" id="fs80">val producer : Producer</div>
@@ -530,7 +530,7 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs89">Topic.Produce(payload: byte [], ?key: byte [], ?partition: int) : Threading.Tasks.Task&lt;DeliveryReport&gt;</div>
 <div class="tip" id="fs90">field DeliveryReport.Partition</div>
 <div class="tip" id="fs91">field DeliveryReport.Offset</div>
-<div class="tip" id="fs92">val subscribeCallback : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:Topic -&gt; onMessage:(Message -&gt; unit) -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.subscribeCallback</div>
+<div class="tip" id="fs92">val subscribeCallback : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:Topic -&gt; onMessage:(Message -&gt; unit) -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.subscribeCallback</div>
 <div class="tip" id="fs93">val onMessage : (Message -&gt; unit)</div>
 <div class="tip" id="fs94">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.map</div>
 <div class="tip" id="fs95">val t : string</div>
@@ -544,7 +544,7 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs103">event EventConsumer.OnMessage: IEvent&lt;EventHandler&lt;Message&gt;,Message&gt;</div>
 <div class="tip" id="fs104">Consumer.Subscribe(topics: Collections.Generic.List&lt;string&gt;) : unit</div>
 <div class="tip" id="fs105">EventConsumer.Start() : unit</div>
-<div class="tip" id="fs106">val subscribeSeq : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:string -&gt; seq&lt;Partition * Offset * byte []&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.subscribeSeq</div>
+<div class="tip" id="fs106">val subscribeSeq : brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:string -&gt; seq&lt;Partition * Offset * byte []&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.subscribeSeq</div>
 <div class="tip" id="fs107">val topic : string</div>
 <div class="tip" id="fs108">Multiple items<br />val seq : sequence:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.Operators.seq<br /><br />--------------------<br />type seq&lt;&#39;T&gt; = Collections.Generic.IEnumerable&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.seq&lt;_&gt;</div>
 <div class="tip" id="fs109">val buffer : int</div>
@@ -559,7 +559,7 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs118">property Message.Partition: int</div>
 <div class="tip" id="fs119">property Message.Offset: int64</div>
 <div class="tip" id="fs120">property Message.Payload: byte []</div>
-<div class="tip" id="fs121">type Offsets =<br />&#160;&#160;{Next: Offset option;<br />&#160;&#160;&#160;Active: Offset list;<br />&#160;&#160;&#160;Processed: Offset list;}<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Offsets</div>
+<div class="tip" id="fs121">type Offsets =<br />&#160;&#160;{Next: Offset option;<br />&#160;&#160;&#160;Active: Offset list;<br />&#160;&#160;&#160;Processed: Offset list;}<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Offsets</div>
 <div class="tip" id="fs122">Offsets.Next: Offset option</div>
 <div class="tip" id="fs123">type &#39;T option = Option&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.option&lt;_&gt;</div>
 <div class="tip" id="fs124">Offsets.Active: Offset list</div>
@@ -568,9 +568,9 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs127">Multiple items<br />type CompilationRepresentationAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : flags:CompilationRepresentationFlags -&gt; CompilationRepresentationAttribute<br />&#160;&#160;member Flags : CompilationRepresentationFlags<br /><br />Full name: Microsoft.FSharp.Core.CompilationRepresentationAttribute<br /><br />--------------------<br />new : flags:CompilationRepresentationFlags -&gt; CompilationRepresentationAttribute</div>
 <div class="tip" id="fs128">type CompilationRepresentationFlags =<br />&#160;&#160;|  None  =  0<br />&#160;&#160;|  Static  =  1<br />&#160;&#160;|  Instance  =  2<br />&#160;&#160;|  ModuleSuffix  =  4<br />&#160;&#160;|  UseNullAsTrueValue  =  8<br />&#160;&#160;|  Event  =  16<br /><br />Full name: Microsoft.FSharp.Core.CompilationRepresentationFlags</div>
 <div class="tip" id="fs129">CompilationRepresentationFlags.ModuleSuffix: CompilationRepresentationFlags = 4</div>
-<div class="tip" id="fs130">val empty : Offsets<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetsModule.empty</div>
+<div class="tip" id="fs130">val empty : Offsets<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetsModule.empty</div>
 <div class="tip" id="fs131">union case Option.None: Option&lt;&#39;T&gt;</div>
-<div class="tip" id="fs132">val private update : _arg1:Offsets -&gt; Offsets<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetsModule.update</div>
+<div class="tip" id="fs132">val private update : _arg1:Offsets -&gt; Offsets<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetsModule.update</div>
 <div class="tip" id="fs133">val x : Offsets</div>
 <div class="tip" id="fs134">val max : list:&#39;T list -&gt; &#39;T (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.List.max</div>
 <div class="tip" id="fs135">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
@@ -578,46 +578,46 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs137">val min : list:&#39;T list -&gt; &#39;T (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.List.min</div>
 <div class="tip" id="fs138">val c : Offset list</div>
 <div class="tip" id="fs139">val p : Offset list</div>
-<div class="tip" id="fs140">val start : x:Offset -&gt; xs:Offsets -&gt; Offsets<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetsModule.start</div>
+<div class="tip" id="fs140">val start : x:Offset -&gt; xs:Offsets -&gt; Offsets<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetsModule.start</div>
 <div class="tip" id="fs141">val x : Offset</div>
 <div class="tip" id="fs142">val xs : Offsets</div>
-<div class="tip" id="fs143">val finish : x:Offset -&gt; xs:Offsets -&gt; Offsets<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetsModule.finish</div>
+<div class="tip" id="fs143">val finish : x:Offset -&gt; xs:Offsets -&gt; Offsets<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetsModule.finish</div>
 <div class="tip" id="fs144">val filter : predicate:(&#39;T -&gt; bool) -&gt; list:&#39;T list -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List.filter</div>
-<div class="tip" id="fs145">type Partitions = Map&lt;Partition,Offsets&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Partitions</div>
+<div class="tip" id="fs145">type Partitions = Map&lt;Partition,Offsets&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Partitions</div>
 <div class="tip" id="fs146">Multiple items<br />module Map<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type Map&lt;&#39;Key,&#39;Value (requires comparison)&gt; =<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IComparable<br />&#160;&#160;interface IEnumerable&lt;KeyValuePair&lt;&#39;Key,&#39;Value&gt;&gt;<br />&#160;&#160;interface ICollection&lt;KeyValuePair&lt;&#39;Key,&#39;Value&gt;&gt;<br />&#160;&#160;interface IDictionary&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;new : elements:seq&lt;&#39;Key * &#39;Value&gt; -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;member Add : key:&#39;Key * value:&#39;Value -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;member ContainsKey : key:&#39;Key -&gt; bool<br />&#160;&#160;override Equals : obj -&gt; bool<br />&#160;&#160;member Remove : key:&#39;Key -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;...<br /><br />Full name: Microsoft.FSharp.Collections.Map&lt;_,_&gt;<br /><br />--------------------<br />new : elements:seq&lt;&#39;Key * &#39;Value&gt; -&gt; Map&lt;&#39;Key,&#39;Value&gt;</div>
-<div class="tip" id="fs147">val assign : p:Partition -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.PartitionsModule.assign</div>
+<div class="tip" id="fs147">val assign : p:Partition -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.PartitionsModule.assign</div>
 <div class="tip" id="fs148">val p : Partition</div>
 <div class="tip" id="fs149">val xs : Partitions</div>
 <div class="tip" id="fs150">val tryFind : key:&#39;Key -&gt; table:Map&lt;&#39;Key,&#39;T&gt; -&gt; &#39;T option (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Map.tryFind</div>
 <div class="tip" id="fs151">val add : key:&#39;Key -&gt; value:&#39;T -&gt; table:Map&lt;&#39;Key,&#39;T&gt; -&gt; Map&lt;&#39;Key,&#39;T&gt; (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Map.add</div>
-<div class="tip" id="fs152">val start : p:Partition * o:Offset -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.PartitionsModule.start</div>
+<div class="tip" id="fs152">val start : p:Partition * o:Offset -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.PartitionsModule.start</div>
 <div class="tip" id="fs153">val o : Offset</div>
 <div class="tip" id="fs154">val offsets : Offsets</div>
-<div class="tip" id="fs155">val finish : p:Partition * o:Offset -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.PartitionsModule.finish</div>
-<div class="tip" id="fs156">val revoke : p:Partition -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.PartitionsModule.revoke</div>
+<div class="tip" id="fs155">val finish : p:Partition * o:Offset -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.PartitionsModule.finish</div>
+<div class="tip" id="fs156">val revoke : p:Partition -&gt; xs:Partitions -&gt; Partitions<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.PartitionsModule.revoke</div>
 <div class="tip" id="fs157">val remove : key:&#39;Key -&gt; table:Map&lt;&#39;Key,&#39;T&gt; -&gt; Map&lt;&#39;Key,&#39;T&gt; (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Map.remove</div>
-<div class="tip" id="fs158">val checkpoint : (Partitions -&gt; List&lt;Partition * Offset&gt;)<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.PartitionsModule.checkpoint</div>
+<div class="tip" id="fs158">val checkpoint : (Partitions -&gt; List&lt;Partition * Offset&gt;)<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.PartitionsModule.checkpoint</div>
 <div class="tip" id="fs159">val toList : table:Map&lt;&#39;Key,&#39;T&gt; -&gt; (&#39;Key * &#39;T) list (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Map.toList</div>
 <div class="tip" id="fs160">val choose : chooser:(&#39;T -&gt; &#39;U option) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.choose</div>
 <div class="tip" id="fs161">val o : Offsets</div>
 <div class="tip" id="fs162">module Option<br /><br />from Microsoft.FSharp.Core</div>
 <div class="tip" id="fs163">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; option:&#39;T option -&gt; &#39;U option<br /><br />Full name: Microsoft.FSharp.Core.Option.map</div>
-<div class="tip" id="fs164">type OffsetMonitor = OffsetMonitorMessage -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitor</div>
-<div class="tip" id="fs165">type OffsetMonitorMessage =<br />&#160;&#160;| Start of Partition * Offset<br />&#160;&#160;| Finish of Partition * Offset<br />&#160;&#160;| Assign of Partition list<br />&#160;&#160;| Revoke of Partition list<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitorMessage</div>
+<div class="tip" id="fs164">type OffsetMonitor = OffsetMonitorMessage -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitor</div>
+<div class="tip" id="fs165">type OffsetMonitorMessage =<br />&#160;&#160;| Start of Partition * Offset<br />&#160;&#160;| Finish of Partition * Offset<br />&#160;&#160;| Assign of Partition list<br />&#160;&#160;| Revoke of Partition list<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitorMessage</div>
 <div class="tip" id="fs166">type unit = Unit<br /><br />Full name: Microsoft.FSharp.Core.unit</div>
 <div class="tip" id="fs167">union case OffsetMonitorMessage.Start: Partition * Offset -&gt; OffsetMonitorMessage</div>
 <div class="tip" id="fs168">union case OffsetMonitorMessage.Finish: Partition * Offset -&gt; OffsetMonitorMessage</div>
 <div class="tip" id="fs169">union case OffsetMonitorMessage.Assign: Partition list -&gt; OffsetMonitorMessage</div>
 <div class="tip" id="fs170">union case OffsetMonitorMessage.Revoke: Partition list -&gt; OffsetMonitorMessage</div>
-<div class="tip" id="fs171">val assign : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; ((&#39;b * Partition * &#39;c) list -&gt; &#39;a)<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitorModule.assign</div>
+<div class="tip" id="fs171">val assign : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; ((&#39;b * Partition * &#39;c) list -&gt; &#39;a)<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitorModule.assign</div>
 <div class="tip" id="fs172">val m : (OffsetMonitorMessage -&gt; &#39;a)</div>
-<div class="tip" id="fs173">val revoke : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; ((&#39;b * Partition * &#39;c) list -&gt; &#39;a)<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitorModule.revoke</div>
-<div class="tip" id="fs174">val start : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; x:Message -&gt; &#39;a<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitorModule.start</div>
+<div class="tip" id="fs173">val revoke : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; ((&#39;b * Partition * &#39;c) list -&gt; &#39;a)<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitorModule.revoke</div>
+<div class="tip" id="fs174">val start : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; x:Message -&gt; &#39;a<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitorModule.start</div>
 <div class="tip" id="fs175">val x : Message</div>
-<div class="tip" id="fs176">val finish : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; x:Message -&gt; &#39;a<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitorModule.finish</div>
-<div class="tip" id="fs177">val create : consumer:EventConsumer -&gt; topic:Topic -&gt; (OffsetMonitorMessage -&gt; unit)<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitorModule.create</div>
+<div class="tip" id="fs176">val finish : m:(OffsetMonitorMessage -&gt; &#39;a) -&gt; x:Message -&gt; &#39;a<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitorModule.finish</div>
+<div class="tip" id="fs177">val create : consumer:EventConsumer -&gt; topic:Topic -&gt; (OffsetMonitorMessage -&gt; unit)<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitorModule.create</div>
 <div class="tip" id="fs178">val integrate : (OffsetMonitorMessage -&gt; Partitions -&gt; Partitions)</div>
-<div class="tip" id="fs179">Multiple items<br />module Partitions<br /><br />from 2016-12-08-rdkafka-subscription-in-fsharp<br /><br />--------------------<br />type Partitions = Map&lt;Partition,Offsets&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Partitions</div>
+<div class="tip" id="fs179">Multiple items<br />module Partitions<br /><br />from 2016-12-08-rdkafka-for-fsharp-microservices<br /><br />--------------------<br />type Partitions = Map&lt;Partition,Offsets&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Partitions</div>
 <div class="tip" id="fs180">val ps : Partition list</div>
 <div class="tip" id="fs181">val foldBack : folder:(&#39;T -&gt; &#39;State -&gt; &#39;State) -&gt; list:&#39;T list -&gt; state:&#39;State -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.foldBack</div>
 <div class="tip" id="fs182">Multiple items<br />type MailboxProcessor&lt;&#39;Msg&gt; =<br />&#160;&#160;interface IDisposable<br />&#160;&#160;new : body:(MailboxProcessor&lt;&#39;Msg&gt; -&gt; Async&lt;unit&gt;) * ?cancellationToken:CancellationToken -&gt; MailboxProcessor&lt;&#39;Msg&gt;<br />&#160;&#160;member Post : message:&#39;Msg -&gt; unit<br />&#160;&#160;member PostAndAsyncReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; Async&lt;&#39;Reply&gt;<br />&#160;&#160;member PostAndReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; &#39;Reply<br />&#160;&#160;member PostAndTryAsyncReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; Async&lt;&#39;Reply option&gt;<br />&#160;&#160;member Receive : ?timeout:int -&gt; Async&lt;&#39;Msg&gt;<br />&#160;&#160;member Scan : scanner:(&#39;Msg -&gt; Async&lt;&#39;T&gt; option) * ?timeout:int -&gt; Async&lt;&#39;T&gt;<br />&#160;&#160;member Start : unit -&gt; unit<br />&#160;&#160;member TryPostAndReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; &#39;Reply option<br />&#160;&#160;...<br /><br />Full name: Microsoft.FSharp.Control.MailboxProcessor&lt;_&gt;<br /><br />--------------------<br />new : body:(MailboxProcessor&lt;&#39;Msg&gt; -&gt; Async&lt;unit&gt;) * ?cancellationToken:Threading.CancellationToken -&gt; MailboxProcessor&lt;&#39;Msg&gt;</div>
@@ -636,23 +636,23 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs195">member MailboxProcessor.TryReceive : ?timeout:int -&gt; Async&lt;&#39;Msg option&gt;</div>
 <div class="tip" id="fs196">val m : OffsetMonitorMessage</div>
 <div class="tip" id="fs197">val empty&lt;&#39;Key,&#39;T (requires comparison)&gt; : Map&lt;&#39;Key,&#39;T&gt; (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Map.empty</div>
-<div class="tip" id="fs198">val ofSeq : xs:seq&lt;&#39;a&gt; -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.AsyncSeq.ofSeq</div>
+<div class="tip" id="fs198">val ofSeq : xs:seq&lt;&#39;a&gt; -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.AsyncSeq.ofSeq</div>
 <div class="tip" id="fs199">val xs : seq&lt;&#39;a&gt;</div>
-<div class="tip" id="fs200">val iterAsyncParThrottled : &#39;a -&gt; &#39;b -&gt; &#39;c -&gt; Async&lt;unit&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.AsyncSeq.iterAsyncParThrottled</div>
+<div class="tip" id="fs200">val iterAsyncParThrottled : &#39;a -&gt; &#39;b -&gt; &#39;c -&gt; Async&lt;unit&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.AsyncSeq.iterAsyncParThrottled</div>
 <div class="tip" id="fs201">member AsyncBuilder.Return : value:&#39;T -&gt; Async&lt;&#39;T&gt;</div>
-<div class="tip" id="fs202">val subscribeParallel : concurrency:&#39;a -&gt; brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:Topic -&gt; onMessage:(Message -&gt; Async&lt;unit&gt;) -&gt; Async&lt;unit&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.subscribeParallel</div>
+<div class="tip" id="fs202">val subscribeParallel : concurrency:&#39;a -&gt; brokerCsv:BrokerCsv -&gt; group:ConsumerName -&gt; topic:Topic -&gt; onMessage:(Message -&gt; Async&lt;unit&gt;) -&gt; Async&lt;unit&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.subscribeParallel</div>
 <div class="tip" id="fs203">val concurrency : &#39;a</div>
 <div class="tip" id="fs204">val onMessage : (Message -&gt; Async&lt;unit&gt;)</div>
 <div class="tip" id="fs205">val messageSeq : seq&lt;Message&gt;</div>
 <div class="tip" id="fs206">val monitor : (OffsetMonitorMessage -&gt; unit)</div>
-<div class="tip" id="fs207">Multiple items<br />module OffsetMonitor<br /><br />from 2016-12-08-rdkafka-subscription-in-fsharp<br /><br />--------------------<br />type OffsetMonitor = OffsetMonitorMessage -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.OffsetMonitor</div>
-<div class="tip" id="fs208">module AsyncSeq<br /><br />from 2016-12-08-rdkafka-subscription-in-fsharp</div>
-<div class="tip" id="fs209">type Watermark =<br />&#160;&#160;{Topic: string;<br />&#160;&#160;&#160;Partition: int;<br />&#160;&#160;&#160;High: int64;<br />&#160;&#160;&#160;Low: int64;}<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Watermark</div>
-<div class="tip" id="fs210">Multiple items<br />Watermark.Topic: string<br /><br />--------------------<br />type Topic = string<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Topic</div>
-<div class="tip" id="fs211">Multiple items<br />Watermark.Partition: int<br /><br />--------------------<br />type Partition = int<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Partition</div>
+<div class="tip" id="fs207">Multiple items<br />module OffsetMonitor<br /><br />from 2016-12-08-rdkafka-for-fsharp-microservices<br /><br />--------------------<br />type OffsetMonitor = OffsetMonitorMessage -&gt; unit<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.OffsetMonitor</div>
+<div class="tip" id="fs208">module AsyncSeq<br /><br />from 2016-12-08-rdkafka-for-fsharp-microservices</div>
+<div class="tip" id="fs209">type Watermark =<br />&#160;&#160;{Topic: string;<br />&#160;&#160;&#160;Partition: int;<br />&#160;&#160;&#160;High: int64;<br />&#160;&#160;&#160;Low: int64;}<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Watermark</div>
+<div class="tip" id="fs210">Multiple items<br />Watermark.Topic: string<br /><br />--------------------<br />type Topic = string<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Topic</div>
+<div class="tip" id="fs211">Multiple items<br />Watermark.Partition: int<br /><br />--------------------<br />type Partition = int<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Partition</div>
 <div class="tip" id="fs212">Watermark.High: int64</div>
 <div class="tip" id="fs213">Watermark.Low: int64</div>
-<div class="tip" id="fs214">val queryWithTimeout : timeout:TimeSpan -&gt; producer:Producer -&gt; consumer:Consumer -&gt; topic:Topic -&gt; Async&lt;Watermark []&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.WatermarkModule.queryWithTimeout</div>
+<div class="tip" id="fs214">val queryWithTimeout : timeout:TimeSpan -&gt; producer:Producer -&gt; consumer:Consumer -&gt; topic:Topic -&gt; Async&lt;Watermark []&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.WatermarkModule.queryWithTimeout</div>
 <div class="tip" id="fs215">val timeout : TimeSpan</div>
 <div class="tip" id="fs216">val consumer : Consumer</div>
 <div class="tip" id="fs217">val queryWatermark : (string * int -&gt; Async&lt;Watermark&gt;)</div>
@@ -672,9 +672,9 @@ an open source client (written entirely in F# !) under development at <a href="h
 <div class="tip" id="fs231">property PartitionMetadata.PartitionId: int</div>
 <div class="tip" id="fs232">val sort : source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt; (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Seq.sort</div>
 <div class="tip" id="fs233">static member Async.Parallel : computations:seq&lt;Async&lt;&#39;T&gt;&gt; -&gt; Async&lt;&#39;T []&gt;</div>
-<div class="tip" id="fs234">type Checkpoint = List&lt;Partition * Offset&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Checkpoint</div>
-<div class="tip" id="fs235">Multiple items<br />module Checkpoint<br /><br />from 2016-12-08-rdkafka-subscription-in-fsharp<br /><br />--------------------<br />type Checkpoint = List&lt;Partition * Offset&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.Checkpoint</div>
-<div class="tip" id="fs236">val queryWithTimeout : timeout:TimeSpan -&gt; producer:Producer -&gt; consumer:Consumer -&gt; topic:Topic -&gt; Async&lt;Checkpoint&gt;<br /><br />Full name: 2016-12-08-rdkafka-subscription-in-fsharp.CheckpointModule.queryWithTimeout</div>
+<div class="tip" id="fs234">type Checkpoint = List&lt;Partition * Offset&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Checkpoint</div>
+<div class="tip" id="fs235">Multiple items<br />module Checkpoint<br /><br />from 2016-12-08-rdkafka-for-fsharp-microservices<br /><br />--------------------<br />type Checkpoint = List&lt;Partition * Offset&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.Checkpoint</div>
+<div class="tip" id="fs236">val queryWithTimeout : timeout:TimeSpan -&gt; producer:Producer -&gt; consumer:Consumer -&gt; topic:Topic -&gt; Async&lt;Checkpoint&gt;<br /><br />Full name: 2016-12-08-rdkafka-for-fsharp-microservices.CheckpointModule.queryWithTimeout</div>
 <div class="tip" id="fs237">val partitions : seq&lt;TopicPartition&gt;</div>
 <div class="tip" id="fs238">val committed : Collections.Generic.List&lt;TopicPartitionOffset&gt;</div>
 <div class="tip" id="fs239">Consumer.Committed(partitions: Collections.Generic.List&lt;TopicPartition&gt;, timeout: TimeSpan) : Threading.Tasks.Task&lt;Collections.Generic.List&lt;TopicPartitionOffset&gt;&gt;</div>

@@ -23,4 +23,4 @@ let generate name =
         lineNumbers=false)
     
 #r "packages/RdKafka/lib/net451/RdKafka.dll"
-generate "2016-12-08-rdkafka-subscription-in-fsharp"
+generate "2016-12-08-rdkafka-for-fsharp-microservices"

@@ -72,8 +72,8 @@
   <ItemGroup>
     <Content Include="paket.references" />
     <Compile Include="AssemblyInfo.fs" />
-    <None Include="2016-12-08-rdkafka-subscription-in-fsharp.html" />
-    <None Include="2016-12-08-rdkafka-subscription-in-fsharp.fsx" />
+    <None Include="2016-12-08-rdkafka-for-fsharp-microservices.html" />
+    <None Include="2016-12-08-rdkafka-for-fsharp-microservices.fsx" />
     <None Include="Generate.fsx" />
   </ItemGroup>
   <ItemGroup>

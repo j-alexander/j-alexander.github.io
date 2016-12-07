@@ -47,7 +47,7 @@ is available for it.</p>
 <h3>RdKafka Events</h3>
 <p>RdKafka provides much better transparency than other .NET kafka libraries by
 exposing a wide variety of events using callbacks.  Here we define an F# union
-type of all the different cases.</p>
+type for the various cases.</p>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs15', 20)" onmouseover="showTip(event, 'fs15', 20)" class="t">Event</span> <span class="o">=</span>
   | <span onmouseout="hideTip(event, 'fs16', 21)" onmouseover="showTip(event, 'fs16', 21)" class="p">Statistics</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs7', 22)" onmouseover="showTip(event, 'fs7', 22)" class="t">string</span>
   | <span onmouseout="hideTip(event, 'fs17', 23)" onmouseover="showTip(event, 'fs17', 23)" class="p">OffsetCommit</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs18', 24)" onmouseover="showTip(event, 'fs18', 24)" class="t">ErrorCode</span><span class="o">*</span><span onmouseout="hideTip(event, 'fs19', 25)" onmouseover="showTip(event, 'fs19', 25)" class="t">List</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs6', 26)" onmouseover="showTip(event, 'fs6', 26)" class="t">Topic</span><span class="o">*</span><span onmouseout="hideTip(event, 'fs8', 27)" onmouseover="showTip(event, 'fs8', 27)" class="t">Partition</span><span class="o">*</span><span onmouseout="hideTip(event, 'fs10', 28)" onmouseover="showTip(event, 'fs10', 28)" class="t">Offset</span><span class="o">&gt;</span>
@@ -101,7 +101,7 @@ In particular, there are several settings you may want to consider:</p>
 <li>
 a consumer <em>GroupId</em>, shared by all cooperating instances of a microservice
 <ul>
-<li>note: for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()</li>
+<li><a href="https://github.com/ah-/rdkafka-dotnet/issues/88#issuecomment-264820360">note</a>: for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()</li>
 </ul>
 </li>
 <li>whether or not to <em>EnableAutoCommit</em> for tracking your current offset position</li>

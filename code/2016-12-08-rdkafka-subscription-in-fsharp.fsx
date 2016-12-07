@@ -55,7 +55,7 @@ and ErrorReason = string
 ### RdKafka Events
 RdKafka provides much better transparency than other .NET kafka libraries by
 exposing a wide variety of events using callbacks.  Here we define an F# union
-type of all the different cases.
+type for the various cases.
 *)
 type Event =
   | Statistics of string
@@ -113,7 +113,7 @@ When you connect to RdKafka, you can configure any of the defaults in the underl
 In particular, there are several settings you may want to consider:
 
 1. a consumer _GroupId_, shared by all cooperating instances of a microservice
-  * note: for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()
+  * [note](https://github.com/ah-/rdkafka-dotnet/issues/88#issuecomment-264820360): for rdkafka 0.9.1 or earlier, setting GroupId on a producer may block Dispose()
 2. whether or not to _EnableAutoCommit_ for tracking your current offset position
 3. whether to save the offsets on the _broker_ for coordination
 4. if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle

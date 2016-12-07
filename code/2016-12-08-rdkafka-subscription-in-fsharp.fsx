@@ -118,7 +118,7 @@ In particular, there are several settings you may want to consider:
 4. if your Kafka cluster runs an idle connection reaper, disconnection messages will appear at even intervals when idle
 5. a _metadata broker list_ workaround enables you to query additional metadata using the native wrapper
 6. where to start a _brand new_ consumer group:
-  * `smallest` starts processing from the earliet offsets in the topic
+  * `smallest` starts processing from the earliest offsets in the topic
   * `largest`, the default, starts from the newest message offsets
 *)
 let connect (brokerCsv:BrokerCsv) (group:ConsumerName) (autoCommit:bool) =
@@ -152,7 +152,7 @@ let publish (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) =
 (**
 ### Subscribing
 To consume, on partition assignment we select `Offset.Stored`, which defaults to the value of
-`auto.offset.reset`, if no stored offset exists.  Messages are then sent to the onMessage callback
+`auto.offset.reset` if no stored offset exists.  Messages are then sent to the onMessage callback
 once the topic subscription starts.
 *)
 let subscribeCallback (brokerCsv:BrokerCsv) (group:ConsumerName) (topic:Topic) (onMessage) =

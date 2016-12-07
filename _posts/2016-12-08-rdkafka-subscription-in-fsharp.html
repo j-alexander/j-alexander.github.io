@@ -110,7 +110,7 @@ a consumer <em>GroupId</em>, shared by all cooperating instances of a microservi
 <li>
 where to start a <em>brand new</em> consumer group:
 <ul>
-<li><code>smallest</code> starts processing from the earliet offsets in the topic</li>
+<li><code>smallest</code> starts processing from the earliest offsets in the topic</li>
 <li><code>largest</code>, the default, starts from the newest message offsets</li>
 </ul>
 </li>
@@ -145,7 +145,7 @@ includes a partition and offset position confirming the write.  Consider
 </code></pre>
 <h3>Subscribing</h3>
 <p>To consume, on partition assignment we select <code>Offset.Stored</code>, which defaults to the value of
-<code>auto.offset.reset</code>, if no stored offset exists.  Messages are then sent to the onMessage callback
+<code>auto.offset.reset</code> if no stored offset exists.  Messages are then sent to the onMessage callback
 once the topic subscription starts.</p>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs91', 220)" onmouseover="showTip(event, 'fs91', 220)" class="f">subscribeCallback</span> (<span onmouseout="hideTip(event, 'fs64', 221)" onmouseover="showTip(event, 'fs64', 221)" class="i">brokerCsv</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 222)" onmouseover="showTip(event, 'fs12', 222)" class="t">BrokerCsv</span>) (<span onmouseout="hideTip(event, 'fs65', 223)" onmouseover="showTip(event, 'fs65', 223)" class="i">group</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs13', 224)" onmouseover="showTip(event, 'fs13', 224)" class="t">ConsumerName</span>) (<span onmouseout="hideTip(event, 'fs79', 225)" onmouseover="showTip(event, 'fs79', 225)" class="i">topic</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs6', 226)" onmouseover="showTip(event, 'fs6', 226)" class="t">Topic</span>) (<span onmouseout="hideTip(event, 'fs92', 227)" onmouseover="showTip(event, 'fs92', 227)" class="f">onMessage</span>) <span class="o">=</span>
   <span class="k">let</span> <span onmouseout="hideTip(event, 'fs66', 228)" onmouseover="showTip(event, 'fs66', 228)" class="i">autoCommit</span> <span class="o">=</span> <span class="k">true</span>

@@ -186,7 +186,7 @@ let subscribeSeq brokerCsv group topic : seq<Partition*Offset*byte[]> =
     >> Collections.Generic.List<_>
     >> consumer.Assign)
 (**
-More than _3000_ messages in the buffer will hold+block the callback until the client has
+Buffering more than _3000_ messages will hold+block the callback until the client has
 consumed from the sequence.
 *)
   let buffer = 3000
@@ -393,7 +393,7 @@ the specified degree of concurrency. (using AsyncSeq, this time :) )
 
 Supervising progress of a microservice running RdKafka depends on monitoring two things:
 
-1. the range of messages available in topic (i.e. its `Watermark` offsets), and
+1. the range of messages available in a topic (i.e. its `Watermark` offsets), and
 2. the current `Checkpoint` offsets for a consumer group relative to those `Watermarks`
 
 ### Watermarks

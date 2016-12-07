@@ -167,7 +167,7 @@ To use a sequence instead, a blocking collection can buffer incoming messages as
 A sequence generator yielding messages from this buffer is returned to the client:</p>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs106', 256)" onmouseover="showTip(event, 'fs106', 256)" class="f">subscribeSeq</span> <span onmouseout="hideTip(event, 'fs63', 257)" onmouseover="showTip(event, 'fs63', 257)" class="i">brokerCsv</span> <span onmouseout="hideTip(event, 'fs64', 258)" onmouseover="showTip(event, 'fs64', 258)" class="i">group</span> <span onmouseout="hideTip(event, 'fs107', 259)" onmouseover="showTip(event, 'fs107', 259)" class="i">topic</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs108', 260)" onmouseover="showTip(event, 'fs108', 260)" class="t">seq</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs8', 261)" onmouseover="showTip(event, 'fs8', 261)" class="t">Partition</span><span class="o">*</span><span onmouseout="hideTip(event, 'fs10', 262)" onmouseover="showTip(event, 'fs10', 262)" class="t">Offset</span><span class="o">*</span><span onmouseout="hideTip(event, 'fs83', 263)" onmouseover="showTip(event, 'fs83', 263)" class="t">byte</span>[]<span class="o">&gt;</span> <span class="o">=</span>
 </code></pre>
-<p>More than <em>3000</em> messages in the buffer will hold+block the callback until the client has
+<p>Buffering more than <em>3000</em> messages will hold+block the callback until the client has
 consumed from the sequence.</p>
 <pre class="fssnip highlighted"><code lang="fsharp">  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs109', 292)" onmouseover="showTip(event, 'fs109', 292)" class="i">buffer</span> <span class="o">=</span> <span class="n">3000</span>
   <span class="k">let</span> <span onmouseout="hideTip(event, 'fs110', 293)" onmouseover="showTip(event, 'fs110', 293)" class="i">messages</span> <span class="o">=</span>
@@ -344,7 +344,7 @@ the specified degree of concurrency. (using AsyncSeq, this time :) )</p>
 <h2>Supervision</h2>
 <p>Supervising progress of a microservice running RdKafka depends on monitoring two things:</p>
 <ol>
-<li>the range of messages available in topic (i.e. its <code>Watermark</code> offsets), and</li>
+<li>the range of messages available in a topic (i.e. its <code>Watermark</code> offsets), and</li>
 <li>the current <code>Checkpoint</code> offsets for a consumer group relative to those <code>Watermarks</code></li>
 </ol>
 <h3>Watermarks</h3>

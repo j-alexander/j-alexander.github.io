@@ -287,6 +287,7 @@ There are several ways to solve this problem! This particular solution can play 
 asynchronous workflows and is fairly concise.
 
 The actor observes the following:
+
 1. processing _started_ or _completed_ on a message at `Offset` of `Partition`
 2. active `Partitions` have been assigned to us, or revoked from us (i.e. assigned to another consumer in our group)
 *)

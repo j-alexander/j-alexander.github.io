@@ -259,9 +259,11 @@ Our client can then commit a checkpoint to record completion of all messages up 
 <p>This example uses an F# mailbox processor to aggregate our progress from multiple threads.
 There are several ways to solve this problem! This particular solution can play nicely with
 asynchronous workflows and is fairly concise.</p>
-<p>The actor observes the following:
-1. processing <em>started</em> or <em>completed</em> on a message at <code>Offset</code> of <code>Partition</code>
-2. active <code>Partitions</code> have been assigned to us, or revoked from us (i.e. assigned to another consumer in our group)</p>
+<p>The actor observes the following:</p>
+<ol>
+<li>processing <em>started</em> or <em>completed</em> on a message at <code>Offset</code> of <code>Partition</code></li>
+<li>active <code>Partitions</code> have been assigned to us, or revoked from us (i.e. assigned to another consumer in our group)</li>
+</ol>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs164', 500)" onmouseover="showTip(event, 'fs164', 500)" class="t">OffsetMonitor</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs165', 501)" onmouseover="showTip(event, 'fs165', 501)" class="t">OffsetMonitorMessage</span><span class="k">-&gt;</span><span onmouseout="hideTip(event, 'fs166', 502)" onmouseover="showTip(event, 'fs166', 502)" class="t">unit</span>
 <span class="k">and</span> <span onmouseout="hideTip(event, 'fs165', 503)" onmouseover="showTip(event, 'fs165', 503)" class="t">OffsetMonitorMessage</span> <span class="o">=</span>
   | <span onmouseout="hideTip(event, 'fs167', 504)" onmouseover="showTip(event, 'fs167', 504)" class="p">Start</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs8', 505)" onmouseover="showTip(event, 'fs8', 505)" class="t">Partition</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs10', 506)" onmouseover="showTip(event, 'fs10', 506)" class="t">Offset</span> | <span onmouseout="hideTip(event, 'fs168', 507)" onmouseover="showTip(event, 'fs168', 507)" class="p">Finish</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs8', 508)" onmouseover="showTip(event, 'fs8', 508)" class="t">Partition</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs10', 509)" onmouseover="showTip(event, 'fs10', 509)" class="t">Offset</span> <span class="c">// (1)</span>

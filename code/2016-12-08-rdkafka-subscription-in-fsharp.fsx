@@ -275,7 +275,7 @@ module Partitions =
     Map.remove p xs
 (**
 Finally, we want the next offset to commit for each partition assigned to us.
-The client then records completion of all messages up to that point.
+Our client can then commit a checkpoint to record completion of all messages up to this point.
 *)
   let checkpoint : Partitions -> List<Partition*Offset> =
     Map.toList >> List.choose (fun (p,o) -> o.Next |> Option.map(fun o -> p,1L+o))

@@ -480,15 +480,17 @@ the number of consumer instances or size of machines.
 ## Summary
 With an eye to building top-tier microservices, we looked at:
 
-* how to get visibility into the RdKafka client with callback logging
+* logging callbacks in RdKafka to achieve better visibility
 * configuring the client for flexibility in several useful scenarios
-* scaling the client as partitions are redistributed
-* maintaining an at-least-once guarantee for message processing at scale
-* and monitoring overall progress using watermarks and committed checkpoints
-
-(and we barely even scratched the surface :) )
+* publishing and subscribing, including:
+  * scaling the client as partitions are redistributed
+  * maintaining an at-least-once guarantee for message processing at scale
+* monitoring overall progress using watermarks and committed checkpoints
+* and we barely even scratched the surface ;)
 
 If you enjoy working with F# and Kafka, I also encourage you to check out [Kafunk](https://jet.github.io/kafunk/) -
 an open source client (written entirely in F# !) under development at [Jet](https://tech.jet.com/).
+
+Good luck!
 
 *)

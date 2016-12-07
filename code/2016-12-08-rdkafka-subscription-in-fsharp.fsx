@@ -47,7 +47,7 @@ open System.Diagnostics
 type Topic = string       // https://kafka.apache.org/intro#intro_topics
 and Partition = int       //   partition of a topic
 and Offset = int64        //   offset position within a partition of a topic
-and BrokerCsv = string    // connection string of "broker1,broker2"
+and BrokerCsv = string    // connection string of "broker1:9092,broker2:9092"
                           //   with protocol {http://,tcp://} removed
 and ConsumerName = string // https://kafka.apache.org/intro#intro_consumers
 and ErrorReason = string  

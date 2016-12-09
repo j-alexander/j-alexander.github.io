@@ -2,3 +2,4 @@ FSharp.Compiler.Service
 FSharp.Formatting
 FSharpVSPowerTools.Core
 RdKafka
+FSharp.Data

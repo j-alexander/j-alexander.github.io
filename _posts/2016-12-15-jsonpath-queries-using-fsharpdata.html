@@ -29,25 +29,34 @@ that query.</p>
 <p>The query consists of a sequence of levels from the root of a json document <code>$</code> separated
 by the <code>.</code> character.  Each level refers to a named property or array, and each case is
 scoped to match that <code>Exact</code> level, or inclusively <code>Any</code> instances within its subtree.
-If a level refers to an array, then a slice, index, or wildcard operation (between
-<code>[</code> and <code>]</code> specifies which elements of the array match the query.</p>
+If a level refers to an array, then a slice, literal index, or wildcard operation (between
+<code>[</code> and <code>]</code> specifies which elements of an array match the query.</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">type</span> <span onmouseout="hideTip(event, 'fs18', 27)" onmouseover="showTip(event, 'fs18', 27)" class="t">Levels</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs19', 28)" onmouseover="showTip(event, 'fs19', 28)" class="t">Level</span> <span onmouseout="hideTip(event, 'fs20', 29)" onmouseover="showTip(event, 'fs20', 29)" class="t">list</span>
         <span class="k">and</span> <span onmouseout="hideTip(event, 'fs19', 30)" onmouseover="showTip(event, 'fs19', 30)" class="t">Level</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs21', 31)" onmouseover="showTip(event, 'fs21', 31)" class="t">Scope</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs22', 32)" onmouseover="showTip(event, 'fs22', 32)" class="t">Type</span>
-        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs22', 33)" onmouseover="showTip(event, 'fs22', 33)" class="t">Type</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs23', 34)" onmouseover="showTip(event, 'fs23', 34)" class="p">Property</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs24', 35)" onmouseover="showTip(event, 'fs24', 35)" class="t">Name</span> | <span onmouseout="hideTip(event, 'fs25', 36)" onmouseover="showTip(event, 'fs25', 36)" class="p">Array</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs26', 37)" onmouseover="showTip(event, 'fs26', 37)" class="t">Predicate</span>
+        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs22', 33)" onmouseover="showTip(event, 'fs22', 33)" class="t">Type</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs23', 34)" onmouseover="showTip(event, 'fs23', 34)" class="p">Property</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs24', 35)" onmouseover="showTip(event, 'fs24', 35)" class="t">Name</span> | <span onmouseout="hideTip(event, 'fs25', 36)" onmouseover="showTip(event, 'fs25', 36)" class="p">Array</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs26', 37)" onmouseover="showTip(event, 'fs26', 37)" class="t">Index</span>
         <span class="k">and</span> <span onmouseout="hideTip(event, 'fs21', 38)" onmouseover="showTip(event, 'fs21', 38)" class="t">Scope</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs27', 39)" onmouseover="showTip(event, 'fs27', 39)" class="p">Any</span> | <span onmouseout="hideTip(event, 'fs28', 40)" onmouseover="showTip(event, 'fs28', 40)" class="p">Exact</span>
         <span class="k">and</span> <span onmouseout="hideTip(event, 'fs24', 41)" onmouseover="showTip(event, 'fs24', 41)" class="t">Name</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs17', 42)" onmouseover="showTip(event, 'fs17', 42)" class="t">string</span>
-        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs26', 43)" onmouseover="showTip(event, 'fs26', 43)" class="t">Predicate</span> <span class="o">=</span>
+        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs26', 43)" onmouseover="showTip(event, 'fs26', 43)" class="t">Index</span> <span class="o">=</span>
             | <span onmouseout="hideTip(event, 'fs29', 44)" onmouseover="showTip(event, 'fs29', 44)" class="p">Expression</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs17', 45)" onmouseover="showTip(event, 'fs17', 45)" class="t">string</span>
             | <span onmouseout="hideTip(event, 'fs30', 46)" onmouseover="showTip(event, 'fs30', 46)" class="p">Wildcard</span>
             | <span onmouseout="hideTip(event, 'fs31', 47)" onmouseover="showTip(event, 'fs31', 47)" class="p">Slice</span> <span class="k">of</span> <span class="i">start</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 48)" onmouseover="showTip(event, 'fs12', 48)" class="t">int</span> <span onmouseout="hideTip(event, 'fs32', 49)" onmouseover="showTip(event, 'fs32', 49)" class="t">option</span> <span class="o">*</span> <span class="i">finish</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 50)" onmouseover="showTip(event, 'fs12', 50)" class="t">int</span> <span onmouseout="hideTip(event, 'fs32', 51)" onmouseover="showTip(event, 'fs32', 51)" class="t">option</span> <span class="o">*</span> <span class="i">step</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 52)" onmouseover="showTip(event, 'fs12', 52)" class="t">int</span>
-            | <span onmouseout="hideTip(event, 'fs33', 53)" onmouseover="showTip(event, 'fs33', 53)" class="p">Index</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs12', 54)" onmouseover="showTip(event, 'fs12', 54)" class="t">int</span> <span onmouseout="hideTip(event, 'fs20', 55)" onmouseover="showTip(event, 'fs20', 55)" class="t">list</span>
+            | <span onmouseout="hideTip(event, 'fs33', 53)" onmouseover="showTip(event, 'fs33', 53)" class="p">Literal</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs12', 54)" onmouseover="showTip(event, 'fs12', 54)" class="t">int</span> <span onmouseout="hideTip(event, 'fs20', 55)" onmouseover="showTip(event, 'fs20', 55)" class="t">list</span>
 </code></pre>
 <p>Finally, given a <code>Query</code> string, we should be able to obtain a pattern for the <code>Levels</code>
 which can satisfy (or <em>match</em>) the query.</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs34', 56)" onmouseover="showTip(event, 'fs34', 56)" class="f">levelsFor</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs16', 57)" onmouseover="showTip(event, 'fs16', 57)" class="t">Query</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs18', 58)" onmouseover="showTip(event, 'fs18', 58)" class="t">Levels</span> <span class="o">=</span>
             <span class="c">// ...</span>
 </code></pre>
-<p>For example,...</p>
+<p>For example:</p>
+<pre class="fssnip highlighted"><code lang="fsharp">  <span class="c">// any author</span>
+  <span class="s">&quot;$..author&quot;</span>   [<span class="i">Any</span>,<span class="i">Property</span>(<span class="s">&quot;author&quot;</span>)]
+
+  <span class="c">// anything at the root of the store</span>
+  <span class="s">&quot;$.store.*&quot;</span>   [<span class="i">Exact</span>,<span class="i">Property</span>(<span class="s">&quot;store&quot;</span>);<span class="i">Exact</span>,<span class="i">Property</span>(<span class="s">&quot;*&quot;</span>)]
+
+  <span class="c">// the last book in any collection of books</span>
+  <span class="s">&quot;$..book[-1]&quot;</span> [<span class="i">Any</span>,<span class="i">Property</span>(<span class="s">&quot;book&quot;</span>);<span class="i">Exact</span>,<span onmouseout="hideTip(event, 'fs35', 59)" onmouseover="showTip(event, 'fs35', 59)" class="i">Array</span>(<span class="i">Index</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs36', 60)" onmouseover="showTip(event, 'fs36', 60)" class="i">Literal</span>[<span class="o">-</span><span class="n">1</span>])]
+</code></pre>
 
 <div class="tip" id="fs1">namespace System</div>
 <div class="tip" id="fs2">namespace System.Text</div>
@@ -70,87 +79,89 @@ which can satisfy (or <em>match</em>) the query.</p>
 <div class="tip" id="fs19">type Level = JsonValue.Query.Scope * JsonValue.Query.Type<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Level</div>
 <div class="tip" id="fs20">type &#39;T list = List&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.list&lt;_&gt;</div>
 <div class="tip" id="fs21">type Scope =<br />&#160;&#160;| Any<br />&#160;&#160;| Exact<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Scope</div>
-<div class="tip" id="fs22">type Type =<br />&#160;&#160;| Property of Name<br />&#160;&#160;| Array of Predicate<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Type</div>
+<div class="tip" id="fs22">type Type =<br />&#160;&#160;| Property of Name<br />&#160;&#160;| Array of Index<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Type</div>
 <div class="tip" id="fs23">union case JsonValue.Query.Type.Property: JsonValue.Query.Name -&gt; JsonValue.Query.Type</div>
 <div class="tip" id="fs24">type Name = string<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Name</div>
-<div class="tip" id="fs25">Multiple items<br />union case JsonValue.Query.Type.Array: JsonValue.Query.Predicate -&gt; JsonValue.Query.Type<br /><br />--------------------<br />type Array =<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CopyTo : array:Array * index:int -&gt; unit + 1 overload<br />&#160;&#160;member GetEnumerator : unit -&gt; IEnumerator<br />&#160;&#160;member GetLength : dimension:int -&gt; int<br />&#160;&#160;member GetLongLength : dimension:int -&gt; int64<br />&#160;&#160;member GetLowerBound : dimension:int -&gt; int<br />&#160;&#160;member GetUpperBound : dimension:int -&gt; int<br />&#160;&#160;member GetValue : [&lt;ParamArray&gt;] indices:int[] -&gt; obj + 7 overloads<br />&#160;&#160;member Initialize : unit -&gt; unit<br />&#160;&#160;member IsFixedSize : bool<br />&#160;&#160;...<br /><br />Full name: System.Array</div>
-<div class="tip" id="fs26">Multiple items<br />type Predicate =<br />&#160;&#160;| Expression of string<br />&#160;&#160;| Wildcard<br />&#160;&#160;| Slice of start: int option * finish: int option * step: int<br />&#160;&#160;| Index of int list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Predicate<br /><br />--------------------<br />type Predicate&lt;&#39;T&gt; =<br />&#160;&#160;delegate of &#39;T -&gt; bool<br /><br />Full name: System.Predicate&lt;_&gt;</div>
+<div class="tip" id="fs25">Multiple items<br />union case JsonValue.Query.Type.Array: JsonValue.Query.Index -&gt; JsonValue.Query.Type<br /><br />--------------------<br />type Array =<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CopyTo : array:Array * index:int -&gt; unit + 1 overload<br />&#160;&#160;member GetEnumerator : unit -&gt; IEnumerator<br />&#160;&#160;member GetLength : dimension:int -&gt; int<br />&#160;&#160;member GetLongLength : dimension:int -&gt; int64<br />&#160;&#160;member GetLowerBound : dimension:int -&gt; int<br />&#160;&#160;member GetUpperBound : dimension:int -&gt; int<br />&#160;&#160;member GetValue : [&lt;ParamArray&gt;] indices:int[] -&gt; obj + 7 overloads<br />&#160;&#160;member Initialize : unit -&gt; unit<br />&#160;&#160;member IsFixedSize : bool<br />&#160;&#160;...<br /><br />Full name: System.Array</div>
+<div class="tip" id="fs26">type Index =<br />&#160;&#160;| Expression of string<br />&#160;&#160;| Wildcard<br />&#160;&#160;| Slice of start: int option * finish: int option * step: int<br />&#160;&#160;| Literal of int list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Index</div>
 <div class="tip" id="fs27">union case JsonValue.Query.Scope.Any: JsonValue.Query.Scope</div>
 <div class="tip" id="fs28">union case JsonValue.Query.Scope.Exact: JsonValue.Query.Scope</div>
-<div class="tip" id="fs29">union case JsonValue.Query.Predicate.Expression: string -&gt; JsonValue.Query.Predicate</div>
-<div class="tip" id="fs30">union case JsonValue.Query.Predicate.Wildcard: JsonValue.Query.Predicate</div>
-<div class="tip" id="fs31">union case JsonValue.Query.Predicate.Slice: start: int option * finish: int option * step: int -&gt; JsonValue.Query.Predicate</div>
+<div class="tip" id="fs29">union case JsonValue.Query.Index.Expression: string -&gt; JsonValue.Query.Index</div>
+<div class="tip" id="fs30">union case JsonValue.Query.Index.Wildcard: JsonValue.Query.Index</div>
+<div class="tip" id="fs31">union case JsonValue.Query.Index.Slice: start: int option * finish: int option * step: int -&gt; JsonValue.Query.Index</div>
 <div class="tip" id="fs32">type &#39;T option = Option&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.option&lt;_&gt;</div>
-<div class="tip" id="fs33">union case JsonValue.Query.Predicate.Index: int list -&gt; JsonValue.Query.Predicate</div>
+<div class="tip" id="fs33">Multiple items<br />union case JsonValue.Query.Index.Literal: int list -&gt; JsonValue.Query.Index<br /><br />--------------------<br />type LiteralAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; LiteralAttribute<br /><br />Full name: Microsoft.FSharp.Core.LiteralAttribute<br /><br />--------------------<br />new : unit -&gt; LiteralAttribute</div>
 <div class="tip" id="fs34">val levelsFor : path:JsonValue.Query -&gt; JsonValue.Query.Levels<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.levelsFor</div>
-<div class="tip" id="fs35">val path : JsonValue.Query</div>
-<div class="tip" id="fs36">type Automata = JsonValue.Pattern.Automaton list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Automata</div>
-<div class="tip" id="fs37">Multiple items<br />union case JsonValue.Pattern.State.Automaton: JsonValue.Pattern.Automaton -&gt; JsonValue.Pattern.State<br /><br />--------------------<br />type Automaton = JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Automaton</div>
-<div class="tip" id="fs38">type Input =<br />&#160;&#160;| Property of Name<br />&#160;&#160;| Array of index: int * length: int<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Input</div>
-<div class="tip" id="fs39">type State =<br />&#160;&#160;| Match<br />&#160;&#160;| Automaton of Automaton<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.State</div>
-<div class="tip" id="fs40">Multiple items<br />union case JsonValue.Pattern.State.Match: JsonValue.Pattern.State<br /><br />--------------------<br />type Match =<br />&#160;&#160;inherit Group<br />&#160;&#160;member Groups : GroupCollection<br />&#160;&#160;member NextMatch : unit -&gt; Match<br />&#160;&#160;member Result : replacement:string -&gt; string<br />&#160;&#160;static member Empty : Match<br />&#160;&#160;static member Synchronized : inner:Match -&gt; Match<br /><br />Full name: System.Text.RegularExpressions.Match</div>
-<div class="tip" id="fs41">union case JsonValue.Pattern.Input.Property: JsonValue.Query.Name -&gt; JsonValue.Pattern.Input</div>
-<div class="tip" id="fs42">Multiple items<br />module Query<br /><br />from 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule<br /><br />--------------------<br />type Query = string<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Query</div>
-<div class="tip" id="fs43">Multiple items<br />union case JsonValue.Pattern.Input.Array: index: int * length: int -&gt; JsonValue.Pattern.Input<br /><br />--------------------<br />type Array =<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CopyTo : array:Array * index:int -&gt; unit + 1 overload<br />&#160;&#160;member GetEnumerator : unit -&gt; IEnumerator<br />&#160;&#160;member GetLength : dimension:int -&gt; int<br />&#160;&#160;member GetLongLength : dimension:int -&gt; int64<br />&#160;&#160;member GetLowerBound : dimension:int -&gt; int<br />&#160;&#160;member GetUpperBound : dimension:int -&gt; int<br />&#160;&#160;member GetValue : [&lt;ParamArray&gt;] indices:int[] -&gt; obj + 7 overloads<br />&#160;&#160;member Initialize : unit -&gt; unit<br />&#160;&#160;member IsFixedSize : bool<br />&#160;&#160;...<br /><br />Full name: System.Array</div>
-<div class="tip" id="fs44">val transition : levels:JsonValue.Query.Levels -&gt; (JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.transition</div>
-<div class="tip" id="fs45">val levels : JsonValue.Query.Levels</div>
-<div class="tip" id="fs46">val q : JsonValue.Query.Scope</div>
-<div class="tip" id="fs47">val n : JsonValue.Query.Name</div>
-<div class="tip" id="fs48">val tail : JsonValue.Query.Level list</div>
-<div class="tip" id="fs49">union case JsonValue.Pattern.Input.Array: index: int * length: int -&gt; JsonValue.Pattern.Input</div>
-<div class="tip" id="fs50">val name : JsonValue.Query.Name</div>
-<div class="tip" id="fs51">val x : JsonValue.Query.Name</div>
-<div class="tip" id="fs52">val xs : JsonValue.Query.Level list</div>
-<div class="tip" id="fs53">union case JsonValue.Query.Type.Array: JsonValue.Query.Predicate -&gt; JsonValue.Query.Type</div>
-<div class="tip" id="fs54">val p : JsonValue.Query.Predicate</div>
-<div class="tip" id="fs55">val index : int</div>
-<div class="tip" id="fs56">val length : int</div>
-<div class="tip" id="fs57">type Predicate =<br />&#160;&#160;| Expression of string<br />&#160;&#160;| Wildcard<br />&#160;&#160;| Slice of start: int option * finish: int option * step: int<br />&#160;&#160;| Index of int list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.Predicate</div>
-<div class="tip" id="fs58">val xs : int list</div>
-<div class="tip" id="fs59">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member GetSlice : startIndex:int option * endIndex:int option -&gt; &#39;T list<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
-<div class="tip" id="fs60">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.map</div>
-<div class="tip" id="fs61">val exists : predicate:(&#39;T -&gt; bool) -&gt; list:&#39;T list -&gt; bool<br /><br />Full name: Microsoft.FSharp.Collections.List.exists</div>
-<div class="tip" id="fs62">val start : int option</div>
-<div class="tip" id="fs63">val finish : int option</div>
-<div class="tip" id="fs64">val step : int</div>
-<div class="tip" id="fs65">val start : int</div>
-<div class="tip" id="fs66">val finish : int</div>
-<div class="tip" id="fs67">val create : levels:JsonValue.Query.Levels -&gt; JsonValue.Pattern.State<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.create</div>
-<div class="tip" id="fs68">val findSeq : (JsonValue.Query -&gt; JsonValue -&gt; seq&lt;JsonValue&gt;)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.findSeq</div>
-<div class="tip" id="fs69">val recurse : (JsonValue.Pattern.State list * JsonValue -&gt; seq&lt;JsonValue&gt;)</div>
-<div class="tip" id="fs70">val states : JsonValue.Pattern.State list</div>
-<div class="tip" id="fs71">module Pattern<br /><br />from 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule</div>
-<div class="tip" id="fs72">val value : JsonValue</div>
-<div class="tip" id="fs73">type JsonValue =<br />&#160;&#160;| String of string<br />&#160;&#160;| Number of decimal<br />&#160;&#160;| Float of float<br />&#160;&#160;| Record of properties: (string * JsonValue) []<br />&#160;&#160;| Array of elements: JsonValue []<br />&#160;&#160;| Boolean of bool<br />&#160;&#160;| Null<br />&#160;&#160;member Request : uri:string * ?httpMethod:string * ?headers:seq&lt;string * string&gt; -&gt; HttpResponse<br />&#160;&#160;member RequestAsync : uri:string * ?httpMethod:string * ?headers:seq&lt;string * string&gt; -&gt; Async&lt;HttpResponse&gt;<br />&#160;&#160;override ToString : unit -&gt; string<br />&#160;&#160;member ToString : saveOptions:JsonSaveOptions -&gt; string<br />&#160;&#160;member WriteTo : w:TextWriter * saveOptions:JsonSaveOptions -&gt; unit<br />&#160;&#160;static member AsyncLoad : uri:string * ?cultureInfo:CultureInfo -&gt; Async&lt;JsonValue&gt;<br />&#160;&#160;static member private JsonStringEncodeTo : w:TextWriter -&gt; value:string -&gt; unit<br />&#160;&#160;static member Load : uri:string * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member Load : reader:TextReader * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member Load : stream:Stream * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member Parse : text:string * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member ParseMultiple : text:string * ?cultureInfo:CultureInfo -&gt; seq&lt;JsonValue&gt;<br />&#160;&#160;static member ParseSample : text:string * ?cultureInfo:CultureInfo -&gt; JsonValue<br /><br />Full name: FSharp.Data.JsonValue</div>
-<div class="tip" id="fs74">val isMatch : bool</div>
-<div class="tip" id="fs75">val automata : JsonValue.Pattern.Automaton list</div>
-<div class="tip" id="fs76">union case JsonValue.Pattern.State.Match: JsonValue.Pattern.State</div>
-<div class="tip" id="fs77">val choose : chooser:(&#39;T -&gt; &#39;U option) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.choose</div>
-<div class="tip" id="fs78">union case JsonValue.Pattern.State.Automaton: JsonValue.Pattern.Automaton -&gt; JsonValue.Pattern.State</div>
-<div class="tip" id="fs79">val x : JsonValue.Pattern.Automaton</div>
-<div class="tip" id="fs80">Multiple items<br />val seq : sequence:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.Operators.seq<br /><br />--------------------<br />type seq&lt;&#39;T&gt; = Collections.Generic.IEnumerable&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.seq&lt;_&gt;</div>
-<div class="tip" id="fs81">union case JsonValue.Record: properties: (string * JsonValue) [] -&gt; JsonValue</div>
-<div class="tip" id="fs82">val xs : (string * JsonValue) []</div>
-<div class="tip" id="fs83">module Seq<br /><br />from Microsoft.FSharp.Collections</div>
-<div class="tip" id="fs84">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.map</div>
-<div class="tip" id="fs85">val name : string</div>
-<div class="tip" id="fs86">val json : JsonValue</div>
-<div class="tip" id="fs87">val collect : mapping:(&#39;T -&gt; &#39;U list) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.collect</div>
-<div class="tip" id="fs88">val a : JsonValue.Pattern.Automaton</div>
-<div class="tip" id="fs89">val collect : mapping:(&#39;T -&gt; #seq&lt;&#39;U&gt;) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.collect</div>
-<div class="tip" id="fs90">union case JsonValue.Array: elements: JsonValue [] -&gt; JsonValue</div>
-<div class="tip" id="fs91">val xs : JsonValue []</div>
-<div class="tip" id="fs92">val mapi : mapping:(int -&gt; &#39;T -&gt; &#39;U) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.mapi</div>
-<div class="tip" id="fs93">val i : int</div>
-<div class="tip" id="fs94">property Array.Length: int</div>
-<div class="tip" id="fs95">val empty&lt;&#39;T&gt; : seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.empty</div>
-<div class="tip" id="fs96">val singleton : value:&#39;T -&gt; seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.singleton</div>
-<div class="tip" id="fs97">val levels : JsonValue.Query.Level list</div>
-<div class="tip" id="fs98">val start : JsonValue.Pattern.State</div>
-<div class="tip" id="fs99">val findList : query:JsonValue.Query -&gt; (JsonValue -&gt; JsonValue list)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.findList</div>
-<div class="tip" id="fs100">val query : JsonValue.Query</div>
-<div class="tip" id="fs101">val toList : source:seq&lt;&#39;T&gt; -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.Seq.toList</div>
-<div class="tip" id="fs102">val find : query:JsonValue.Query -&gt; (JsonValue -&gt; JsonValue)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.find</div>
-<div class="tip" id="fs103">val head : source:seq&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Collections.Seq.head</div>
-<div class="tip" id="fs104">val tryFind : query:JsonValue.Query -&gt; (JsonValue -&gt; JsonValue option)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.tryFind</div>
-<div class="tip" id="fs105">val tryPick : chooser:(&#39;T -&gt; &#39;U option) -&gt; source:seq&lt;&#39;T&gt; -&gt; &#39;U option<br /><br />Full name: Microsoft.FSharp.Collections.Seq.tryPick</div>
+<div class="tip" id="fs35">module Array<br /><br />from Microsoft.FSharp.Collections</div>
+<div class="tip" id="fs36">Multiple items<br />type LiteralAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; LiteralAttribute<br /><br />Full name: Microsoft.FSharp.Core.LiteralAttribute<br /><br />--------------------<br />new : unit -&gt; LiteralAttribute</div>
+<div class="tip" id="fs37">val path : JsonValue.Query</div>
+<div class="tip" id="fs38">type Automata = JsonValue.Pattern.Automaton list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Automata</div>
+<div class="tip" id="fs39">Multiple items<br />union case JsonValue.Pattern.State.Automaton: JsonValue.Pattern.Automaton -&gt; JsonValue.Pattern.State<br /><br />--------------------<br />type Automaton = JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Automaton</div>
+<div class="tip" id="fs40">type Input =<br />&#160;&#160;| Property of Name<br />&#160;&#160;| Array of index: int * length: int<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Input</div>
+<div class="tip" id="fs41">type State =<br />&#160;&#160;| Match<br />&#160;&#160;| Automaton of Automaton<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.State</div>
+<div class="tip" id="fs42">Multiple items<br />union case JsonValue.Pattern.State.Match: JsonValue.Pattern.State<br /><br />--------------------<br />type Match =<br />&#160;&#160;inherit Group<br />&#160;&#160;member Groups : GroupCollection<br />&#160;&#160;member NextMatch : unit -&gt; Match<br />&#160;&#160;member Result : replacement:string -&gt; string<br />&#160;&#160;static member Empty : Match<br />&#160;&#160;static member Synchronized : inner:Match -&gt; Match<br /><br />Full name: System.Text.RegularExpressions.Match</div>
+<div class="tip" id="fs43">union case JsonValue.Pattern.Input.Property: JsonValue.Query.Name -&gt; JsonValue.Pattern.Input</div>
+<div class="tip" id="fs44">Multiple items<br />module Query<br /><br />from 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule<br /><br />--------------------<br />type Query = string<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Query</div>
+<div class="tip" id="fs45">Multiple items<br />union case JsonValue.Pattern.Input.Array: index: int * length: int -&gt; JsonValue.Pattern.Input<br /><br />--------------------<br />type Array =<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CopyTo : array:Array * index:int -&gt; unit + 1 overload<br />&#160;&#160;member GetEnumerator : unit -&gt; IEnumerator<br />&#160;&#160;member GetLength : dimension:int -&gt; int<br />&#160;&#160;member GetLongLength : dimension:int -&gt; int64<br />&#160;&#160;member GetLowerBound : dimension:int -&gt; int<br />&#160;&#160;member GetUpperBound : dimension:int -&gt; int<br />&#160;&#160;member GetValue : [&lt;ParamArray&gt;] indices:int[] -&gt; obj + 7 overloads<br />&#160;&#160;member Initialize : unit -&gt; unit<br />&#160;&#160;member IsFixedSize : bool<br />&#160;&#160;...<br /><br />Full name: System.Array</div>
+<div class="tip" id="fs46">val transition : levels:JsonValue.Query.Levels -&gt; (JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.transition</div>
+<div class="tip" id="fs47">val levels : JsonValue.Query.Levels</div>
+<div class="tip" id="fs48">val q : JsonValue.Query.Scope</div>
+<div class="tip" id="fs49">val n : JsonValue.Query.Name</div>
+<div class="tip" id="fs50">val tail : JsonValue.Query.Level list</div>
+<div class="tip" id="fs51">union case JsonValue.Pattern.Input.Array: index: int * length: int -&gt; JsonValue.Pattern.Input</div>
+<div class="tip" id="fs52">val name : JsonValue.Query.Name</div>
+<div class="tip" id="fs53">val x : JsonValue.Query.Name</div>
+<div class="tip" id="fs54">val xs : JsonValue.Query.Level list</div>
+<div class="tip" id="fs55">union case JsonValue.Query.Type.Array: JsonValue.Query.Index -&gt; JsonValue.Query.Type</div>
+<div class="tip" id="fs56">val p : JsonValue.Query.Index</div>
+<div class="tip" id="fs57">val index : int</div>
+<div class="tip" id="fs58">val length : int</div>
+<div class="tip" id="fs59">union case JsonValue.Query.Index.Literal: int list -&gt; JsonValue.Query.Index</div>
+<div class="tip" id="fs60">val xs : int list</div>
+<div class="tip" id="fs61">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member GetSlice : startIndex:int option * endIndex:int option -&gt; &#39;T list<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs62">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.map</div>
+<div class="tip" id="fs63">val exists : predicate:(&#39;T -&gt; bool) -&gt; list:&#39;T list -&gt; bool<br /><br />Full name: Microsoft.FSharp.Collections.List.exists</div>
+<div class="tip" id="fs64">val start : int option</div>
+<div class="tip" id="fs65">val finish : int option</div>
+<div class="tip" id="fs66">val step : int</div>
+<div class="tip" id="fs67">val start : int</div>
+<div class="tip" id="fs68">val finish : int</div>
+<div class="tip" id="fs69">val create : levels:JsonValue.Query.Levels -&gt; JsonValue.Pattern.State<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.create</div>
+<div class="tip" id="fs70">val findSeq : (JsonValue.Query -&gt; JsonValue -&gt; seq&lt;JsonValue&gt;)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.findSeq</div>
+<div class="tip" id="fs71">val recurse : (JsonValue.Pattern.State list * JsonValue -&gt; seq&lt;JsonValue&gt;)</div>
+<div class="tip" id="fs72">val states : JsonValue.Pattern.State list</div>
+<div class="tip" id="fs73">module Pattern<br /><br />from 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule</div>
+<div class="tip" id="fs74">val value : JsonValue</div>
+<div class="tip" id="fs75">type JsonValue =<br />&#160;&#160;| String of string<br />&#160;&#160;| Number of decimal<br />&#160;&#160;| Float of float<br />&#160;&#160;| Record of properties: (string * JsonValue) []<br />&#160;&#160;| Array of elements: JsonValue []<br />&#160;&#160;| Boolean of bool<br />&#160;&#160;| Null<br />&#160;&#160;member Request : uri:string * ?httpMethod:string * ?headers:seq&lt;string * string&gt; -&gt; HttpResponse<br />&#160;&#160;member RequestAsync : uri:string * ?httpMethod:string * ?headers:seq&lt;string * string&gt; -&gt; Async&lt;HttpResponse&gt;<br />&#160;&#160;override ToString : unit -&gt; string<br />&#160;&#160;member ToString : saveOptions:JsonSaveOptions -&gt; string<br />&#160;&#160;member WriteTo : w:TextWriter * saveOptions:JsonSaveOptions -&gt; unit<br />&#160;&#160;static member AsyncLoad : uri:string * ?cultureInfo:CultureInfo -&gt; Async&lt;JsonValue&gt;<br />&#160;&#160;static member private JsonStringEncodeTo : w:TextWriter -&gt; value:string -&gt; unit<br />&#160;&#160;static member Load : uri:string * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member Load : reader:TextReader * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member Load : stream:Stream * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member Parse : text:string * ?cultureInfo:CultureInfo -&gt; JsonValue<br />&#160;&#160;static member ParseMultiple : text:string * ?cultureInfo:CultureInfo -&gt; seq&lt;JsonValue&gt;<br />&#160;&#160;static member ParseSample : text:string * ?cultureInfo:CultureInfo -&gt; JsonValue<br /><br />Full name: FSharp.Data.JsonValue</div>
+<div class="tip" id="fs76">val isMatch : bool</div>
+<div class="tip" id="fs77">val automata : JsonValue.Pattern.Automaton list</div>
+<div class="tip" id="fs78">union case JsonValue.Pattern.State.Match: JsonValue.Pattern.State</div>
+<div class="tip" id="fs79">val choose : chooser:(&#39;T -&gt; &#39;U option) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.choose</div>
+<div class="tip" id="fs80">union case JsonValue.Pattern.State.Automaton: JsonValue.Pattern.Automaton -&gt; JsonValue.Pattern.State</div>
+<div class="tip" id="fs81">val x : JsonValue.Pattern.Automaton</div>
+<div class="tip" id="fs82">Multiple items<br />val seq : sequence:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.Operators.seq<br /><br />--------------------<br />type seq&lt;&#39;T&gt; = Collections.Generic.IEnumerable&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.seq&lt;_&gt;</div>
+<div class="tip" id="fs83">union case JsonValue.Record: properties: (string * JsonValue) [] -&gt; JsonValue</div>
+<div class="tip" id="fs84">val xs : (string * JsonValue) []</div>
+<div class="tip" id="fs85">module Seq<br /><br />from Microsoft.FSharp.Collections</div>
+<div class="tip" id="fs86">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.map</div>
+<div class="tip" id="fs87">val name : string</div>
+<div class="tip" id="fs88">val json : JsonValue</div>
+<div class="tip" id="fs89">val collect : mapping:(&#39;T -&gt; &#39;U list) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.collect</div>
+<div class="tip" id="fs90">val a : JsonValue.Pattern.Automaton</div>
+<div class="tip" id="fs91">val collect : mapping:(&#39;T -&gt; #seq&lt;&#39;U&gt;) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.collect</div>
+<div class="tip" id="fs92">union case JsonValue.Array: elements: JsonValue [] -&gt; JsonValue</div>
+<div class="tip" id="fs93">val xs : JsonValue []</div>
+<div class="tip" id="fs94">val mapi : mapping:(int -&gt; &#39;T -&gt; &#39;U) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.mapi</div>
+<div class="tip" id="fs95">val i : int</div>
+<div class="tip" id="fs96">property Array.Length: int</div>
+<div class="tip" id="fs97">val empty&lt;&#39;T&gt; : seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.empty</div>
+<div class="tip" id="fs98">val singleton : value:&#39;T -&gt; seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.singleton</div>
+<div class="tip" id="fs99">val levels : JsonValue.Query.Level list</div>
+<div class="tip" id="fs100">val start : JsonValue.Pattern.State</div>
+<div class="tip" id="fs101">val findList : query:JsonValue.Query -&gt; (JsonValue -&gt; JsonValue list)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.findList</div>
+<div class="tip" id="fs102">val query : JsonValue.Query</div>
+<div class="tip" id="fs103">val toList : source:seq&lt;&#39;T&gt; -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.Seq.toList</div>
+<div class="tip" id="fs104">val find : query:JsonValue.Query -&gt; (JsonValue -&gt; JsonValue)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.find</div>
+<div class="tip" id="fs105">val head : source:seq&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Collections.Seq.head</div>
+<div class="tip" id="fs106">val tryFind : query:JsonValue.Query -&gt; (JsonValue -&gt; JsonValue option)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.tryFind</div>
+<div class="tip" id="fs107">val tryPick : chooser:(&#39;T -&gt; &#39;U option) -&gt; source:seq&lt;&#39;T&gt; -&gt; &#39;U option<br /><br />Full name: Microsoft.FSharp.Collections.Seq.tryPick</div>

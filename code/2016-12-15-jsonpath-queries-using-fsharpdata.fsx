@@ -37,19 +37,19 @@ that query.
 The query consists of a sequence of levels from the root of a json document `$` separated
 by the `.` character.  Each level refers to a named property or array, and each case is
 scoped to match that `Exact` level, or inclusively `Any` instances within its subtree.
-If a level refers to an array, then a slice, index, or wildcard operation (between
-`[` and `]` specifies which elements of the array match the query.
+If a level refers to an array, then a slice, literal index, or wildcard operation (between
+`[` and `]` specifies which elements of an array match the query.
 *)
         type Levels = Level list
         and Level = Scope * Type
-        and Type = Property of Name | Array of Predicate
+        and Type = Property of Name | Array of Index
         and Scope = Any | Exact
         and Name = string
-        and Predicate =
+        and Index =
             | Expression of string
             | Wildcard
             | Slice of start:int option * finish:int option * step:int
-            | Index of int list
+            | Literal of int list
 (**
 Finally, given a `Query` string, we should be able to obtain a pattern for the `Levels`
 which can satisfy (or _match_) the query.
@@ -57,7 +57,19 @@ which can satisfy (or _match_) the query.
         let levelsFor : Query -> Levels =
             // ...
 (**
-For example,...
+For example:
+
+```fsharp
+  // any author
+  "$..author"   [Any,Property("author")]
+
+  // anything at the root of the store
+  "$.store.*"   [Exact,Property("store");Exact,Property("*")]
+
+  // the last book in any collection of books
+  "$..book[-1]" [Any,Property("book");Exact,Array(Index.Literal[-1])]
+```
+
 *)
 (*** hide ***)
             fun (path:string) ->
@@ -97,18 +109,18 @@ For example,...
                 | Input.Property _ -> []
                 | Input.Array (index,length) ->
                     match p with
-                    | Query.Predicate.Wildcard ->
+                    | Query.Index.Wildcard ->
                         match tail with
                         | [] -> [ Match ]
                         | xs -> [ Automaton (transition xs) ]
-                    | Query.Predicate.Index xs when
+                    | Query.Index.Literal xs when
                         (xs
                          |> List.map (function x when x < 0 -> length+x | x -> x)
                          |> List.exists ((=) index)) ->
                         match tail with
                         | [] -> [ Match ]
                         | xs -> [ Automaton (transition xs) ]
-                    | Query.Predicate.Slice(start,finish,step) when (step > 0) ->
+                    | Query.Index.Slice(start,finish,step) when (step > 0) ->
                         let start =
                             match start |> valueOr 0 with
                             | x when x < 0 -> length+x
@@ -123,7 +135,7 @@ For example,...
                             | [] -> [ Match ]
                             | xs -> [ Automaton (transition xs) ]
                         else []
-                    | _ -> []
+                    | Query.Index.Expression _ -> []
                     @
                     match q with
                     | Query.Any -> [ Automaton (transition levels) ]

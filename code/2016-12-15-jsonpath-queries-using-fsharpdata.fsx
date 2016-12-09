@@ -21,91 +21,47 @@ open FSharp.Data
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module JsonValue =
 
-            
-    let private values (m:Match) (group:string) =
-        [ for g in m.Groups.[group].Captures -> Int32.Parse g.Value ]
-
     let private valueOr (defaultValue:int) =
         function Some x -> x | None -> defaultValue
 
-
+(**
+##Query
+Given an arbitrary JsonPath query string, we want to derive a structured representation of
+that query.
+*)
     type Query = string
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Query =
-    
+(**
+The query consists of a sequence of levels from the root of a json document `$` separated
+by the `.` character.  Each level refers to a named property or array, and each case is
+scoped to match that `Exact` level, or inclusively `Any` instances within its subtree.
+If a level refers to an array, then a slice, index, or wildcard operation (between
+`[` and `]` specifies which elements of the array match the query.
+*)
         type Levels = Level list
-        and Level = Quantifier * Type
+        and Level = Scope * Type
         and Type = Property of Name | Array of Predicate
-        and Quantifier = All | Exists
+        and Scope = Any | Exact
         and Name = string
         and Predicate =
             | Expression of string
             | Wildcard
             | Slice of start:int option * finish:int option * step:int
             | Index of int list
-
+(**
+Finally, given a `Query` string, we should be able to obtain a pattern for the `Levels`
+which can satisfy (or _match_) the query.
+*)
         let levelsFor : Query -> Levels =
-
-            let predicateFor : string -> Predicate =
-
-                let (|Wildcard|_|) = function "*" -> Some Predicate.Wildcard | _ -> None
-                let (|Index|_|) =
-                    let pattern = "^(?<i>-?\d+)(,(?<i>-?\d+))*$"
-                    let regex = new Regex(pattern, RegexOptions.Compiled)
-                    fun input ->
-                        let index = regex.Match(input)
-                        if index.Success then Some(Predicate.Index(values index "i"))
-                        else None
-                let (|Slice|_|) =
-                    let pattern = "^(?<start>-?\d+)?:(?<finish>-?\d+)?(:(?<step>-?\d+))?$"
-                    let regex = new Regex(pattern, RegexOptions.Compiled)
-                    fun input ->
-                        let slice = regex.Match(input)
-                        if slice.Success then
-                            let step =
-                                Seq.tryPick Some (values slice "step") |> valueOr 1
-                            let start,finish =
-                                Seq.tryPick Some (values slice "start"),
-                                Seq.tryPick Some (values slice "finish")
-                            match step with
-                            | 0 -> Some(Predicate.Index[])
-                            | i -> Some(Predicate.Slice(start,finish,step))
-                        else None
-                let (|Expression|) input = Predicate.Expression input
-
-                function
-                | Wildcard x -> x
-                | Index x -> x
-                | Slice x -> x
-                | Expression x -> x
-
-            let pattern = 
-                "(?<quantifier>[\.]+)"+       // 1 or more '.' symbols
-                "(?<name>([^.\[])*)"+         // anything other than a '.' or '['
-                "(\[(?<predicate>[^\]]*)\])*" // and optionally:
-                                              //   '['
-                                              //   anything other than ']'
-                                              //   ']'
-            let regex = new Regex(pattern, RegexOptions.Compiled)
-
+            // ...
+(**
+For example,...
+*)
+(*** hide ***)
             fun (path:string) ->
-                [
-                    for x in regex.Matches(path) do
-                        let name, quantifier =
-                            x.Groups.["name"].Value,
-                            x.Groups.["quantifier"].Value
-                            |> function "." -> Exists | _ -> All
-                    
-                        if (x.Groups.["predicate"].Success) then
-                            let predicates = x.Groups.["predicate"].Captures
-                            yield quantifier, Type.Property(name)
-                            for x in predicates do
-                                yield Exists, Type.Array (predicateFor x.Value)
-                        else
-                            yield quantifier, Type.Property(name)
-                ]
-
+                []
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Pattern  =
@@ -133,8 +89,8 @@ module JsonValue =
                     | _ -> []
                     @
                     match q with
-                    | Query.All -> [ Automaton (transition levels) ]
-                    | Query.Exists -> []
+                    | Query.Any -> [ Automaton (transition levels) ]
+                    | Query.Exact -> []
                 
             | (q,Query.Array(p)) :: tail ->
                 function
@@ -170,8 +126,8 @@ module JsonValue =
                     | _ -> []
                     @
                     match q with
-                    | Query.All -> [ Automaton (transition levels) ]
-                    | Query.Exists -> []
+                    | Query.Any -> [ Automaton (transition levels) ]
+                    | Query.Exact -> []
                     
         let create (levels:Query.Levels) : State =
             Automaton (transition levels)
@@ -214,8 +170,8 @@ module JsonValue =
             }
                 
         Query.levelsFor >> function
-        | [Query.Exists,Query.Property ""] -> Seq.singleton
-        | (Query.Exists,Query.Property "")::levels
+        | [Query.Exact,Query.Property ""] -> Seq.singleton
+        | (Query.Exact,Query.Property "")::levels
         | levels ->
             let start = Pattern.create levels
             fun json -> recurse([start],json)

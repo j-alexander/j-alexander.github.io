@@ -38,7 +38,7 @@ The query consists of a sequence of levels from the root of a json document `$` 
 by the `.` character.  Each level refers to a named property or array, and each case is
 scoped to match that `Exact` level, or inclusively `Any` instances within its subtree.
 If a level refers to an array, then a slice, literal index, or wildcard operation (between
-`[` and `]` specifies which elements of an array match the query.
+`[` and `]`) specifies which elements of an array match the query.
 *)
         type Levels = Level list
         and Level = Scope * Type

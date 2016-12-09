@@ -55,7 +55,66 @@ which can satisfy (or <em>match</em>) the query.</p>
   <span class="s">&quot;$.store.*&quot;</span>   [<span class="i">Exact</span>,<span class="i">Property</span>(<span class="s">&quot;store&quot;</span>);<span class="i">Exact</span>,<span class="i">Property</span>(<span class="s">&quot;*&quot;</span>)]
 
   <span class="c">// the last book in any collection of books</span>
-  <span class="s">&quot;$..book[-1]&quot;</span> [<span class="i">Any</span>,<span class="i">Property</span>(<span class="s">&quot;book&quot;</span>);<span class="i">Exact</span>,<span onmouseout="hideTip(event, 'fs35', 59)" onmouseover="showTip(event, 'fs35', 59)" class="i">Array</span>(<span class="i">Index</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs36', 60)" onmouseover="showTip(event, 'fs36', 60)" class="i">Literal</span>[<span class="o">-</span><span class="n">1</span>])]
+  <span class="s">&quot;$..book[-1]&quot;</span> [<span class="i">Any</span>,<span class="i">Property</span>(<span class="s">&quot;book&quot;</span>);<span class="i">Exact</span>,<span onmouseout="hideTip(event, 'fs36', 61)" onmouseover="showTip(event, 'fs36', 61)" class="i">Array</span>(<span class="i">Index</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs37', 62)" onmouseover="showTip(event, 'fs37', 62)" class="i">Literal</span>[<span class="o">-</span><span class="n">1</span>])]
+</code></pre>
+<h2>Pattern Matching</h2>
+<p>Here, <code>Pattern</code> matching on the <code>Query</code> is performed using immutable <a href="https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton">non-deterministic
+finite automata</a>.</p>
+<pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">module</span> <span class="t">Pattern</span>  <span class="o">=</span>
+</code></pre>
+<p>An automaton is a specialized kind of state machine that when given a sequence of
+inputs has the potential to arrive at some final state indicating acceptance of those
+inputs.
+Imagine some user interface has a text box that accepts several possible passwords. Each
+letter you input will <em>transition</em> your automaton from one state to another (like a
+combination lock). If you input the right sequence of letters, you will arrive at a
+"password accepted" state and successfully log into the app.</p>
+<p>In F#, we can represent this concept as follows:</p>
+<h3>Automata</h3>
+<p>First, more than <em>one automaton</em> is called <em>automata</em>.</p>
+<pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">type</span> <span onmouseout="hideTip(event, 'fs38', 63)" onmouseover="showTip(event, 'fs38', 63)" class="t">Automata</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs39', 64)" onmouseover="showTip(event, 'fs39', 64)" class="t">Automaton</span> <span onmouseout="hideTip(event, 'fs20', 65)" onmouseover="showTip(event, 'fs20', 65)" class="t">list</span>
+</code></pre>
+<ul>
+<li><em>Deterministic</em> finite automata will yield exactly one state when given an input.</li>
+<li>
+<em>Non-deterministic</em> finite automata, on the other hand, may yield more than one. Recall
+that our password example would match several possible passwords at once.
+</li>
+</ul>
+<pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs39', 66)" onmouseover="showTip(event, 'fs39', 66)" class="t">Automaton</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs40', 67)" onmouseover="showTip(event, 'fs40', 67)" class="t">Input</span><span class="k">-&gt;</span><span onmouseout="hideTip(event, 'fs41', 68)" onmouseover="showTip(event, 'fs41', 68)" class="t">State</span> <span onmouseout="hideTip(event, 'fs20', 69)" onmouseover="showTip(event, 'fs20', 69)" class="t">list</span>
+</code></pre>
+<p>Given some input:</p>
+<ul>
+<li>
+One possible state of the automaton is a <code>Match</code> or <em>acceptance</em> of 
+the input.
+</li>
+<li>
+If no match occurs, the automaton must transition to a new state ready to
+accept more input.
+<ul>
+<li>
+For example, if you enter the first letter <code>s</code> of a password "secret", the new state of
+your automaton must stand ready to <em>accept</em> the character sequence <code>[e;c;r;e;t]</code>.
+</li>
+</ul>
+</li>
+</ul>
+<p>These automata are <em>immutable</em> in a functional programming sense.  Rather than mutating
+some internal state, an input produces derivations.  As a consequence, an input produces
+a <code>Match</code> state or a <em>new</em> <code>Automaton</code> with that input applied.</p>
+<pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs41', 70)" onmouseover="showTip(event, 'fs41', 70)" class="t">State</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs42', 71)" onmouseover="showTip(event, 'fs42', 71)" class="p">Match</span> | <span onmouseout="hideTip(event, 'fs39', 72)" onmouseover="showTip(event, 'fs39', 72)" class="p">Automaton</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs39', 73)" onmouseover="showTip(event, 'fs39', 73)" class="t">Automaton</span>
+</code></pre>
+<p>Finally, since we're matching json documents rather than passwords, your input from an
+actual document could be either:</p>
+<ul>
+<li>a <code>Property</code> of a json record with some <code>Name</code>, or</li>
+<li>an <code>Array</code> element of a json array at some specific index</li>
+</ul>
+<pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs40', 74)" onmouseover="showTip(event, 'fs40', 74)" class="t">Input</span> <span class="o">=</span>
+            | <span onmouseout="hideTip(event, 'fs43', 75)" onmouseover="showTip(event, 'fs43', 75)" class="p">Property</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs44', 76)" onmouseover="showTip(event, 'fs44', 76)" class="t">Query</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs24', 77)" onmouseover="showTip(event, 'fs24', 77)" class="t">Name</span>
+            | <span onmouseout="hideTip(event, 'fs45', 78)" onmouseover="showTip(event, 'fs45', 78)" class="p">Array</span> <span class="k">of</span> <span class="i">index</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 79)" onmouseover="showTip(event, 'fs12', 79)" class="t">int</span><span class="o">*</span><span class="i">length</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 80)" onmouseover="showTip(event, 'fs12', 80)" class="t">int</span>
+            
 </code></pre>
 
 <div class="tip" id="fs1">namespace System</div>
@@ -92,18 +151,18 @@ which can satisfy (or <em>match</em>) the query.</p>
 <div class="tip" id="fs32">type &#39;T option = Option&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.option&lt;_&gt;</div>
 <div class="tip" id="fs33">Multiple items<br />union case JsonValue.Query.Index.Literal: int list -&gt; JsonValue.Query.Index<br /><br />--------------------<br />type LiteralAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; LiteralAttribute<br /><br />Full name: Microsoft.FSharp.Core.LiteralAttribute<br /><br />--------------------<br />new : unit -&gt; LiteralAttribute</div>
 <div class="tip" id="fs34">val levelsFor : path:JsonValue.Query -&gt; JsonValue.Query.Levels<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.QueryModule.levelsFor</div>
-<div class="tip" id="fs35">module Array<br /><br />from Microsoft.FSharp.Collections</div>
-<div class="tip" id="fs36">Multiple items<br />type LiteralAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; LiteralAttribute<br /><br />Full name: Microsoft.FSharp.Core.LiteralAttribute<br /><br />--------------------<br />new : unit -&gt; LiteralAttribute</div>
-<div class="tip" id="fs37">val path : JsonValue.Query</div>
-<div class="tip" id="fs38">type Automata = JsonValue.Pattern.Automaton list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Automata</div>
-<div class="tip" id="fs39">Multiple items<br />union case JsonValue.Pattern.State.Automaton: JsonValue.Pattern.Automaton -&gt; JsonValue.Pattern.State<br /><br />--------------------<br />type Automaton = JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Automaton</div>
-<div class="tip" id="fs40">type Input =<br />&#160;&#160;| Property of Name<br />&#160;&#160;| Array of index: int * length: int<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.Input</div>
-<div class="tip" id="fs41">type State =<br />&#160;&#160;| Match<br />&#160;&#160;| Automaton of Automaton<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.State</div>
+<div class="tip" id="fs35">val path : JsonValue.Query</div>
+<div class="tip" id="fs36">module Array<br /><br />from Microsoft.FSharp.Collections</div>
+<div class="tip" id="fs37">Multiple items<br />type LiteralAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; LiteralAttribute<br /><br />Full name: Microsoft.FSharp.Core.LiteralAttribute<br /><br />--------------------<br />new : unit -&gt; LiteralAttribute</div>
+<div class="tip" id="fs38">type Automata = JsonValue.Pattern.Automaton list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Pattern.Automata</div>
+<div class="tip" id="fs39">Multiple items<br />union case JsonValue.Pattern.State.Automaton: JsonValue.Pattern.Automaton -&gt; JsonValue.Pattern.State<br /><br />--------------------<br />type Automaton = JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Pattern.Automaton</div>
+<div class="tip" id="fs40">type Input =<br />&#160;&#160;| Property of Name<br />&#160;&#160;| Array of index: int * length: int<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Pattern.Input</div>
+<div class="tip" id="fs41">type State =<br />&#160;&#160;| Match<br />&#160;&#160;| Automaton of Automaton<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Pattern.State</div>
 <div class="tip" id="fs42">Multiple items<br />union case JsonValue.Pattern.State.Match: JsonValue.Pattern.State<br /><br />--------------------<br />type Match =<br />&#160;&#160;inherit Group<br />&#160;&#160;member Groups : GroupCollection<br />&#160;&#160;member NextMatch : unit -&gt; Match<br />&#160;&#160;member Result : replacement:string -&gt; string<br />&#160;&#160;static member Empty : Match<br />&#160;&#160;static member Synchronized : inner:Match -&gt; Match<br /><br />Full name: System.Text.RegularExpressions.Match</div>
 <div class="tip" id="fs43">union case JsonValue.Pattern.Input.Property: JsonValue.Query.Name -&gt; JsonValue.Pattern.Input</div>
 <div class="tip" id="fs44">Multiple items<br />module Query<br /><br />from 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule<br /><br />--------------------<br />type Query = string<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Query</div>
 <div class="tip" id="fs45">Multiple items<br />union case JsonValue.Pattern.Input.Array: index: int * length: int -&gt; JsonValue.Pattern.Input<br /><br />--------------------<br />type Array =<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CopyTo : array:Array * index:int -&gt; unit + 1 overload<br />&#160;&#160;member GetEnumerator : unit -&gt; IEnumerator<br />&#160;&#160;member GetLength : dimension:int -&gt; int<br />&#160;&#160;member GetLongLength : dimension:int -&gt; int64<br />&#160;&#160;member GetLowerBound : dimension:int -&gt; int<br />&#160;&#160;member GetUpperBound : dimension:int -&gt; int<br />&#160;&#160;member GetValue : [&lt;ParamArray&gt;] indices:int[] -&gt; obj + 7 overloads<br />&#160;&#160;member Initialize : unit -&gt; unit<br />&#160;&#160;member IsFixedSize : bool<br />&#160;&#160;...<br /><br />Full name: System.Array</div>
-<div class="tip" id="fs46">val transition : levels:JsonValue.Query.Levels -&gt; (JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.transition</div>
+<div class="tip" id="fs46">val transition : levels:JsonValue.Query.Levels -&gt; (JsonValue.Pattern.Input -&gt; JsonValue.Pattern.State list)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Pattern.transition</div>
 <div class="tip" id="fs47">val levels : JsonValue.Query.Levels</div>
 <div class="tip" id="fs48">val q : JsonValue.Query.Scope</div>
 <div class="tip" id="fs49">val n : JsonValue.Query.Name</div>
@@ -126,7 +185,7 @@ which can satisfy (or <em>match</em>) the query.</p>
 <div class="tip" id="fs66">val step : int</div>
 <div class="tip" id="fs67">val start : int</div>
 <div class="tip" id="fs68">val finish : int</div>
-<div class="tip" id="fs69">val create : levels:JsonValue.Query.Levels -&gt; JsonValue.Pattern.State<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.PatternModule.create</div>
+<div class="tip" id="fs69">val create : levels:JsonValue.Query.Levels -&gt; JsonValue.Pattern.State<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.Pattern.create</div>
 <div class="tip" id="fs70">val findSeq : (JsonValue.Query -&gt; JsonValue -&gt; seq&lt;JsonValue&gt;)<br /><br />Full name: 2016-12-15-jsonpath-queries-using-fsharpdata.JsonValueModule.findSeq</div>
 <div class="tip" id="fs71">val recurse : (JsonValue.Pattern.State list * JsonValue -&gt; seq&lt;JsonValue&gt;)</div>
 <div class="tip" id="fs72">val states : JsonValue.Pattern.State list</div>

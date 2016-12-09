@@ -25,7 +25,7 @@ module JsonValue =
         function Some x -> x | None -> defaultValue
 
 (**
-##Query
+## Query
 Given an arbitrary JsonPath query string, we want to derive a structured representation of
 that query.
 *)
@@ -56,6 +56,9 @@ which can satisfy (or _match_) the query.
 *)
         let levelsFor : Query -> Levels =
             // ...
+(*** hide ***)
+            fun (path:string) ->
+                []
 (**
 For example:
 
@@ -71,20 +74,60 @@ For example:
 ```
 
 *)
-(*** hide ***)
-            fun (path:string) ->
-                []
-
-    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+(**
+## Pattern Matching
+Here, `Pattern` matching on the `Query` is performed using immutable [non-deterministic
+finite automata](https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton).
+*)
     module Pattern  =
+(**
+An automaton is a specialized kind of state machine that when given a sequence of
+inputs has the potential to arrive at some final state indicating acceptance of those
+inputs.
+Imagine some user interface has a text box that accepts several possible passwords. Each
+letter you input will _transition_ your automaton from one state to another (like a
+combination lock). If you input the right sequence of letters, you will arrive at a
+"password accepted" state and successfully log into the app.
 
+In F#, we can represent this concept as follows:
+
+### Automata
+First, more than _one automaton_ is called _automata_.
+*)
         type Automata = Automaton list
+(**
+* _Deterministic_ finite automata will yield exactly one state when given an input.
+* _Non-deterministic_ finite automata, on the other hand, may yield more than one. Recall
+that our password example would match several possible passwords at once.
+*)
         and Automaton = Input->State list
+(**
+Given some input:
+
+* One possible state of the automaton is a `Match` or _acceptance_ of 
+the input.
+* If no match occurs, the automaton must transition to a new state ready to
+accept more input.
+  * For example, if you enter the first letter `s` of a password "secret", the new state of
+your automaton must stand ready to _accept_ the character sequence `[e;c;r;e;t]`.
+
+These automata are _immutable_ in a functional programming sense.  Rather than mutating
+some internal state, an input produces derivations.  As a consequence, an input produces
+a `Match` state or a _new_ `Automaton` with that input applied.
+*)
         and State = Match | Automaton of Automaton
+(**
+Finally, since we're matching json documents rather than passwords, your input from an
+actual document could be either:
+
+* a `Property` of a json record with some `Name`, or
+* an `Array` element of a json array at some specific index
+*)
         and Input =
             | Property of Query.Name
             | Array of index:int*length:int
-
+            
+(*** hide ***)
         let rec transition (levels:Query.Levels) =
             match levels with
             | [] -> fun _ -> []

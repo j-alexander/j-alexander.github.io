@@ -2,13 +2,22 @@
 ## Objective
 *)
 (*** hide ***)
-namespace Nata.Fun.JsonPath
-
 open System
 open System.Text
 open System.Text.RegularExpressions
-open FSharp.Data
+(**
+## Dependencies
+1. *FSharp.Data* from NuGet, or using Paket:
 
+ ```powershell
+   ./.paket/paket.exe add nuget FSharp.Data project MyProject
+ ```
+
+2. *Reference* and open the FSharp.Data library:
+*)
+#r "packages/FSharp.Data/lib/net40/FSharp.Data.dll"
+open FSharp.Data
+(*** hide ***)
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module JsonValue =
 

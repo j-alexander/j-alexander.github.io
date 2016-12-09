@@ -128,10 +128,8 @@ actual document could be either:
             | Property of Query.Name
             | Array of index:int*length:int
 (**
-Where are the other `JsonValue` cases?
-
-These are _values_ that occur at some path in the  JsonPath query, rather than parts
-of the path itself.
+Where are the other `JsonValue` cases? These are _values_ that occur at some path in the
+JsonPath query, rather than parts of the path itself.
 
 Given the following example, we might refer to JsonPath "`$.x`". The value "`3`" would
 be the _result_ of this match.

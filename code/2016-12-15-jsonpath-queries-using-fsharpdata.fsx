@@ -84,6 +84,7 @@ finite automata](https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton
 An automaton is a specialized kind of state machine that when given a sequence of
 inputs has the potential to arrive at some final state indicating acceptance of those
 inputs.
+
 Imagine some user interface has a text box that accepts several possible passwords. Each
 letter you input will _transition_ your automaton from one state to another (like a
 combination lock). If you input the right sequence of letters, you will arrive at a
@@ -120,13 +121,25 @@ a `Match` state or a _new_ `Automaton` with that input applied.
 Finally, since we're matching json documents rather than passwords, your input from an
 actual document could be either:
 
-* a `Property` of a json record with some `Name`, or
-* an `Array` element of a json array at some specific index
+* a `Property` of a [JsonValue.Record](https://github.com/fsharp/FSharp.Data/blob/master/src/Json/JsonValue.fs#L38-38) with some `Name`, or
+* an `Array` element of a [JsonValue.Array](https://github.com/fsharp/FSharp.Data/blob/master/src/Json/JsonValue.fs#L39-39) at some specific index
 *)
         and Input =
             | Property of Query.Name
             | Array of index:int*length:int
-            
+(**
+Where are the other `JsonValue` cases?
+
+These are _values_ that occur at some path in the  JsonPath query, rather than parts
+of the path itself.
+
+Given the following example, we might refer to JsonPath "`$.x`". The value "`3`" would
+be the _result_ of this match.
+
+```json
+  { "x": 3 }
+```
+*)          
 (*** hide ***)
         let rec transition (levels:Query.Levels) =
             match levels with

@@ -137,43 +137,72 @@ be the _result_ of this match.
 ```json
   { "x": 3 }
 ```
+
+Our implementation of the state machine starts with the structured representation
+of a query from above, that is `Query.Levels`.  Since the current `State` of an
+Automaton takes arbitrary json `Input`, and produces a new collection of `States`
+it can be written recursively.
+
+The cases are as follows:
 *)          
-(*** hide ***)
-        let rec transition (levels:Query.Levels) =
+        let rec transition (levels:Query.Levels) : Automaton =
             match levels with
+            
+            // nothing to match matches nothing
             | [] -> fun _ -> []
 
-            | (q,Query.Property(n)) :: tail ->
+            // looking for a property of name n withs scope s
+            | (s,Query.Property(n)) :: tail ->
                 function
                 | Input.Array _ -> []
                 | Input.Property name ->
+                    // does the input property name match?
                     match name with
                     | x when x=n || "*"=n ->
                         match tail with
+                        // if nothing remains to match,
+                        // we accept this value
                         | [] -> [ Match ]
+                        // otherwise, we continue to take input
                         | xs -> [ Automaton (transition xs) ]
                     | _ -> []
                     @
-                    match q with
+                    // does the scope also include
+                    // anything in the subtree?
+                    match s with
                     | Query.Any -> [ Automaton (transition levels) ]
                     | Query.Exact -> []
                 
-            | (q,Query.Array(p)) :: tail ->
+            // looking for an array with a matching index
+            | (s,Query.Array(i)) :: tail ->
                 function
                 | Input.Property _ -> []
                 | Input.Array (index,length) ->
-                    match p with
+                    match i with
+
+                    // querying for all indices?
                     | Query.Index.Wildcard ->
                         match tail with
+                        // if nothing remains in the query,
+                        // we accept this value
                         | [] -> [ Match ]
+                        // otherwise, we continue to take input
                         | xs -> [ Automaton (transition xs) ]
+
+                    // querying for specific indices?
                     | Query.Index.Literal xs when
-                        (xs
+                        (xs // also handle valid negative index literals:
                          |> List.map (function x when x < 0 -> length+x | x -> x)
                          |> List.exists ((=) index)) ->
                         match tail with
+                        // if nothing remains in the query,
+                        // we accept this value
                         | [] -> [ Match ]
+                        // otherwise, we continue to take input
                         | xs -> [ Automaton (transition xs) ]
+                        
+                    // querying for an index range (with step)?
+                    // -- handle negative indices as well
                     | Query.Index.Slice(start,finish,step) when (step > 0) ->
                         let start =
                             match start |> valueOr 0 with
@@ -189,14 +218,20 @@ be the _result_ of this match.
                             | [] -> [ Match ]
                             | xs -> [ Automaton (transition xs) ]
                         else []
-                    | Query.Index.Expression _ -> []
+                    | _ -> []
                     @
-                    match q with
+                    match s with
+                    // does the scope also include
+                    // anything in the subtree?
                     | Query.Any -> [ Automaton (transition levels) ]
                     | Query.Exact -> []
-                    
+(**
+The starting state for the automaton is a function accepting input
+matching the current query:
+*)
         let create (levels:Query.Levels) : State =
             Automaton (transition levels)
+(*** hide ***)
 
 
     let findSeq = 

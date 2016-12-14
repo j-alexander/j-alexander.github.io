@@ -121,6 +121,12 @@ JsonPath query, rather than parts of the path itself.</p>
 be the <em>result</em> of this match.</p>
 <table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="json">  { "x": 3 }
 </code></pre></td></tr></table>
+<h3>Example</h3>
+<img src="bookstore-json.png" class="post-slide" alt="Book Store Json Document"/>
+<p>Given query "<code>$..book[-2]</code>" which looks for the second-last book in any collection,
+we generate the following automaton.  Notice the epsilon transitions for the "<code>..</code>"
+portion of the path.  These let us match anywhere in the tree.</p>
+<img src="bookstore-jsonpath.png" class="post-slide" alt="Book Store Automaton"/>
 <p>Our implementation of the state machine starts with the structured representation
 of a query from above, that is <code>Query.Levels</code>.  Since the current <code>State</code> of an
 Automaton takes arbitrary json <code>Input</code>, and produces a new collection of <code>States</code>

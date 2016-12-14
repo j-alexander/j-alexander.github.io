@@ -109,3 +109,7 @@ footer ul li:last-child {
 #container, .post, .meta {
 	font-size: 90%;
 }
+
+img.post-slide {
+    width: 400px;
+}

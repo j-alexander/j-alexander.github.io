@@ -151,7 +151,7 @@ The cases are as follows:
             // nothing to match matches nothing
             | [] -> fun _ -> []
 
-            // looking for a property of name n withs scope s
+            // looking for a property of name n with scope s
             | (s,Query.Property(n)) :: tail ->
                 function
                 | Input.Array _ -> []

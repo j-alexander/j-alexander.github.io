@@ -110,6 +110,6 @@ footer ul li:last-child {
 	font-size: 90%;
 }
 
-.post img .post-slide {
-    width: 400px;
+img.post-slide {
+    width: 95%;
 }

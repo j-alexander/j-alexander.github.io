@@ -151,7 +151,7 @@ Using our structured query format, we obtain:
 
 We might generate the following automaton:
 
-<img src="book-store-json.png" class="post-slide" alt="Automaton: Second-last Book"/>
+<img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
 
 Now let's suppose that our datastore has a document like this:
 

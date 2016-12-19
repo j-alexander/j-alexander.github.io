@@ -140,12 +140,20 @@ be the _result_ of this match.
 
 ### Example
 
-Suppose we want "`$..book[-2]`" to find the second-last book in any collection of a Json document.
-For instance, we might have schema for a store that contains books and movies:
+Suppose we're given the query "`$..book[-2]`" by a user looking for the second-last
+book in any collection of a Json document.
 
-<img src="bookstore-json.png" class="post-slide" alt="Book Store Json Document"/>
+Using our structured query format, we obtain:
 
-An instance of this in Json might appear as follows:
+```fsharp
+  [Any,Property("book");Exact,Array(Index.Literal[-2])]
+```
+
+We might generate the following automaton:
+
+<img src="book-store-json.png" class="post-slide" alt="Automaton: Second-last Book"/>
+
+Now let's suppose that our datastore has a document like this:
 
 ```json
 { "store":
@@ -155,11 +163,6 @@ An instance of this in Json might appear as follows:
       { "author": "Jonathan", "title": "Binary Log Search" } ]},
     "movies": [] } }
 ```
-
-We generate the following automaton.  Notice the epsilon transitions for the "`..`"
-portion of the path.  These let us match anywhere in the tree.
-
-<img src="bookstore-jsonpath.png" class="post-slide" alt="Second-last Book Automaton"/>
 
 Our implementation of the state machine starts with the structured representation
 of a query from above, that is `Query.Levels`.  Since the current `State` of an

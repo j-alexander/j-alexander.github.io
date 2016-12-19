@@ -166,6 +166,23 @@ its right.
 
 <img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
 
+In the above example, we enter the automaton at the root of the json document `$` in
+the upper left.  If the root document has no `books` property, we follow the `..` epsilon
+transition back to that first state - waiting for some portion of the json document that
+does have a `books` property.  If some node _does_ have a `books` property, we follow
+it to the middle state.  If that property is an array with index `[-2]`, then we
+transition to `Accept` the value at this index.
+
+Consider quickly the following json document:
+```json
+{ "books": { "books": [ { "books": 3 } ]} } }
+```
+
+What makes this an NFA is that from the starting state, you follow both the
+possibility that books is an array with a second last element, but also, that
+books transitions back to the start state and matches with some `books` array
+of a `books` property. 
+
 Since the current `State` of an Automaton takes arbitrary json `Input`, and
 produces a new collection of `States` it can be written recursively.
 

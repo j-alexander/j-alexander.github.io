@@ -143,15 +143,11 @@ be the _result_ of this match.
 Suppose we're given the query "`$..book[-2]`" by a user looking for the second-last
 book in any collection of a Json document.
 
-Using our structured query format, we obtain:
+Using our structured query format, `Query.Levels`, we obtain:
 
 ```fsharp
   [Any,Property("book");Exact,Array(Index.Literal[-2])]
 ```
-
-We might generate the following automaton:
-
-<img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
 
 Now let's suppose that our datastore has a document like this:
 
@@ -164,10 +160,14 @@ Now let's suppose that our datastore has a document like this:
     "movies": [] } }
 ```
 
-Our implementation of the state machine starts with the structured representation
-of a query from above, that is `Query.Levels`.  Since the current `State` of an
-Automaton takes arbitrary json `Input`, and produces a new collection of `States`
-it can be written recursively.
+You could imagine that it conforms to the following schema diagram.  Moreover,
+the structured query format might be represented using the automaton to
+its right.
+
+<img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
+
+Since the current `State` of an Automaton takes arbitrary json `Input`, and
+produces a new collection of `States` it can be written recursively.
 
 The cases are as follows:
 *)          

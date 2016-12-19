@@ -124,11 +124,9 @@ be the <em>result</em> of this match.</p>
 <h3>Example</h3>
 <p>Suppose we're given the query "<code>$..book[-2]</code>" by a user looking for the second-last
 book in any collection of a Json document.</p>
-<p>Using our structured query format, we obtain:</p>
+<p>Using our structured query format, <code>Query.Levels</code>, we obtain:</p>
 <pre class="fssnip highlighted"><code lang="fsharp">  [<span class="i">Any</span>,<span class="i">Property</span>(<span class="s">&quot;book&quot;</span>);<span class="i">Exact</span>,<span onmouseout="hideTip(event, 'fs36', 81)" onmouseover="showTip(event, 'fs36', 81)" class="i">Array</span>(<span class="i">Index</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs37', 82)" onmouseover="showTip(event, 'fs37', 82)" class="i">Literal</span>[<span class="o">-</span><span class="n">2</span>])]
 </code></pre>
-<p>We might generate the following automaton:</p>
-<img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
 <p>Now let's suppose that our datastore has a document like this:</p>
 <table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="json">{ "store":
   { "books":
@@ -137,10 +135,12 @@ book in any collection of a Json document.</p>
       { "author": "Jonathan", "title": "Binary Log Search" } ]},
     "movies": [] } }
 </code></pre></td></tr></table>
-<p>Our implementation of the state machine starts with the structured representation
-of a query from above, that is <code>Query.Levels</code>.  Since the current <code>State</code> of an
-Automaton takes arbitrary json <code>Input</code>, and produces a new collection of <code>States</code>
-it can be written recursively.</p>
+<p>You could imagine that it conforms to the following schema diagram.  Moreover,
+the structured query format might be represented using the automaton to
+its right.</p>
+<img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
+<p>Since the current <code>State</code> of an Automaton takes arbitrary json <code>Input</code>, and
+produces a new collection of <code>States</code> it can be written recursively.</p>
 <p>The cases are as follows:</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">let</span> <span class="k">rec</span> <span onmouseout="hideTip(event, 'fs46', 83)" onmouseover="showTip(event, 'fs46', 83)" class="f">transition</span> (<span onmouseout="hideTip(event, 'fs47', 84)" onmouseover="showTip(event, 'fs47', 84)" class="i">levels</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs44', 85)" onmouseover="showTip(event, 'fs44', 85)" class="t">Query</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs18', 86)" onmouseover="showTip(event, 'fs18', 86)" class="t">Levels</span>) <span class="o">:</span> <span onmouseout="hideTip(event, 'fs39', 87)" onmouseover="showTip(event, 'fs39', 87)" class="t">Automaton</span> <span class="o">=</span>
             <span class="k">match</span> <span onmouseout="hideTip(event, 'fs47', 88)" onmouseover="showTip(event, 'fs47', 88)" class="i">levels</span> <span class="k">with</span>

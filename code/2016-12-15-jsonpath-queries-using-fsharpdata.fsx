@@ -274,12 +274,18 @@ matching the current query:
 *)
         let create (levels:Query.Levels) : State =
             Automaton (transition levels)
-(*** hide ***)
-
-
+(**
+Finding a sequence of matching json values can also be defined recursively.  Here, `findSeq` is
+a function accepting a list of current states and some json value (effectively, our _positions_ in
+the state machine and document).
+*)
     let findSeq = 
 
         let rec recurse (states:Pattern.State list,value:JsonValue) =
+(**
+If any of the states is a `Match` state, we yield the current `JsonValue`.  But also, we can
+continue to check the remaining automata for matches:
+*)
             let isMatch, automata =
                 states
                 |> List.exists (function
@@ -294,6 +300,8 @@ matching the current query:
                     yield value
                 yield!
                     match value with
+                    // for a record, we apply the property name to the
+                    // automata to obtain new states, and recurse:
                     | JsonValue.Record xs ->
                         xs
                         |> Seq.map(fun (name,json) ->
@@ -302,6 +310,8 @@ matching the current query:
                                 a (Pattern.Input.Property name)),
                             json)
                         |> Seq.collect recurse
+                    // for an array, we apply the index values to the
+                    // automata to obtain new states, and recurse:
                     | JsonValue.Array xs ->
                         xs
                         |> Seq.mapi(fun i json ->
@@ -311,15 +321,20 @@ matching the current query:
                             json)
                         |> Seq.collect recurse
                     | _ -> Seq.empty         
-            }
-                
+            }      
+(**
+We also handle `$.` as a unique case for matching the document itself:
+*)   
         Query.levelsFor >> function
         | [Query.Exact,Query.Property ""] -> Seq.singleton
         | (Query.Exact,Query.Property "")::levels
         | levels ->
             let start = Pattern.create levels
             fun json -> recurse([start],json)
-            
+(**
+And for convenience, a few different mechanisms to eagerly evaluate the
+search, or optionally obtain the first match case:
+*)
     let findList query =
         findSeq query >> Seq.toList
 
@@ -328,3 +343,5 @@ matching the current query:
 
     let tryFind query =
         findSeq query >> Seq.tryPick Some
+(**
+*)

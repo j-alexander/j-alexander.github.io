@@ -255,6 +255,19 @@ the state machine and document).</p>
             | [] <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs80', 234)" onmouseover="showTip(event, 'fs80', 234)" class="t">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs81', 235)" onmouseover="showTip(event, 'fs81', 235)" class="i">empty</span>
             | (<span onmouseout="hideTip(event, 'fs82', 236)" onmouseover="showTip(event, 'fs82', 236)" class="i">states</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs75', 237)" onmouseover="showTip(event, 'fs75', 237)" class="t">Pattern</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs41', 238)" onmouseover="showTip(event, 'fs41', 238)" class="t">State</span> <span onmouseout="hideTip(event, 'fs20', 239)" onmouseover="showTip(event, 'fs20', 239)" class="t">list</span>, <span onmouseout="hideTip(event, 'fs83', 240)" onmouseover="showTip(event, 'fs83', 240)" class="i">value</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs84', 241)" onmouseover="showTip(event, 'fs84', 241)" class="t">JsonValue</span>) <span class="o">::</span> <span onmouseout="hideTip(event, 'fs85', 242)" onmouseover="showTip(event, 'fs85', 242)" class="i">positions</span> <span class="k">-&gt;</span>
 </code></pre>
+<p>This representation works especially well with long linear datastructures that might otherwise
+cause a <code>StackOverflowException</code>. For example:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="json"> { "100000":
+   { "99999":
+     { "99998":
+       { "99997": 
+         // ...
+           { "2":
+             { "1":
+               { "0": null } } }
+         // ...
+       } } } }
+</code></pre></td></tr></table>
 <p>If any of the states is a <code>Match</code> state, we yield the current <code>JsonValue</code>.  But also, we can
 continue to check the remaining automata for matches:</p>
 <pre class="fssnip highlighted"><code lang="fsharp">                <span onmouseout="hideTip(event, 'fs86', 243)" onmouseover="showTip(event, 'fs86', 243)" class="i">seq</span> {
@@ -297,7 +310,7 @@ continue to check the remaining automata for matches:</p>
             <span class="k">let</span> <span onmouseout="hideTip(event, 'fs108', 317)" onmouseover="showTip(event, 'fs108', 317)" class="i">start</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs75', 318)" onmouseover="showTip(event, 'fs75', 318)" class="t">Pattern</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs69', 319)" onmouseover="showTip(event, 'fs69', 319)" class="f">create</span> <span onmouseout="hideTip(event, 'fs107', 320)" onmouseover="showTip(event, 'fs107', 320)" class="i">levels</span>
             <span class="k">fun</span> <span onmouseout="hideTip(event, 'fs93', 321)" onmouseover="showTip(event, 'fs93', 321)" class="i">json</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs79', 322)" onmouseover="showTip(event, 'fs79', 322)" class="f">recurse</span>[[<span onmouseout="hideTip(event, 'fs108', 323)" onmouseover="showTip(event, 'fs108', 323)" class="i">start</span>],<span onmouseout="hideTip(event, 'fs93', 324)" onmouseover="showTip(event, 'fs93', 324)" class="i">json</span>]
 </code></pre>
-<p>And for convenience, a few different mechanisms to eagerly evaluate the
+<p>And for convenience, we add a few different mechanisms to eagerly evaluate the
 search, or optionally obtain the first match case:</p>
 <pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs109', 325)" onmouseover="showTip(event, 'fs109', 325)" class="f">findList</span> <span onmouseout="hideTip(event, 'fs110', 326)" onmouseover="showTip(event, 'fs110', 326)" class="i">query</span> <span class="o">=</span>
         <span onmouseout="hideTip(event, 'fs70', 327)" onmouseover="showTip(event, 'fs70', 327)" class="f">findSeq</span> <span onmouseout="hideTip(event, 'fs110', 328)" onmouseover="showTip(event, 'fs110', 328)" class="i">query</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span onmouseout="hideTip(event, 'fs80', 329)" onmouseover="showTip(event, 'fs80', 329)" class="t">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs111', 330)" onmouseover="showTip(event, 'fs111', 330)" class="f">toList</span>

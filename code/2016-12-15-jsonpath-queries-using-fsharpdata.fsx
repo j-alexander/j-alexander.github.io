@@ -290,6 +290,22 @@ the state machine and document).
             | [] -> Seq.empty
             | (states:Pattern.State list, value:JsonValue) :: positions ->
 (**
+This representation works especially well with long linear datastructures that might otherwise
+cause a `StackOverflowException`. For example:
+
+```json
+ { "100000":
+   { "99999":
+     { "99998":
+       { "99997": 
+         // ...
+           { "2":
+             { "1":
+               { "0": null } } }
+         // ...
+       } } } }
+```
+
 If any of the states is a `Match` state, we yield the current `JsonValue`.  But also, we can
 continue to check the remaining automata for matches:
 *)  
@@ -334,7 +350,7 @@ We also handle `$.` as a unique case for matching the document itself:
             let start = Pattern.create levels
             fun json -> recurse[[start],json]
 (**
-And for convenience, a few different mechanisms to eagerly evaluate the
+And for convenience, we add a few different mechanisms to eagerly evaluate the
 search, or optionally obtain the first match case:
 *)
     let findList query =

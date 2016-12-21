@@ -6,10 +6,28 @@ comments: false
 publish: false
 ---
 <h2>Objective</h2>
+<p><a href="http://fsharp.org/about/index.html">F#</a> has been characterized as a modern programming language
+well-suited to data-rich analytical problems.
+In this language, interacting with diverse datasets from event streams, web services, and databases
+is further simplified with the open-source <a href="http://fsharp.github.io/FSharp.Data/">FSharp.Data</a>
+library.</p>
+<p>Many of these real-world documents are hierarchically structured in Json and Xml.
+When designing reusable applications and algorithms in this space, it becomes <em>very important</em> to
+be able to extract subsets of data using a custom path specifier.</p>
+<p>For <a href="https://en.wikipedia.org/wiki/XML">Xml</a>, <a href="http://www.w3schools.com/xml/xml_xpath.asp">XPATH</a> is
+a well established tool for describing specific elements of a document.</p>
+<p>A similar mechanism exists for Json, called <em><a href="http://goessner.net/articles/JsonPath/">JsonPath</a></em>.</p>
+<p>Using JsonPath with F# typically involves converting data to
+<a href="http://www.newtonsoft.com/json/help/html/QueryJsonSelectToken.htm">Newtonsoft.Json</a>'s <code>JObject</code>
+type and invoking <code>SelectToken</code>.  However, FSharp.Data has an elegant and functional representation
+of <a href="http://fsharp.github.io/FSharp.Data/reference/fsharp-data-jsonvalue.html">JsonValue</a>s that is
+very widely used.</p>
+<p>In this article, I describe <em>one possible way</em> to directly query subsets of a <code>JsonValue</code> document
+without converting your entire dataset to perform an extraction.</p>
 <h2>Dependencies</h2>
 <ol>
 <li>
-<p><em>FSharp.Data</em> from NuGet, or using Paket:</p>
+<p><em>FSharp.Data</em> from <a href="https://www.nuget.org/packages/newtonsoft.json/">NuGet</a>, or using <a href="https://fsprojects.github.io/Paket/">Paket</a>:</p>
 <table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="powershell">./.paket/paket.exe add nuget FSharp.Data project MyProject
 </code></pre></td></tr></table>
 </li>

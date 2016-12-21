@@ -42,8 +42,8 @@ If a level refers to an array, then a slice, literal index, or wildcard operatio
             | <span onmouseout="hideTip(event, 'fs31', 47)" onmouseover="showTip(event, 'fs31', 47)" class="p">Slice</span> <span class="k">of</span> <span class="i">start</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 48)" onmouseover="showTip(event, 'fs12', 48)" class="t">int</span> <span onmouseout="hideTip(event, 'fs32', 49)" onmouseover="showTip(event, 'fs32', 49)" class="t">option</span> <span class="o">*</span> <span class="i">finish</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 50)" onmouseover="showTip(event, 'fs12', 50)" class="t">int</span> <span onmouseout="hideTip(event, 'fs32', 51)" onmouseover="showTip(event, 'fs32', 51)" class="t">option</span> <span class="o">*</span> <span class="i">step</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs12', 52)" onmouseover="showTip(event, 'fs12', 52)" class="t">int</span>
             | <span onmouseout="hideTip(event, 'fs33', 53)" onmouseover="showTip(event, 'fs33', 53)" class="p">Literal</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs12', 54)" onmouseover="showTip(event, 'fs12', 54)" class="t">int</span> <span onmouseout="hideTip(event, 'fs20', 55)" onmouseover="showTip(event, 'fs20', 55)" class="t">list</span>
 </code></pre>
-<p>Finally, given a <code>Query</code> string, we should be able to obtain a pattern for the <code>Levels</code>
-which can satisfy (or <em>match</em>) the query.</p>
+<p>Given a <code>Query</code> string, we should be able to obtain a pattern for the <code>Levels</code>
+which can satisfy (or <em>match</em>) that query.</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs34', 56)" onmouseover="showTip(event, 'fs34', 56)" class="f">levelsFor</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs16', 57)" onmouseover="showTip(event, 'fs16', 57)" class="t">Query</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs18', 58)" onmouseover="showTip(event, 'fs18', 58)" class="t">Levels</span> <span class="o">=</span>
             <span class="c">// ... </span>
 </code></pre>
@@ -148,14 +148,16 @@ does have a <code>books</code> property.  If some node <em>does</em> have a <cod
 it to the middle state.  If that property is an array with index <code>[-2]</code>, then we
 transition to <code>Accept</code> the value at this index.</p>
 <p>Consider quickly the following json document:</p>
-<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="json">{ "books": { "books": [ { "books": 3 } ]} } }
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="json">{ "books": { "books": [ 0, "success", { "books": 3 } ]} }
 </code></pre></td></tr></table>
-<p>What makes this an NFA is that from the starting state, you follow both the
-possibility that books is an array with a second last element, but also, that
-books transitions back to the start state and matches with some <code>books</code> array
-of a <code>books</code> property.</p>
+<p>From the starting state, you follow both the possibility that books is an array with
+a second last element, but also, that books transitions back to the start state and
+matches with some child <code>books</code> array inside that first <code>books</code> property.</p>
 <p>Since the current <code>State</code> of an Automaton takes arbitrary json <code>Input</code>, and
-produces a new collection of <code>States</code> it can be written recursively.</p>
+produces a new collection of <code>States</code> it can be written recursively.  The transition
+function, below, interprets <code>Input</code> differently depending on the <code>Query</code> element
+we're currently trying to satisfy.  This models the <em>structure</em> of the automaton for
+a given <code>Query</code>.</p>
 <p>The cases are as follows:</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">let</span> <span class="k">rec</span> <span onmouseout="hideTip(event, 'fs46', 83)" onmouseover="showTip(event, 'fs46', 83)" class="f">transition</span> (<span onmouseout="hideTip(event, 'fs47', 84)" onmouseover="showTip(event, 'fs47', 84)" class="i">levels</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs44', 85)" onmouseover="showTip(event, 'fs44', 85)" class="t">Query</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs18', 86)" onmouseover="showTip(event, 'fs18', 86)" class="t">Levels</span>) <span class="o">:</span> <span onmouseout="hideTip(event, 'fs39', 87)" onmouseover="showTip(event, 'fs39', 87)" class="t">Automaton</span> <span class="o">=</span>
             <span class="k">match</span> <span onmouseout="hideTip(event, 'fs47', 88)" onmouseover="showTip(event, 'fs47', 88)" class="i">levels</span> <span class="k">with</span>

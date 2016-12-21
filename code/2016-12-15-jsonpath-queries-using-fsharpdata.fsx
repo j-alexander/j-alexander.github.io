@@ -51,8 +51,8 @@ If a level refers to an array, then a slice, literal index, or wildcard operatio
             | Slice of start:int option * finish:int option * step:int
             | Literal of int list
 (**
-Finally, given a `Query` string, we should be able to obtain a pattern for the `Levels`
-which can satisfy (or _match_) the query.
+Given a `Query` string, we should be able to obtain a pattern for the `Levels`
+which can satisfy (or _match_) that query.
 *)
         let levelsFor : Query -> Levels =
             // ... 
@@ -177,16 +177,18 @@ transition to `Accept` the value at this index.
 
 Consider quickly the following json document:
 ```json
-{ "books": { "books": [ { "books": 3 } ]} } }
+{ "books": { "books": [ 0, "success", { "books": 3 } ]} }
 ```
 
-What makes this an NFA is that from the starting state, you follow both the
-possibility that books is an array with a second last element, but also, that
-books transitions back to the start state and matches with some `books` array
-of a `books` property. 
+From the starting state, you follow both the possibility that books is an array with
+a second last element, but also, that books transitions back to the start state and
+matches with some child `books` array inside that first `books` property.
 
 Since the current `State` of an Automaton takes arbitrary json `Input`, and
-produces a new collection of `States` it can be written recursively.
+produces a new collection of `States` it can be written recursively.  The transition
+function, below, interprets `Input` differently depending on the `Query` element 
+we're currently trying to satisfy.  This models the _structure_ of the automaton for
+a given `Query`.
 
 The cases are as follows:
 *)          

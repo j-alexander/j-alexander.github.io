@@ -13,17 +13,17 @@ is further simplified with the open-source <a href="http://fsharp.github.io/FSha
 library.</p>
 <p>Many of these real-world documents are hierarchically structured in Json and Xml.
 When designing reusable applications and algorithms in this space, it becomes <em>very important</em> to
-be able to extract subsets of data using a custom path specifier.</p>
+be able to extract subsets of data using custom queries.</p>
 <p>For <a href="https://en.wikipedia.org/wiki/XML">Xml</a>, <a href="http://www.w3schools.com/xml/xml_xpath.asp">XPATH</a> is
-a well established tool for describing specific elements of a document.</p>
-<p>A similar mechanism exists for Json, called <em><a href="http://goessner.net/articles/JsonPath/">JsonPath</a></em>.</p>
+a well established tool for describing specific elements within a document.</p>
+<p>A similar mechanism exists for Json, called <strong><a href="http://goessner.net/articles/JsonPath/">JsonPath</a></strong>.</p>
 <p>Using JsonPath with F# typically involves converting data to
 <a href="http://www.newtonsoft.com/json/help/html/QueryJsonSelectToken.htm">Newtonsoft.Json</a>'s <code>JObject</code>
 type and invoking <code>SelectToken</code>.  However, FSharp.Data has an elegant and functional representation
 of <a href="http://fsharp.github.io/FSharp.Data/reference/fsharp-data-jsonvalue.html">JsonValue</a>s that is
 very widely used.</p>
 <p>In this article, I describe <em>one possible way</em> to directly query subsets of a <code>JsonValue</code> document
-without converting your entire dataset to perform an extraction.</p>
+without converting your entire dataset to perform some extraction.</p>
 <h2>Dependencies</h2>
 <ol>
 <li>

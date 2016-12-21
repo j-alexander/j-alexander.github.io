@@ -9,12 +9,12 @@ library.
 
 Many of these real-world documents are hierarchically structured in Json and Xml.
 When designing reusable applications and algorithms in this space, it becomes _very important_ to
-be able to extract subsets of data using a custom path specifier.
+be able to extract subsets of data using custom queries.
 
 For [Xml](https://en.wikipedia.org/wiki/XML), [XPATH](http://www.w3schools.com/xml/xml_xpath.asp) is
-a well established tool for describing specific elements of a document.
+a well established tool for describing specific elements within a document.
 
-A similar mechanism exists for Json, called *[JsonPath](http://goessner.net/articles/JsonPath/)*.
+A similar mechanism exists for Json, called **[JsonPath](http://goessner.net/articles/JsonPath/)**.
 
 Using JsonPath with F# typically involves converting data to 
 [Newtonsoft.Json](http://www.newtonsoft.com/json/help/html/QueryJsonSelectToken.htm)'s `JObject`
@@ -23,7 +23,7 @@ of [JsonValue](http://fsharp.github.io/FSharp.Data/reference/fsharp-data-jsonval
 very widely used.
 
 In this article, I describe _one possible way_ to directly query subsets of a `JsonValue` document
-without converting your entire dataset to perform an extraction.
+without converting your entire dataset to perform some extraction.
 *)
 (*** hide ***)
 open System

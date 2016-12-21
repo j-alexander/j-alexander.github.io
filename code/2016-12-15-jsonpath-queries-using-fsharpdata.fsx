@@ -325,7 +325,6 @@ continue to check the remaining automata for matches:
                                 |> List.collect(fun a -> 
                                     a (Pattern.Input.Property name)),
                                 json)
-                            |> Array.rev
                         // (2) for an array, we apply the index values to the
                         //     automata to obtain new states, and recurse:
                         | JsonValue.Array xs ->
@@ -335,9 +334,8 @@ continue to check the remaining automata for matches:
                                 |> List.collect(fun a ->
                                     a (Pattern.Input.Array(i,xs.Length))),
                                 json)
-                            |> Array.rev
                         | _ -> Array.empty
-                        |> Array.fold (fun xs x -> x :: xs) positions
+                        |> Array.foldBack (fun x xs -> x :: xs) <| positions
                         |> recurse
                 }  
 (**

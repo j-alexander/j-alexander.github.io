@@ -55,7 +55,7 @@ Finally, given a `Query` string, we should be able to obtain a pattern for the `
 which can satisfy (or _match_) the query.
 *)
         let levelsFor : Query -> Levels =
-            // ...
+            // ... 
 (*** hide ***)
             fun (path:string) ->
                 []
@@ -73,6 +73,8 @@ For example:
   "$..book[-1]" [Any,Property("book");Exact,Array(Index.Literal[-1])]
 ```
 
+The implementation of this parsing operation is pretty straightforward and can be found
+[here](https://git.io/v1piR) for the version being discussed in this post.
 *)
 (**
 ## Pattern Matching

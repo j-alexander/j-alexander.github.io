@@ -45,7 +45,7 @@ If a level refers to an array, then a slice, literal index, or wildcard operatio
 <p>Finally, given a <code>Query</code> string, we should be able to obtain a pattern for the <code>Levels</code>
 which can satisfy (or <em>match</em>) the query.</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs34', 56)" onmouseover="showTip(event, 'fs34', 56)" class="f">levelsFor</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs16', 57)" onmouseover="showTip(event, 'fs16', 57)" class="t">Query</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs18', 58)" onmouseover="showTip(event, 'fs18', 58)" class="t">Levels</span> <span class="o">=</span>
-            <span class="c">// ...</span>
+            <span class="c">// ... </span>
 </code></pre>
 <p>For example:</p>
 <pre class="fssnip highlighted"><code lang="fsharp">  <span class="c">// any author</span>
@@ -57,6 +57,8 @@ which can satisfy (or <em>match</em>) the query.</p>
   <span class="c">// the last book in any collection of books</span>
   <span class="s">&quot;$..book[-1]&quot;</span> [<span class="i">Any</span>,<span class="i">Property</span>(<span class="s">&quot;book&quot;</span>);<span class="i">Exact</span>,<span onmouseout="hideTip(event, 'fs36', 61)" onmouseover="showTip(event, 'fs36', 61)" class="i">Array</span>(<span class="i">Index</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs37', 62)" onmouseover="showTip(event, 'fs37', 62)" class="i">Literal</span>[<span class="o">-</span><span class="n">1</span>])]
 </code></pre>
+<p>The implementation of this parsing operation is pretty straightforward and can be found
+<a href="https://git.io/v1piR">here</a> for the version being discussed in this post.</p>
 <h2>Pattern Matching</h2>
 <p>Here, <code>Pattern</code> matching on the <code>Query</code> is performed using immutable <a href="https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton">non-deterministic
 finite automata</a>.</p>

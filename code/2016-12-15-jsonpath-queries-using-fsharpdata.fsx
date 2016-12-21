@@ -191,15 +191,15 @@ The cases are as follows:
         let rec transition (levels:Query.Levels) : Automaton =
             match levels with
             
-            // nothing to match matches nothing
+            // 1. nothing to match matches nothing
             | [] -> fun _ -> []
 
-            // looking for a property of name n with scope s
+            // 2. looking for a property of name n with scope s
             | (s,Query.Property(n)) :: tail ->
                 function
                 | Input.Array _ -> []
                 | Input.Property name ->
-                    // does the input property name match?
+                    // 2a) does the input property name match?
                     match name with
                     | x when x=n || "*"=n ->
                         match tail with
@@ -210,20 +210,20 @@ The cases are as follows:
                         | xs -> [ Automaton (transition xs) ]
                     | _ -> []
                     @
-                    // does the scope also include
-                    // anything in the subtree?
+                    // 2b) does the scope also include
+                    //     anything in the subtree?
                     match s with
                     | Query.Any -> [ Automaton (transition levels) ]
                     | Query.Exact -> []
                 
-            // looking for an array with a matching index
+            // 3. looking for an array with a matching index
             | (s,Query.Array(i)) :: tail ->
                 function
                 | Input.Property _ -> []
                 | Input.Array (index,length) ->
                     match i with
 
-                    // querying for all indices?
+                    // 3a) querying for all indices?
                     | Query.Index.Wildcard ->
                         match tail with
                         // if nothing remains in the query,
@@ -232,7 +232,7 @@ The cases are as follows:
                         // otherwise, we continue to take input
                         | xs -> [ Automaton (transition xs) ]
 
-                    // querying for specific indices?
+                    // 3b) querying for specific indices?
                     | Query.Index.Literal xs when
                         (xs // also handle valid negative index literals:
                          |> List.map (function x when x < 0 -> length+x | x -> x)
@@ -244,8 +244,8 @@ The cases are as follows:
                         // otherwise, we continue to take input
                         | xs -> [ Automaton (transition xs) ]
                         
-                    // querying for an index range (with step)?
-                    // -- handle negative indices as well
+                    // 3c) querying for an index range (with step)?
+                    //     handle negative indices as well
                     | Query.Index.Slice(start,finish,step) when (step > 0) ->
                         let start =
                             match start |> valueOr 0 with

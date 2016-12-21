@@ -62,8 +62,8 @@ which can satisfy (or <em>match</em>) the query.</p>
 finite automata</a>.</p>
 <pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">module</span> <span class="t">Pattern</span>  <span class="o">=</span>
 </code></pre>
-<p>An automaton is a specialized kind of state machine that when given a sequence of
-inputs has the potential to arrive at some final state indicating acceptance of those
+<p>An automaton is a specialized kind of state machine.  When given a sequence of
+inputs, it has the potential to arrive at some final state indicating acceptance of those
 inputs.</p>
 <p>Imagine some user interface has a text box that accepts several possible passwords. Each
 letter you input will <em>transition</em> your automaton from one state to another (like a

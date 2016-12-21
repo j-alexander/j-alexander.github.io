@@ -187,8 +187,8 @@ matches with some child `books` array inside that first `books` property.
 ### Transition Fun
 
 Since the current `State` of an Automaton takes arbitrary json `Input`, and
-produces a new collection of `States` this transition can be written recursively.  The
-function below interprets `Input` differently depending on the `Query` element 
+produces a new collection of `States`, this transition can be written recursively.  The
+function below interprets `Input` differently depending on the `Query` path level 
 we're currently trying to satisfy.  This models the _structure_ of the automaton for
 a given `Query`.
 
@@ -213,6 +213,7 @@ The cases are as follows:
                         // we accept this value
                         | [] -> [ Match ]
                         // otherwise, we continue to take input
+                        // for the rest of our query
                         | xs -> [ Automaton (transition xs) ]
                     | _ -> []
                     @
@@ -236,6 +237,7 @@ The cases are as follows:
                         // we accept this value
                         | [] -> [ Match ]
                         // otherwise, we continue to take input
+                        // for the rest of our query
                         | xs -> [ Automaton (transition xs) ]
 
                     // 3b) querying for specific indices?
@@ -281,6 +283,14 @@ matching the current query:
         let create (levels:Query.Levels) : State =
             Automaton (transition levels)
 (**
+So far, we've created a structured representation of an arbitrary JsonPath query.  We've also
+defined state transitions based on that representation.  These gives us a an automaton capable
+of matching any user-defined query.
+
+### Search
+
+Next, we'll look at actually running the search sequence for a given automaton and json document.
+
 Finding a sequence of matching json values can also be defined recursively.  Here, `findSeq` is
 a function accepting a list of current states and some json value (effectively, our _positions_ in
 the state machine and document).

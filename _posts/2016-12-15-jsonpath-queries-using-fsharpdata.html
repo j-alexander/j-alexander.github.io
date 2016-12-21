@@ -155,8 +155,8 @@ a second last element, but also, that books transitions back to the start state 
 matches with some child <code>books</code> array inside that first <code>books</code> property.</p>
 <h3>Transition Fun</h3>
 <p>Since the current <code>State</code> of an Automaton takes arbitrary json <code>Input</code>, and
-produces a new collection of <code>States</code> this transition can be written recursively.  The
-function below interprets <code>Input</code> differently depending on the <code>Query</code> element
+produces a new collection of <code>States</code>, this transition can be written recursively.  The
+function below interprets <code>Input</code> differently depending on the <code>Query</code> path level
 we're currently trying to satisfy.  This models the <em>structure</em> of the automaton for
 a given <code>Query</code>.</p>
 <p>The cases are as follows:</p>
@@ -179,6 +179,7 @@ a given <code>Query</code>.</p>
                         <span class="c">// we accept this value</span>
                         | [] <span class="k">-&gt;</span> [ <span onmouseout="hideTip(event, 'fs42', 105)" onmouseover="showTip(event, 'fs42', 105)" class="p">Match</span> ]
                         <span class="c">// otherwise, we continue to take input</span>
+                        <span class="c">// for the rest of our query</span>
                         | <span onmouseout="hideTip(event, 'fs54', 106)" onmouseover="showTip(event, 'fs54', 106)" class="i">xs</span> <span class="k">-&gt;</span> [ <span onmouseout="hideTip(event, 'fs39', 107)" onmouseover="showTip(event, 'fs39', 107)" class="p">Automaton</span> (<span onmouseout="hideTip(event, 'fs46', 108)" onmouseover="showTip(event, 'fs46', 108)" class="f">transition</span> <span onmouseout="hideTip(event, 'fs54', 109)" onmouseover="showTip(event, 'fs54', 109)" class="i">xs</span>) ]
                     | _ <span class="k">-&gt;</span> []
                     <span class="o">@</span>
@@ -202,6 +203,7 @@ a given <code>Query</code>.</p>
                         <span class="c">// we accept this value</span>
                         | [] <span class="k">-&gt;</span> [ <span onmouseout="hideTip(event, 'fs42', 134)" onmouseover="showTip(event, 'fs42', 134)" class="p">Match</span> ]
                         <span class="c">// otherwise, we continue to take input</span>
+                        <span class="c">// for the rest of our query</span>
                         | <span onmouseout="hideTip(event, 'fs54', 135)" onmouseover="showTip(event, 'fs54', 135)" class="i">xs</span> <span class="k">-&gt;</span> [ <span onmouseout="hideTip(event, 'fs39', 136)" onmouseover="showTip(event, 'fs39', 136)" class="p">Automaton</span> (<span onmouseout="hideTip(event, 'fs46', 137)" onmouseover="showTip(event, 'fs46', 137)" class="f">transition</span> <span onmouseout="hideTip(event, 'fs54', 138)" onmouseover="showTip(event, 'fs54', 138)" class="i">xs</span>) ]
 
                     <span class="c">// 3b) querying for specific indices?</span>
@@ -246,6 +248,11 @@ matching the current query:</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs69', 208)" onmouseover="showTip(event, 'fs69', 208)" class="f">create</span> (<span onmouseout="hideTip(event, 'fs47', 209)" onmouseover="showTip(event, 'fs47', 209)" class="i">levels</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs44', 210)" onmouseover="showTip(event, 'fs44', 210)" class="t">Query</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs18', 211)" onmouseover="showTip(event, 'fs18', 211)" class="t">Levels</span>) <span class="o">:</span> <span onmouseout="hideTip(event, 'fs41', 212)" onmouseover="showTip(event, 'fs41', 212)" class="t">State</span> <span class="o">=</span>
             <span onmouseout="hideTip(event, 'fs39', 213)" onmouseover="showTip(event, 'fs39', 213)" class="p">Automaton</span> (<span onmouseout="hideTip(event, 'fs46', 214)" onmouseover="showTip(event, 'fs46', 214)" class="f">transition</span> <span onmouseout="hideTip(event, 'fs47', 215)" onmouseover="showTip(event, 'fs47', 215)" class="i">levels</span>)
 </code></pre>
+<p>So far, we've created a structured representation of an arbitrary JsonPath query.  We've also
+defined state transitions based on that representation.  These gives us a an automaton capable
+of matching any user-defined query.</p>
+<h3>Search</h3>
+<p>Next, we'll look at actually running the search sequence for a given automaton and json document.</p>
 <p>Finding a sequence of matching json values can also be defined recursively.  Here, <code>findSeq</code> is
 a function accepting a list of current states and some json value (effectively, our <em>positions</em> in
 the state machine and document).</p>

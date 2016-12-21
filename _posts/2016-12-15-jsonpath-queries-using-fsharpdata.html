@@ -267,7 +267,7 @@ matching the current query:</p>
             <span onmouseout="hideTip(event, 'fs39', 213)" onmouseover="showTip(event, 'fs39', 213)" class="p">Automaton</span> (<span onmouseout="hideTip(event, 'fs46', 214)" onmouseover="showTip(event, 'fs46', 214)" class="f">transition</span> <span onmouseout="hideTip(event, 'fs47', 215)" onmouseover="showTip(event, 'fs47', 215)" class="i">levels</span>)
 </code></pre>
 <p>So far, we've created a structured representation of an arbitrary JsonPath query.  We've also
-defined state transitions based on that representation.  These give us an automaton capable
+defined state transitions based on that representation.  These give us automata capable
 of matching any user-defined query.</p>
 <h3>Search</h3>
 <p>Next, we'll look at actually running the search sequence for a given automaton and json document.</p>
@@ -349,6 +349,8 @@ search, or optionally obtain the first match case:</p>
     <span class="k">let</span> <span onmouseout="hideTip(event, 'fs113', 333)" onmouseover="showTip(event, 'fs113', 333)" class="f">tryFind</span> <span onmouseout="hideTip(event, 'fs109', 334)" onmouseover="showTip(event, 'fs109', 334)" class="i">query</span> <span class="o">=</span>
         <span onmouseout="hideTip(event, 'fs70', 335)" onmouseover="showTip(event, 'fs70', 335)" class="f">findSeq</span> <span onmouseout="hideTip(event, 'fs109', 336)" onmouseover="showTip(event, 'fs109', 336)" class="i">query</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span onmouseout="hideTip(event, 'fs80', 337)" onmouseover="showTip(event, 'fs80', 337)" class="t">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs114', 338)" onmouseover="showTip(event, 'fs114', 338)" class="f">tryPick</span> <span onmouseout="hideTip(event, 'fs13', 339)" onmouseover="showTip(event, 'fs13', 339)" class="p">Some</span>
 </code></pre>
+<h3>Testing</h3>
+<h3>Summary</h3>
 
 <div class="tip" id="fs1">namespace System</div>
 <div class="tip" id="fs2">namespace System.Text</div>

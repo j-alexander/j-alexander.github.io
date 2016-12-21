@@ -308,7 +308,7 @@ matching the current query:
             Automaton (transition levels)
 (**
 So far, we've created a structured representation of an arbitrary JsonPath query.  We've also
-defined state transitions based on that representation.  These give us an automaton capable
+defined state transitions based on that representation.  These give us automata capable
 of matching any user-defined query.
 
 ### Search
@@ -399,5 +399,17 @@ search, or optionally obtain the first match case:
 
     let tryFind query =
         findSeq query >> Seq.tryPick Some
+(**
+### Testing
+*)
+(*** hide ***)
+//-- show me how to use it!
+// what sorts of things did we have to check? where are the unit tests?
+(**
+### Summary
+*)
+(*** hide ***)
+// what doesn't it do?
+// what did we accomplish?
 (**
 *)

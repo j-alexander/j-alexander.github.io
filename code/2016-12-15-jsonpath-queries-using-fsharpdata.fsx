@@ -81,8 +81,8 @@ finite automata](https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton
 *)
     module Pattern  =
 (**
-An automaton is a specialized kind of state machine that when given a sequence of
-inputs has the potential to arrive at some final state indicating acceptance of those
+An automaton is a specialized kind of state machine.  When given a sequence of
+inputs, it has the potential to arrive at some final state indicating acceptance of those
 inputs.
 
 Imagine some user interface has a text box that accepts several possible passwords. Each

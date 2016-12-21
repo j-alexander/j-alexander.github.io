@@ -113,8 +113,8 @@ accept more input.
 your automaton must stand ready to _accept_ the character sequence `[e;c;r;e;t]`.
 
 These automata are _immutable_ in a functional programming sense.  Rather than mutating
-some internal state, an input produces derivations.  As a consequence, an input produces
-a `Match` state or a _new_ `Automaton` with that input applied.
+some internal state, an input produces derivations.  As a consequence, an input could
+produce a `Match` state, a _new_ `Automaton`, or even a combination of these.
 *)
         and State = Match | Automaton of Automaton
 (**

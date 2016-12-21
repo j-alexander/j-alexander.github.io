@@ -101,8 +101,8 @@ your automaton must stand ready to <em>accept</em> the character sequence <code>
 </li>
 </ul>
 <p>These automata are <em>immutable</em> in a functional programming sense.  Rather than mutating
-some internal state, an input produces derivations.  As a consequence, an input produces
-a <code>Match</code> state or a <em>new</em> <code>Automaton</code> with that input applied.</p>
+some internal state, an input produces derivations.  As a consequence, an input could
+produce a <code>Match</code> state, a <em>new</em> <code>Automaton</code>, or even a combination of these.</p>
 <pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">and</span> <span onmouseout="hideTip(event, 'fs41', 70)" onmouseover="showTip(event, 'fs41', 70)" class="t">State</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs42', 71)" onmouseover="showTip(event, 'fs42', 71)" class="p">Match</span> | <span onmouseout="hideTip(event, 'fs39', 72)" onmouseover="showTip(event, 'fs39', 72)" class="p">Automaton</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs39', 73)" onmouseover="showTip(event, 'fs39', 73)" class="t">Automaton</span>
 </code></pre>
 <p>Finally, since we're matching json documents rather than passwords, your input from an

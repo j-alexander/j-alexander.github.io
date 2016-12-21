@@ -184,9 +184,11 @@ From the starting state, you follow both the possibility that books is an array 
 a second last element, but also, that books transitions back to the start state and
 matches with some child `books` array inside that first `books` property.
 
+### Transition Fun
+
 Since the current `State` of an Automaton takes arbitrary json `Input`, and
-produces a new collection of `States` it can be written recursively.  The transition
-function, below, interprets `Input` differently depending on the `Query` element 
+produces a new collection of `States` this transition can be written recursively.  The
+function below interprets `Input` differently depending on the `Query` element 
 we're currently trying to satisfy.  This models the _structure_ of the automaton for
 a given `Query`.
 

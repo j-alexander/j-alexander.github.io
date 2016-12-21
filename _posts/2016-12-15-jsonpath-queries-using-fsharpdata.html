@@ -153,9 +153,10 @@ transition to <code>Accept</code> the value at this index.</p>
 <p>From the starting state, you follow both the possibility that books is an array with
 a second last element, but also, that books transitions back to the start state and
 matches with some child <code>books</code> array inside that first <code>books</code> property.</p>
+<h3>Transition Fun</h3>
 <p>Since the current <code>State</code> of an Automaton takes arbitrary json <code>Input</code>, and
-produces a new collection of <code>States</code> it can be written recursively.  The transition
-function, below, interprets <code>Input</code> differently depending on the <code>Query</code> element
+produces a new collection of <code>States</code> this transition can be written recursively.  The
+function below interprets <code>Input</code> differently depending on the <code>Query</code> element
 we're currently trying to satisfy.  This models the <em>structure</em> of the automaton for
 a given <code>Query</code>.</p>
 <p>The cases are as follows:</p>

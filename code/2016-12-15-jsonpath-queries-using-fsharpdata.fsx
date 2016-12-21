@@ -308,7 +308,7 @@ matching the current query:
             Automaton (transition levels)
 (**
 So far, we've created a structured representation of an arbitrary JsonPath query.  We've also
-defined state transitions based on that representation.  These gives us a an automaton capable
+defined state transitions based on that representation.  These give us an automaton capable
 of matching any user-defined query.
 
 ### Search

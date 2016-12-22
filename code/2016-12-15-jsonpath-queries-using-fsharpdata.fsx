@@ -455,7 +455,7 @@ format.
 
 In the results above, one takeaway is quite clear: if your data is already in `JsonValue` format,
 we've created a mechanism that can query paths quite quickly.  Operations that must query
-the entire document have very predictable performance.  However, querying well defined
+the entire document have very predictable performance.  However, querying well-defined
 paths definitely speeds up the search.
 
 By contrast, if you're operating on Json data exclusively in string format, _you should

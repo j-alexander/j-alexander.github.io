@@ -74,8 +74,8 @@
     <Compile Include="AssemblyInfo.fs" />
     <None Include="2016-12-08-rdkafka-for-fsharp-microservices.html" />
     <None Include="2016-12-08-rdkafka-for-fsharp-microservices.fsx" />
-    <None Include="2016-12-15-jsonpath-queries-using-fsharpdata.html" />
-    <None Include="2016-12-15-jsonpath-queries-using-fsharpdata.fsx" />
+    <None Include="2016-12-23-jsonpath-queries-using-fsharpdata.html" />
+    <None Include="2016-12-23-jsonpath-queries-using-fsharpdata.fsx" />
     <None Include="Generate.fsx" />
   </ItemGroup>
   <ItemGroup>

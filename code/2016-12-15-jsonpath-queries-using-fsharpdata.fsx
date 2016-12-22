@@ -404,8 +404,9 @@ search, or optionally obtain the first match case:
 
 <img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
 
-|Query|Json.NET (JsonValue->string)|Json.NET (string)|JsonValue (string->JsonValue)|JsonValue (JsonValue)|
+|JsonPath Query|Json.NET|Json.NET|JsonValue|JsonValue|
 |---|---:|---:|---:|---:|
+|Transformation:|JsonValue->string|string|string->JsonValue|JsonValue|
 |$..title (197778 results)|12.99|10.25|11.18|6.82|
 |$..sku_id (708768 results)|12.67|10.04|11.18|6.82|
 |$.source.data.images[1:].md5 (644 results)|12.66|8.99|8.51|4.24|

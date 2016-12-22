@@ -399,22 +399,48 @@ search, or optionally obtain the first match case:
 
     let tryFind query =
         findSeq query >> Seq.tryPick Some
+(*** hide ***)
+let jsonSeq : seq<JsonValue> = Seq.empty
 (**
-### Testing
-
-<img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
-
-||Results|Json.NET|Json.NET|JsonValue|JsonValue|
-|---|---:|---:|---:|---:|---:|
-|_Format:_||_JsonValue_|_string_|_string_|_JsonValue_|
-|`$.no.match`|0|11.70|8.65|7.95|3.88|
-|`$.source.data.images[1:].md5`|644|12.66|8.99|8.51|4.24|
-|`$..sku_id`|708768|12.67|10.04|11.18|6.82|
-|`$..title`|197778|12.99|10.25|11.18|6.82|
+### Use
+Searching for a list of JsonValue matches with each document in a sequence is then
+quite simple.  For instance, if a product data source has multiple images, the first
+image is usually the main image (index 0).  Suppose we want to query
+for the md5 hash of any _alternative_ images (index 1+):
+*)
+let count =
+    // partially applying the query runs parsing only once
+    // obtain a total count of all matches:
+    jsonSeq
+    |> Seq.map (JsonValue.findList "$.source.data.images[1:].md5" >> List.length)
+    |> Seq.sum
+(**
+### Correctness
 
 *)
+(**
+### Performance
+*)
+(**
+For a comparison with Newtonsoft's Json.NET library, several queries were applied
+to a dataset of 100,000 products of varying complexity and size.  In particular:
+
+* `$.no.match` - evaluates early termination in the event no match exists
+* `$.source.data.images[1:].md5` - multiple elements of an array at a _specific path_
+* `$..sku_id` - occurs many times in the document at varying locations
+* `$..title` - similar to `sku_id`, but appears in records with many details properties
+
+Measurements were taken starting from either string or JsonValue.  In particular, 
+the `JsonValue.find` functions need to prepend `JsonValue.Parse >>` when reading a
+sequence of strings.  In the opposite direction, `JsonValue` is converted to string with
+the `JsonSaveOptions.DisableFormatting` flag applied before using Newtonsoft's Json.NET.
+
+The intention is to show which library might perform better given data in a particular
+format.
+
+<img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
+*)
 (*** hide ***)
-//-- show me how to use it!
 // what sorts of things did we have to check? where are the unit tests?
 (**
 ### Summary

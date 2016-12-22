@@ -362,22 +362,38 @@ for the md5 hash of any <em>alternative</em> images (index 1+):</p>
     <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs80', 353)" onmouseover="showTip(event, 'fs80', 353)" class="t">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs119', 354)" onmouseover="showTip(event, 'fs119', 354)" class="f">sum</span>
 </code></pre>
 <h3>Correctness</h3>
+<p><em>What does JsonPath support that this solution does not?</em></p>
+<p>In particular, you might wonder about custom expression support. For instance,
+filtering books with <code>$.books[?(@.price&lt;10)]</code>, or <code>$.books[?(@.Name == 'Json for Dummies')]</code>.</p>
+<p>These can definitely be added -- and would make for a nice follow-up post!</p>
+<p><em>Is this implementation correct?</em></p>
+<p><a href="https://git.io/v1j6c">Unit Tests</a> have been created, encompassing a wide variety of cases.
+Special attention was paid to array slice and literal operations, in addition to some
+of the more unusual cases: long <a href="https://en.wikipedia.org/wiki/Cons#Lists">cons-lists</a>,
+for instance.</p>
+<p>In many cases, implementations of JsonPath disagree! ;)</p>
 <h3>Performance</h3>
 <p>For a comparison with Newtonsoft's Json.NET library, several queries were applied
-to a dataset of 100,000 products of varying complexity and size.  In particular:</p>
+to an in-memory dataset of 100,000 products of varying complexity and size.  In particular:</p>
 <ul>
 <li><code>$.no.match</code> - evaluates early termination in the event no match exists</li>
 <li><code>$.source.data.images[1:].md5</code> - multiple elements of an array at a <em>specific path</em></li>
 <li><code>$..sku_id</code> - occurs many times in the document at varying locations</li>
-<li><code>$..title</code> - similar to <code>sku_id</code>, but appears in records with many details properties</li>
+<li><code>$..title</code> - similar to <code>sku_id</code>, but appears in records with many properties</li>
 </ul>
-<p>Measurements were taken starting from either string or JsonValue.  In particular,
+<p>Measurements are taken starting from either string or JsonValue.  In particular,
 the <code>JsonValue.find</code> functions need to prepend <code>JsonValue.Parse &gt;&gt;</code> when reading a
 sequence of strings.  In the opposite direction, <code>JsonValue</code> is converted to string with
 the <code>JsonSaveOptions.DisableFormatting</code> flag applied before using Newtonsoft's Json.NET.</p>
 <p>The intention is to show which library might perform better given data in a particular
 format.</p>
 <img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
+<p>In the results above, one takeaway is quite clear: if your data is already in JsonValue format,
+we've created a mechanism that can query paths quite quickly.  Using operations that have to
+query the entire document have very predictable performance.  However, querying well defined
+paths can definitely speed up the search.</p>
+<p>By contrast, if you're operating on Json data exclusively in string format, <em>you should
+probably stay with Newtonsoft.Json</em>.</p>
 <h3>Summary</h3>
 
 <div class="tip" id="fs1">namespace System</div>

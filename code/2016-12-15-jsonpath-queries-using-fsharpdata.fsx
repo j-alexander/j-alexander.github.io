@@ -417,20 +417,33 @@ let count =
 (**
 ### Correctness
 
-*)
-(**
+_What does JsonPath support that this solution does not?_
+
+In particular, you might wonder about custom expression support. For instance,
+filtering books with `$.books[?(@.price<10)]`, or `$.books[?(@.Name == 'Json for Dummies')]`.
+
+These can definitely be added -- and would make for a nice follow-up post!
+
+_Is this implementation correct?_
+
+[Unit Tests](https://git.io/v1j6c) have been created, encompassing a wide variety of cases.
+Special attention was paid to array slice and literal operations, in addition to some
+of the more unusual cases: long [cons-lists](https://en.wikipedia.org/wiki/Cons#Lists),
+for instance.
+
+In many cases, implementations of JsonPath disagree! ;)
+
 ### Performance
-*)
-(**
+
 For a comparison with Newtonsoft's Json.NET library, several queries were applied
-to a dataset of 100,000 products of varying complexity and size.  In particular:
+to an in-memory dataset of 100,000 products of varying complexity and size.  In particular:
 
 * `$.no.match` - evaluates early termination in the event no match exists
 * `$.source.data.images[1:].md5` - multiple elements of an array at a _specific path_
 * `$..sku_id` - occurs many times in the document at varying locations
-* `$..title` - similar to `sku_id`, but appears in records with many details properties
+* `$..title` - similar to `sku_id`, but appears in records with many properties
 
-Measurements were taken starting from either string or JsonValue.  In particular, 
+Measurements are taken starting from either string or JsonValue.  In particular, 
 the `JsonValue.find` functions need to prepend `JsonValue.Parse >>` when reading a
 sequence of strings.  In the opposite direction, `JsonValue` is converted to string with
 the `JsonSaveOptions.DisableFormatting` flag applied before using Newtonsoft's Json.NET.
@@ -439,14 +452,19 @@ The intention is to show which library might perform better given data in a part
 format.
 
 <img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
-*)
-(*** hide ***)
-// what sorts of things did we have to check? where are the unit tests?
-(**
+
+In the results above, one takeaway is quite clear: if your data is already in JsonValue format,
+we've created a mechanism that can query paths quite quickly.  Using operations that have to
+query the entire document have very predictable performance.  However, querying well defined
+paths can definitely speed up the search.
+
+By contrast, if you're operating on Json data exclusively in string format, _you should
+probably stay with Newtonsoft.Json_.
+
 ### Summary
+
 *)
 (*** hide ***)
-// what doesn't it do?
 // what did we accomplish?
 (**
 *)

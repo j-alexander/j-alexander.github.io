@@ -98,7 +98,8 @@ For example:
 ```
 
 The implementation of this parsing operation is pretty straightforward and can be found
-[here](https://git.io/v1piR) for the version being discussed in this post.
+[here](https://github.com/j-alexander/nata/blob/8e70167e3ae710faddb277ef981d300017f2f5c0/Nata.Fun.JsonPath/JsonValue.fs#L35-L94)
+for the version being discussed in this post.
 *)
 (**
 ## Pattern Matching
@@ -426,7 +427,8 @@ These can definitely be added -- and would make for a nice follow-up post!
 
 _Is this implementation correct?_
 
-[Unit Tests](https://git.io/v1j6c) have been created, encompassing a wide variety of cases.
+[Unit Tests](https://github.com/j-alexander/nata/blob/8e70167e3ae710faddb277ef981d300017f2f5c0/Nata.Fun.JsonPath.Tests/JsonValueTests.fs#L17)
+have been created, encompassing a wide variety of cases.
 Special attention was paid to array slice and literal operations, in addition to some
 of the more unusual cases: long [cons-lists](https://en.wikipedia.org/wiki/Cons#Lists),
 for instance.
@@ -435,8 +437,9 @@ In many cases, implementations of JsonPath disagree! ;)
 
 ### Performance
 
-For a comparison with Newtonsoft's Json.NET library, several queries were applied
-to an in-memory dataset of 100,000 products of varying complexity and size.  In particular:
+For a comparison with [Newtonsoft's Json.NET library](http://www.newtonsoft.com/json/help/html/QueryJsonSelectTokenWithLinq.htm),
+several queries were applied to an in-memory dataset of 100,000 products of varying
+complexity and size. In particular:
 
 * `$.no.match` - evaluates early termination in the event no match exists
 * `$.source.data.images[1:].md5` - multiple elements of an array at a _specific path_

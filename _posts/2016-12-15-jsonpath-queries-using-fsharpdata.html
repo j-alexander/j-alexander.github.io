@@ -76,7 +76,8 @@ which can satisfy (or <em>match</em>) that query.</p>
   <span class="s">&quot;$..book[-1]&quot;</span> [<span class="i">Any</span>,<span class="i">Property</span>(<span class="s">&quot;book&quot;</span>);<span class="i">Exact</span>,<span onmouseout="hideTip(event, 'fs36', 61)" onmouseover="showTip(event, 'fs36', 61)" class="i">Array</span>(<span class="i">Index</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs37', 62)" onmouseover="showTip(event, 'fs37', 62)" class="i">Literal</span>[<span class="o">-</span><span class="n">1</span>])]
 </code></pre>
 <p>The implementation of this parsing operation is pretty straightforward and can be found
-<a href="https://git.io/v1piR">here</a> for the version being discussed in this post.</p>
+<a href="https://github.com/j-alexander/nata/blob/8e70167e3ae710faddb277ef981d300017f2f5c0/Nata.Fun.JsonPath/JsonValue.fs#L35-L94">here</a>
+for the version being discussed in this post.</p>
 <h2>Pattern Matching</h2>
 <p>Here, <code>Pattern</code> matching on the <code>Query</code> is performed using immutable <a href="https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton">non-deterministic
 finite automata</a>.</p>
@@ -367,14 +368,16 @@ for the md5 hash of any <em>alternative</em> images (index 1+):</p>
 filtering books with <code>$.books[?(@.price&lt;10)]</code>, or <code>$.books[?(@.Name == 'Json for Dummies')]</code>.</p>
 <p>These can definitely be added -- and would make for a nice follow-up post!</p>
 <p><em>Is this implementation correct?</em></p>
-<p><a href="https://git.io/v1j6c">Unit Tests</a> have been created, encompassing a wide variety of cases.
+<p><a href="https://github.com/j-alexander/nata/blob/8e70167e3ae710faddb277ef981d300017f2f5c0/Nata.Fun.JsonPath.Tests/JsonValueTests.fs#L17">Unit Tests</a>
+have been created, encompassing a wide variety of cases.
 Special attention was paid to array slice and literal operations, in addition to some
 of the more unusual cases: long <a href="https://en.wikipedia.org/wiki/Cons#Lists">cons-lists</a>,
 for instance.</p>
 <p>In many cases, implementations of JsonPath disagree! ;)</p>
 <h3>Performance</h3>
-<p>For a comparison with Newtonsoft's Json.NET library, several queries were applied
-to an in-memory dataset of 100,000 products of varying complexity and size.  In particular:</p>
+<p>For a comparison with <a href="http://www.newtonsoft.com/json/help/html/QueryJsonSelectTokenWithLinq.htm">Newtonsoft's Json.NET library</a>,
+several queries were applied to an in-memory dataset of 100,000 products of varying
+complexity and size. In particular:</p>
 <ul>
 <li><code>$.no.match</code> - evaluates early termination in the event no match exists</li>
 <li><code>$.source.data.images[1:].md5</code> - multiple elements of an array at a <em>specific path</em></li>

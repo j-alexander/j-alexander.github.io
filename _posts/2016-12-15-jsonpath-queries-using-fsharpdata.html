@@ -350,7 +350,7 @@ search, or optionally obtain the first match case:</p>
         <span onmouseout="hideTip(event, 'fs70', 335)" onmouseover="showTip(event, 'fs70', 335)" class="f">findSeq</span> <span onmouseout="hideTip(event, 'fs108', 336)" onmouseover="showTip(event, 'fs108', 336)" class="i">query</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span onmouseout="hideTip(event, 'fs80', 337)" onmouseover="showTip(event, 'fs80', 337)" class="t">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs113', 338)" onmouseover="showTip(event, 'fs113', 338)" class="f">tryPick</span> <span onmouseout="hideTip(event, 'fs13', 339)" onmouseover="showTip(event, 'fs13', 339)" class="p">Some</span>
 </code></pre>
 <h3>Use</h3>
-<p>Searching for a list of JsonValue matches with each document in a sequence is then
+<p>Searching for a list of JsonValue matches within each document of a sequence is then
 quite simple.  For instance, if a product data source has multiple images, the first
 image is usually the main image (index 0).  Suppose we want to query
 for the md5 hash of any <em>alternative</em> images (index 1+):</p>
@@ -381,17 +381,17 @@ to an in-memory dataset of 100,000 products of varying complexity and size.  In 
 <li><code>$..sku_id</code> - occurs many times in the document at varying locations</li>
 <li><code>$..title</code> - similar to <code>sku_id</code>, but appears in records with many properties</li>
 </ul>
-<p>Measurements are taken starting from either string or JsonValue.  In particular,
+<p>Measurements are taken starting from either <code>string</code> or <code>JsonValue</code>.  In particular,
 the <code>JsonValue.find</code> functions need to prepend <code>JsonValue.Parse &gt;&gt;</code> when reading a
 sequence of strings.  In the opposite direction, <code>JsonValue</code> is converted to string with
 the <code>JsonSaveOptions.DisableFormatting</code> flag applied before using Newtonsoft's Json.NET.</p>
 <p>The intention is to show which library might perform better given data in a particular
 format.</p>
 <img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
-<p>In the results above, one takeaway is quite clear: if your data is already in JsonValue format,
-we've created a mechanism that can query paths quite quickly.  Using operations that have to
-query the entire document have very predictable performance.  However, querying well defined
-paths can definitely speed up the search.</p>
+<p>In the results above, one takeaway is quite clear: if your data is already in <code>JsonValue</code> format,
+we've created a mechanism that can query paths quite quickly.  Operations that must query
+the entire document have very predictable performance.  However, querying well defined
+paths definitely speeds up the search.</p>
 <p>By contrast, if you're operating on Json data exclusively in string format, <em>you should
 probably stay with Newtonsoft.Json</em>.</p>
 <h3>Summary</h3>

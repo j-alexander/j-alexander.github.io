@@ -403,7 +403,7 @@ search, or optionally obtain the first match case:
 let jsonSeq : seq<JsonValue> = Seq.empty
 (**
 ### Use
-Searching for a list of JsonValue matches with each document in a sequence is then
+Searching for a list of JsonValue matches within each document of a sequence is then
 quite simple.  For instance, if a product data source has multiple images, the first
 image is usually the main image (index 0).  Suppose we want to query
 for the md5 hash of any _alternative_ images (index 1+):
@@ -443,7 +443,7 @@ to an in-memory dataset of 100,000 products of varying complexity and size.  In 
 * `$..sku_id` - occurs many times in the document at varying locations
 * `$..title` - similar to `sku_id`, but appears in records with many properties
 
-Measurements are taken starting from either string or JsonValue.  In particular, 
+Measurements are taken starting from either `string` or `JsonValue`.  In particular, 
 the `JsonValue.find` functions need to prepend `JsonValue.Parse >>` when reading a
 sequence of strings.  In the opposite direction, `JsonValue` is converted to string with
 the `JsonSaveOptions.DisableFormatting` flag applied before using Newtonsoft's Json.NET.
@@ -453,10 +453,10 @@ format.
 
 <img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
 
-In the results above, one takeaway is quite clear: if your data is already in JsonValue format,
-we've created a mechanism that can query paths quite quickly.  Using operations that have to
-query the entire document have very predictable performance.  However, querying well defined
-paths can definitely speed up the search.
+In the results above, one takeaway is quite clear: if your data is already in `JsonValue` format,
+we've created a mechanism that can query paths quite quickly.  Operations that must query
+the entire document have very predictable performance.  However, querying well defined
+paths definitely speeds up the search.
 
 By contrast, if you're operating on Json data exclusively in string format, _you should
 probably stay with Newtonsoft.Json_.

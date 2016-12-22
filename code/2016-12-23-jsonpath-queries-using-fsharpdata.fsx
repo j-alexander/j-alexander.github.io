@@ -466,8 +466,12 @@ probably stay with Newtonsoft.Json_.
 
 ### Summary
 
-*)
-(*** hide ***)
-// what did we accomplish?
-(**
+In this article, I describe _one possible way_ to directly query subsets of a `JsonValue`
+document without converting it to an alternate type.  This makes it easier to work with
+the rich variety of datasources available in `FSharp.Data` in JsonValue format.
+
+This approach is especially useful for ad-hoc queries defined by a user interacting with
+an existing source of JsonValue data.
+
+As a plus, we also had some fun with non-deterministic finite automata in F#!  :D
 *)

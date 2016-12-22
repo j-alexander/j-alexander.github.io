@@ -2,8 +2,8 @@
 layout: post
 title: "Evaluate JsonPath Queries using FSharp.Data"
 date: 2016-12-23
-comments: false
-publish: false
+comments: true
+publish: true
 ---
 <h2>Objective</h2>
 <p><a href="http://fsharp.org/about/index.html">F#</a> has been characterized as a modern programming language
@@ -398,6 +398,12 @@ paths definitely speeds up the search.</p>
 <p>By contrast, if you're operating on Json data exclusively in string format, <em>you should
 probably stay with Newtonsoft.Json</em>.</p>
 <h3>Summary</h3>
+<p>In this article, I describe <em>one possible way</em> to directly query subsets of a <code>JsonValue</code>
+document without converting it to an alternate type.  This makes it easier to work with
+the rich variety of datasources available in <code>FSharp.Data</code> in JsonValue format.</p>
+<p>This approach is especially useful for ad-hoc queries defined by a user interacting with
+an existing source of JsonValue data.</p>
+<p>As a plus, we also had some fun with non-deterministic finite automata in F#!  :D</p>
 
 <div class="tip" id="fs1">namespace System</div>
 <div class="tip" id="fs2">namespace System.Text</div>

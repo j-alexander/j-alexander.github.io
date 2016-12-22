@@ -406,7 +406,7 @@ search, or optionally obtain the first match case:
 
 |JsonPath Query|Json.NET|Json.NET|JsonValue|JsonValue|
 |---|---:|---:|---:|---:|
-|Transformation:|JsonValue -> string|string|string -> JsonValue|JsonValue|
+|_Starting from:_|_JsonValue_|_string_|_string_|_JsonValue_|
 |$..title (197778 results)|12.99|10.25|11.18|6.82|
 |$..sku_id (708768 results)|12.67|10.04|11.18|6.82|
 |$.source.data.images[1:].md5 (644 results)|12.66|8.99|8.51|4.24|

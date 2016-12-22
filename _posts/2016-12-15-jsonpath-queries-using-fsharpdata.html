@@ -354,7 +354,8 @@ search, or optionally obtain the first match case:</p>
 <table>
 <thead>
 <tr class="header">
-<th><p>JsonPath Query</p></th>
+<th></th>
+<th align="right"><p>Results</p></th>
 <th align="right"><p>Json.NET</p></th>
 <th align="right"><p>Json.NET</p></th>
 <th align="right"><p>JsonValue</p></th>
@@ -363,39 +364,44 @@ search, or optionally obtain the first match case:</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td><p><em>Starting from:</em></p></td>
+<td><p><em>Format:</em></p></td>
+<td align="right"></td>
 <td align="right"><p><em>JsonValue</em></p></td>
 <td align="right"><p><em>string</em></p></td>
 <td align="right"><p><em>string</em></p></td>
 <td align="right"><p><em>JsonValue</em></p></td>
 </tr>
 <tr class="even">
-<td><p>$..title (197778 results)</p></td>
-<td align="right"><p>12.99</p></td>
-<td align="right"><p>10.25</p></td>
-<td align="right"><p>11.18</p></td>
-<td align="right"><p>6.82</p></td>
+<td><p><code>$.no.match</code></p></td>
+<td align="right"><p>0</p></td>
+<td align="right"><p>11.70</p></td>
+<td align="right"><p>8.65</p></td>
+<td align="right"><p>7.95</p></td>
+<td align="right"><p>3.88</p></td>
 </tr>
 <tr class="odd">
-<td><p>$..sku_id (708768 results)</p></td>
-<td align="right"><p>12.67</p></td>
-<td align="right"><p>10.04</p></td>
-<td align="right"><p>11.18</p></td>
-<td align="right"><p>6.82</p></td>
-</tr>
-<tr class="even">
-<td><p>$.source.data.images[1:].md5 (644 results)</p></td>
+<td><p><code>$.source.data.images[1:].md5</code></p></td>
+<td align="right"><p>644</p></td>
 <td align="right"><p>12.66</p></td>
 <td align="right"><p>8.99</p></td>
 <td align="right"><p>8.51</p></td>
 <td align="right"><p>4.24</p></td>
 </tr>
+<tr class="even">
+<td><p><code>$..sku_id</code></p></td>
+<td align="right"><p>708768</p></td>
+<td align="right"><p>12.67</p></td>
+<td align="right"><p>10.04</p></td>
+<td align="right"><p>11.18</p></td>
+<td align="right"><p>6.82</p></td>
+</tr>
 <tr class="odd">
-<td><p>$.no.match (0 results)</p></td>
-<td align="right"><p>11.70</p></td>
-<td align="right"><p>8.65</p></td>
-<td align="right"><p>7.95</p></td>
-<td align="right"><p>3.88</p></td>
+<td><p><code>$..title</code></p></td>
+<td align="right"><p>197778</p></td>
+<td align="right"><p>12.99</p></td>
+<td align="right"><p>10.25</p></td>
+<td align="right"><p>11.18</p></td>
+<td align="right"><p>6.82</p></td>
 </tr>
 </tbody>
 </table>

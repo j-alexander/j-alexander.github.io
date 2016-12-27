@@ -1,5 +1,9 @@
 name: Jonathan Leaver
 markdown: kramdown
+highlighter: rouge
 permalink: /entry/:year/:month/:day/:title
 gems:
   - jekyll-sitemap
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge

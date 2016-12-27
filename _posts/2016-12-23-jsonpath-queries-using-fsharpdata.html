@@ -159,7 +159,7 @@ book in any collection of a Json document.</p>
 <p>You could imagine that it conforms to the following schema diagram.  Moreover,
 the structured query format might be represented using the automaton to
 its right.</p>
-<img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
+<p><img src="book-store-json.gif" alt="Automaton: Second-last Book" /></p>
 <p>In the above example, we enter the automaton at the root of the json document <code>$</code> in
 the upper left.  If the root document has no <code>books</code> property, we follow the <code>..</code> epsilon
 transition back to that first state - waiting for some portion of the json document that
@@ -390,7 +390,7 @@ sequence of strings.  In the opposite direction, <code>JsonValue</code> is conve
 the <code>JsonSaveOptions.DisableFormatting</code> flag applied before using Newtonsoft's Json.NET.</p>
 <p>The intention is to show which library might perform better given data in a particular
 format.</p>
-<img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
+<p><img src="benchmarks.png" alt="Comparison w/Newtonsoft.Json" /></p>
 <p>In the results above, one takeaway is quite clear: if your data is already in <code>JsonValue</code> format,
 we've created a mechanism that can query paths quite quickly.  Operations that must query
 the entire document have very predictable performance.  However, querying well-defined

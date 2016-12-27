@@ -191,7 +191,7 @@ You could imagine that it conforms to the following schema diagram.  Moreover,
 the structured query format might be represented using the automaton to
 its right.
 
-<img src="book-store-json.gif" class="post-slide" alt="Automaton: Second-last Book"/>
+![Automaton: Second-last Book](book-store-json.gif)
 
 In the above example, we enter the automaton at the root of the json document `$` in
 the upper left.  If the root document has no `books` property, we follow the `..` epsilon
@@ -454,7 +454,7 @@ the `JsonSaveOptions.DisableFormatting` flag applied before using Newtonsoft's J
 The intention is to show which library might perform better given data in a particular
 format.
 
-<img src="benchmarks.png" class="post-slide" alt="Comparison w/Newtonsoft.Json"/>
+![Comparison w/Newtonsoft.Json](benchmarks.png)
 
 In the results above, one takeaway is quite clear: if your data is already in `JsonValue` format,
 we've created a mechanism that can query paths quite quickly.  Operations that must query

@@ -5,7 +5,10 @@ html, body {
 	margin: 0px;
 }
 body img {
-	width: 100px;
+    width: 100%;
+}
+pre {
+  overflow-x: auto;
 }
 #page {
 	height: 100%;
@@ -108,8 +111,4 @@ footer ul li:last-child {
 
 #container, .post, .meta {
 	font-size: 90%;
-}
-
-img.post-slide {
-    width: 100%;
 }

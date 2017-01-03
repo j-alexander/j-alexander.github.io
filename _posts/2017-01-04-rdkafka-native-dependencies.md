@@ -72,7 +72,8 @@ To resolve (3) above, you can include the C++ redistributable package within you
   RUN Remove-Item -Force /vcredist_x64.exe
 ```
 
-Assuming Powershell is your default shell:
+Assuming, of course, that Powershell is your default shell.
+
 ```powershell
   # Configure Powershell as the Default Shell
   SHELL ["powershell", "-NoProfile", "-Command", "$ErrorActionPreference = 'Stop';"]

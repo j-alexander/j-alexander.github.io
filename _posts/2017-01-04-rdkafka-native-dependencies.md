@@ -29,6 +29,7 @@ Real: 00:00:02.067, CPU: 00:00:00.765, GC gen0: 5, gen1: 1, gen2: 0
 The RdKafka C# wrapper is distributed separately from its C-native dependencies.
 
 The two NuGet packages are:
+
  * [the C# wrapper](https://www.nuget.org/packages/RdKafka)
  * [the native libraries](https://www.nuget.org/packages/RdKafka.Internal.librdkafka/)
 

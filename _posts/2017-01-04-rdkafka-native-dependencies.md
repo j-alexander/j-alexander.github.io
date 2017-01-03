@@ -59,7 +59,7 @@ If you're using 0.9.1 or newer, these dependencies are already being copied to y
 
 3. You are missing the _Visual C++ Redistributable_ package. 64-bit RdKafka 0.9.1 requires [Microsoft Visual C++ 2013 Redistributable (x64) - 12.0.30501](https://www.microsoft.com/en-us/download/details.aspx?id=40784)
 
-   This is problematic because many development workstations include this dependency as part of Visual Studio.  The problem appears during deployment to production.
+   This is problematic because many development workstations include this dependency as part of Visual Studio.  The problem only appears during deployment to production.
 
 ### Docker for Windows
 
@@ -70,7 +70,7 @@ To resolve (3) above, you can include the C++ redistributable package within you
   ADD https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe \vcredist_x64.exe
   RUN Start-Process -Wait -FilePath '\vcredist_x64.exe' -ArgumentList '/install /passive /norestart'
   RUN Remove-Item -Force /vcredist_x64.exe
-   ```
+```
 
 Assuming Powershell is your default shell:
 ```powershell

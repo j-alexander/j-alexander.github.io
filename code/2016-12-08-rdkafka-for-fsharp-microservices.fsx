@@ -21,7 +21,7 @@ Let's look at how to use these from [F#](http://fsharp.org/) to support coordina
    ./.paket/paket.exe add nuget RdKafka project MyProject
  ```
 
-2. *Pre-build event* to transfer native libraries (64-bit):
+2. *Pre-build event* to transfer native libraries (64-bit): (see: [DllNotFoundException](/entry/2017/01/04/rdkafka-native-dependencies))
 
  ```powershell
    xcopy /y /d /f

@@ -22,7 +22,7 @@ is available for it.</p>
 </code></pre></td></tr></table>
 </li>
 <li>
-<p><em>Pre-build event</em> to transfer native libraries (64-bit):</p>
+<p><em>Pre-build event</em> to transfer native libraries (64-bit): (see: <a href="/entry/2017/01/04/rdkafka-native-dependencies">DllNotFoundException</a>)</p>
 <table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="powershell">xcopy /y /d /f
      "$(ProjectDir)..\packages\RdKafka.Internal.librdkafka\runtimes\win7-x64\native\*.*"
      "$(TargetDir)"

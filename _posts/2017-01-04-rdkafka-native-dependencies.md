@@ -2,8 +2,8 @@
 layout: post
 title: "Resolving Native Dependencies for RdKafka"
 date: 2017-01-04
-comments: false
-publish: false
+comments: true
+publish: true
 ---
 
 ## Problem
@@ -78,3 +78,9 @@ Assuming, of course, that Powershell is your default shell.
   # Configure Powershell as the Default Shell
   SHELL ["powershell", "-NoProfile", "-Command", "$ErrorActionPreference = 'Stop';"]
 ```
+
+## Walkthrough
+
+For more information about using RdKafka to support F# Microservices, I've written an extensive post [here](/entry/2016/12/08/rdkafka-for-fsharp-microservices).
+
+Have _fun_!

@@ -1,13 +1,14 @@
 ---
 layout: post
 title: "Docker Blog Plan"
-date: 2016-12-31
+date: 2017-01-12
 comments: false
 publish: false
 ---
 
 
-
+nat error https://github.com/docker/docker/issues/27588
+install service sometimes doesn't commit
 
 
 ## Docker container setup
@@ -47,6 +48,13 @@ Client environment DOCKER_HOST and PATH settings:
 
 ### fsharp
 Create an image for F# (based on [Option 3](http://fsharp.org/use/windows/))
+
+Things I learned:
+
+ * How to change the SHELL and how CMD works.
+ * Connecting via `docker run` to inspect the state of the machine.
+ * `Start-Process -Wait` for many installers (that run async)
+   * otherwise they're unpredictable ~ sometimes install ~ sometimes don't
     
 ``` powershell
 FROM microsoft/windowsservercore
@@ -93,6 +101,8 @@ RUN set-itemproperty -path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Par
 
 ![docker-host-task-manager](docker-host-task-manager.png)
 
+Talk about servicepriority app.
+
 ![docker compose down](docker-compose-down.gif)
 
 [Ports]
@@ -103,54 +113,4 @@ Make sure you accept connections from non-local IPs:
 
 ``` powershell
 CMD /EventStore/EventStore.ClusterNode.exe --db /Data --log /Logs --ext-ip 0.0.0.0 --ext-http-prefixes 'http://+:2113/' 
-```
-
-### documentdb
-
-Great with F#:
-* [with fsharp](https://jamessdixon.wordpress.com/2014/12/30/using-documentdb-with-f/)
-
-Designed for localhost only:
-* [emulator](https://docs.microsoft.com/en-us/azure/documentdb/documentdb-nosql-local-emulator)
-
-Normally, need to install certificate:
-![documentdb certificate 1](documentdb-certificate-1.png)
-![documentdb certificate 2](documentdb-certificate-2.png)
-![documentdb certificate 3](documentdb-certificate-3.png)
-
-Basically, a _nightmare_ for containerized testing.
-
-Workaround for SSL certificate installation:
-
-* [stunnel](https://www.stunnel.org/downloads.html)
-
-Accept connections on 8080 and route to SSL 8081 using local certificate (`DocumentDB.conf`:
-
-``` ini
-engine = capi
-
-[disable-documentdb-ssl]
-client = yes
-accept = 8080
-connect = 127.0.0.1:8081
-engineId = capi
-```
-
-Account name is the first part of the dns name, and must be `localhost`!
-
-Thus, `docker-compose.yml` service:
-
-``` yaml
-  localhost.documentdb:
-    build: ..\DockerFiles\DocumentDB
-    image: documentdb
-    ports:
-     - "8080:8080"
-     - "8081:8081"
-     - "10250:10250"
-     - "10251:10251"
-     - "10252:10252"
-     - "10253:10253"
-     - "10254:10254"
-    stdin_open: true
 ```

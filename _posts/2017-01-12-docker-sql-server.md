@@ -1,12 +1,18 @@
 ---
 layout: post
 title: "SQL Server in Docker Windows Containers"
-date: 2016-12-31
+date: 2017-01-12
 comments: false
-publish: false
+publish: true
 ---
 ### Objective
 
+Notes:
+ * Integrated security worked great until I had to connect from outside the container.  Then needed `sa`.
+ * How do we handle password for `sa`?  (Normally pass in, but here is internal env.)
+ * How to query SQL using osql  (-E for int. sec., -U/P for sa)
+ * How to restore schema using SqlPackage
+ * Licenses -- be very careful about distributing images for which "you've agreed to license terms"!
 
 ### DockerFile
 

@@ -3,7 +3,7 @@ layout: post
 title: "Java in Docker Windows Containers"
 date: 2017-01-12
 comments: false
-publish: true
+publish: false
 ---
 ### Objective
 

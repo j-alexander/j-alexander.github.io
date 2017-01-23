@@ -43,7 +43,7 @@ open System.Text.RegularExpressions
 open FSharp.Data
 (*** hide ***)
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module JsonValue =
+module JsonPath =
 
     let private valueOr (defaultValue:int) =
         function Some x -> x | None -> defaultValue
@@ -98,7 +98,7 @@ For example:
 ```
 
 The implementation of this parsing operation is pretty straightforward and can be found
-[here](https://github.com/j-alexander/nata/blob/8e70167e3ae710faddb277ef981d300017f2f5c0/Nata.Fun.JsonPath/JsonValue.fs#L35-L94)
+[here](https://github.com/j-alexander/FSharp.Data.JsonPath/blob/24fb0ef8dde0a7e4a9c9f87685b53dc64e9ed786/FSharp.Data.JsonPath/JsonPath.fs#L35-L94)
 for the version being discussed in this post.
 *)
 (**
@@ -148,8 +148,8 @@ produce a `Match` state, a _new_ `Automaton`, or even a combination of these.
 Finally, since we're matching json documents rather than passwords, your input from an
 actual document could be either:
 
-* a `Property` of a [JsonValue.Record](https://github.com/fsharp/FSharp.Data/blob/master/src/Json/JsonValue.fs#L38-38) with some `Name`, or
-* an `Array` element of a [JsonValue.Array](https://github.com/fsharp/FSharp.Data/blob/master/src/Json/JsonValue.fs#L39-39) at some specific index
+* a `Property` of a [JsonValue.Record](https://github.com/fsharp/FSharp.Data/blob/a2c25cc5557a4a3918e4d22e191ee74e15f56b49/src/Json/JsonValue.fs#L38-38) with some `Name`, or
+* an `Array` element of a [JsonValue.Array](https://github.com/fsharp/FSharp.Data/blob/a2c25cc5557a4a3918e4d22e191ee74e15f56b49/src/Json/JsonValue.fs#L39-39) at some specific index
 *)
         and Input =
             | Property of Query.Name
@@ -413,7 +413,7 @@ let count =
     // partially applying the query runs parsing only once
     // obtain a total count of all matches:
     jsonSeq
-    |> Seq.map (JsonValue.findList "$.source.data.images[1:].md5" >> List.length)
+    |> Seq.map (JsonPath.findList "$.source.data.images[1:].md5" >> List.length)
     |> Seq.sum
 (**
 ### Correctness
@@ -447,7 +447,7 @@ complexity and size. In particular:
 * `$..title` - similar to `sku_id`, but appears in records with many properties
 
 Measurements are taken starting from either `string` or `JsonValue`.  In particular, 
-the `JsonValue.find` functions need to prepend `JsonValue.Parse >>` when reading a
+the `JsonPath.find` functions need to prepend `JsonValue.Parse >>` when reading a
 sequence of strings.  In the opposite direction, `JsonValue` is converted to string with
 the `JsonSaveOptions.DisableFormatting` flag applied before using Newtonsoft's Json.NET.
 

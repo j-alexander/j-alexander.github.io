@@ -8,7 +8,7 @@ body img {
     width: 100%;
 }
 pre {
-  overflow-x: auto;
+    overflow-x: auto;
 }
 #page {
 	height: 100%;
@@ -110,5 +110,21 @@ footer ul li:last-child {
 }
 
 #container, .post, .meta {
-	font-size: 90%;
+	/*font-size: 90%;*/
+    font-size: 9.7pt;
+}
+#container td, #container th {
+    padding: 0px 10px 0px 10px;
+}
+#container .pre td, #container .pre .td th {
+    padding: 0px 0px 0px 0px;
+}
+#container th {
+    background-color: #bbb;
+}
+#container tr:nth-child(even) {
+    background-color: #fff;
+}
+#container tr:nth-child(odd) {
+    background-color: #eee;
 }

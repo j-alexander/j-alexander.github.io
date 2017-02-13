@@ -11,17 +11,21 @@ publish: true
 When you run and load code using the RdKafka wrapper, you may encounter the following error:
 
 ```
-System.TypeInitializationException: The type initializer for 'RdKafka.Internal.LibRdKafka' threw an exception. ---> System.DllNotFoundException: Unable to load DLL 'librdkafka': The specified module could not be found. (Exception from HRESULT: 0x8007007E)
-   at RdKafka.Internal.LibRdKafka.NativeMethods.rd_kafka_version()
-   at RdKafka.Internal.LibRdKafka..cctor()
-   --- End of inner exception stack trace ---
-   at RdKafka.Internal.LibRdKafka.conf_new()
-   at RdKafka.Internal.SafeConfigHandle.Create()
-   at Project.RdKafka.Connect.config(String brokerCsv) in C:\Project\RdKafka.fs:line 165
-   at Project.RdKafka.Connect.producer(String source, BrokerCsv _arg1) in C:\Project\RdKafka.fs:line 192
-   at Project.RdKafka.subscribeBatch[a](String brokerCsv, String group, String topic, Int32 parallelism, Int32 batchSize, Int32 batchTimeoutMs, FSharpFunc`2 batchHandle) in C:\Project\RdKafka.fs:line 537
-   at Project.RdKafka.subscribe(String brokerCsv, String group, String topic, Int32 parallelism, FSharpFunc`2 handle) in C:\Project\RdKafka.fs:line 638
-Real: 00:00:02.067, CPU: 00:00:00.765, GC gen0: 5, gen1: 1, gen2: 0
+System.TypeInitializationException:
+    The type initializer for 'RdKafka.Internal.LibRdKafka' threw an exception.
+--->
+System.DllNotFoundException: Unable to load DLL 'librdkafka':
+    The specified module could not be found. (Exception from HRESULT: 0x8007007E)
+
+at RdKafka.Internal.LibRdKafka.NativeMethods.rd_kafka_version()
+at RdKafka.Internal.LibRdKafka..cctor()
+--- End of inner exception stack trace ---
+at RdKafka.Internal.LibRdKafka.conf_new()
+at RdKafka.Internal.SafeConfigHandle.Create()
+at Project.RdKafka.Connect.config(String brokerCsv) in C:\Project\RdKafka.fs:line 165
+at Project.RdKafka.Connect.producer(String source, BrokerCsv _arg1) in C:\Project\RdKafka.fs:line 192
+at Project.RdKafka.subscribeBatch[a](String brokerCsv, String group, String topic, Int32 parallelism, Int32 batchSize, Int32 batchTimeoutMs, FSharpFunc`2 batchHandle) in C:\Project\RdKafka.fs:line 537
+at Project.RdKafka.subscribe(String brokerCsv, String group, String topic, Int32 parallelism, FSharpFunc`2 handle) in C:\Project\RdKafka.fs:line 638
 ```
 
 ## Background

@@ -40,16 +40,16 @@ a stream of data:
 
 | Partition | Offset | Contents |
 | -: | -: | :- |
-| 7 | 31415 | { "target": 296962622 } |
-| 7 | 31416 | { "target": 296963894 } |
-| 7 | 31417 | { "target": 296963894 } |
-| 7 | 31418 | { "target": 296967168 } |
-| 7 | 31419 | { "something_else": 1024511 } |
-| 7 | 31420 | { "target": 296970554 } |
-| 7 | 31421 | { "target": 296971532 } |
+| `7` | `31415` | `{ "target": 296962622 }` |
+| `7` | `31416` | `{ "target": 296963894 }` |
+| `7` | `31417` | `{ "target": 296963894 }` |
+| `7` | `31418` | `{ "target": 296967168 }` |
+| `7` | `31419` | `{ "decoy": 1024513301 }` |
+| `7` | `31420` | `{ "target": 296970554 }` |
+| `7` | `31421` | `{ "target": 296971532 }` |
 
 Note that the `target` field value is trending upward, but not necessarily one-to-one with the offset value.  It may
-be missing `{31419}`, and it may appear several times `{31416,31417}`.
+be missing `[31419]`, and it may appear several times `[31416;31417]`.
 
 ### Binary Search Algorithm
 
@@ -111,7 +111,8 @@ A selection of clients exist for streaming data:
    - [kafka-net](https://github.com/Jroland/kafka-net) the Jroland client.
 
 In this application, I used the [Nata.IO](https://github.com/j-alexander/nata) wraper, which provides a common abstraction over stable
-versions of the above clients.
+versions of the above clients. It includes a consistent mechanism to query the range of available offsets, as well as stream from arbitrary positions
+in the target event log.
 
 
 #### User Interface

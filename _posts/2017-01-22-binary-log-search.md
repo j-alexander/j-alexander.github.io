@@ -110,7 +110,7 @@ A selection of clients exist for streaming data:
    - [Microsoft C\# Client](https://github.com/Microsoft/CSharpClient-for-Kafka) is an older client in the same family as Jet's own Marvel client.
    - [kafka-net](https://github.com/Jroland/kafka-net) the Jroland client.
 
-In this application, I used the [Nata.IO](https://github.com/j-alexander/nata) wraper, which provides a common abstraction over stable
+In this application, I used the [Nata.IO](https://github.com/j-alexander/nata) library, which provides a common abstraction over stable
 versions of the above clients. It includes a consistent mechanism to query the range of available offsets, as well as stream from arbitrary positions
 in the target event log.
 
@@ -121,42 +121,16 @@ To build a modern WPF user interface in F\#, I also used the [FsXaml](http://fsp
 Although the documentation is sparse, it is a powerful tool with nearly the same flexibility and capability as the well-known C\# tooling in Visual Studio.
 In fact, it supports the same interactive visual designer for Xaml.
 
+A video screenshot of the final interface:
 
-### Background
-
-- log as in linear data store (kafka, eventstore)
-- log as in logarithmic complexity (assuming the monotonic search field exists)
-- jsonpath query (automata) to extract monotonically increasing field (i.e., date, incremental id)
-
-- https://github.com/j-alexander/binary-log-search
-
-- integration of c# UI with f# search + data i/o
-
-
-Need to be able to use either sequences from EventStore or Kafka.
-
- - Must be able to query first, last, and specific offsets.
- - Use Nata.IO library for abstraction over:
-   - EventStore (Official Client)
-   - Kafka (JRoland Client)
-
-
-Need to be able to report progress to WPF UI.
-
-Need to be able to query DateTime from arbitrary Json document:
-
- - Use [JsonPath for FSharp.Data.JsonValue](http://localhost:4000/entry/2016/12/23/jsonpath-queries-using-fsharpdata)
-   - (need to publish it)
-
-### Implementation
-
- - Link to sections of the code:
-
-### Integration Challenges (C\#/F\#)
-
- - Examples of specific types
+<video controls>
+  <source src="Screenshot.mp4" type="video/mp4"/>
+</video>
 
 ### Result
+
+- copy+paste to excel
+- partial log progress bar
 
 - shows dropdown for both es & kafka connection strings
 - selects stream or topic name
@@ -173,4 +147,9 @@ Need to be able to query DateTime from arbitrary Json document:
   - Cancelled
   - Found
 
-![application screenshot](Screenshot.gif)
+### References
+
+- log as in linear data store (kafka, eventstore)
+- log as in logarithmic complexity (assuming the monotonic search field exists)
+
+- https://github.com/j-alexander/binary-log-search

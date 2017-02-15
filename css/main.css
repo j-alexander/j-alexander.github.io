@@ -128,3 +128,7 @@ footer ul li:last-child {
 #container tr:nth-child(odd) {
     background-color: #eee;
 }
+#container video {
+    width: 100%   !important;
+    height: auto  !important;
+}

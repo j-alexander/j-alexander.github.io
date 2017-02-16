@@ -124,7 +124,7 @@ In fact, it supports the same interactive visual designer for Xaml.
 A video screenshot of the final interface:
 
 <video controls>
-  <source src="Screenshot.mp4" type="video/mp4"/>
+  <source src=“Annotated-Screenshot.mp4" type="video/mp4"/>
 </video>
 
 ### Result

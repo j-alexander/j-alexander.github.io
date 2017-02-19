@@ -1,15 +1,18 @@
 ---
 layout: post
 title: "Binary Log Search"
-date: 2017-01-22
-comments: false
+date: 2017-02-22
+comments: true
 publish: false
 ---
+
+Following is a case study on a fun evening project in [F\#](http://fsharp.org/) for [Kafka](https://kafka.apache.org/) and [EventStore](https://geteventstore.com/):
+
 ## Problem
 
-The product matching and taxonomy engine at Jet.com is a large event driven distributed system consisting of nearly 400 microservices
+The product matching and taxonomy engine at [Jet.com](http://tech.jet.com/) is a large event driven distributed system consisting of nearly 400 microservices
 that process a half million messages per minute on a quiet Sunday.  Clustered linear data stores, such as Kafka and EventStore, are used
-to retain and distribute these messages.
+to retain and distribute many of these messages.
 
 For auditing and diagnostic purposes, finding an individual message in these datastores could entail scanning a huge number of 
 events in linear time, algorithmically on the order of `O(n)`.  In practice, this could take days.
@@ -68,7 +71,7 @@ then look at offset `31420` and then `31421` to find the lower bound of `2969715
 However, if you probe partition `7`, offset `31419` above for the `target` field, you will be unable to extract the `target` value.
 Thankfully, most clients for Kafka and EventStore are designed to efficiently stream subsequent events.
 In this case, the algorithm needs to be modified to also consider `target` values later in the stream including offsets `31420` and above.
-It should also be able to handle situations where the last messages of the event stream _all exclude_ this `target` field.
+It should also be able to handle situations where the tail of the event stream _entirely excludes_ this `target` field.
 
 #### Optimization
 
@@ -107,11 +110,11 @@ A selection of clients exist for streaming data:
    - [RdKafka](https://github.com/edenhill/librdkafka) wrappers:
       - [by Andreas Heider](https://github.com/ah-/rdkafka-dotnet) is stable, but no longer maintained.
       - [by Confluent](https://github.com/confluentinc/confluent-kafka-dotnet) replaces it, but is _pre-release_.
-   - [Microsoft C\# Client](https://github.com/Microsoft/CSharpClient-for-Kafka) is an older client in the same family as Jet's own Marvel client.
-   - [kafka-net](https://github.com/Jroland/kafka-net) the Jroland client.
+   - [Microsoft C\# Client](https://github.com/Microsoft/CSharpClient-for-Kafka) is an older client in the same family as Jet's original Marvel client.
+   - [kafka-net](https://github.com/Jroland/kafka-net) a client by James Roland.
 
 In this application, I used the [Nata.IO](https://github.com/j-alexander/nata) library, which provides a common abstraction over stable
-versions of the above clients. It includes a consistent mechanism to query the range of available offsets, as well as stream from arbitrary positions
+versions of the above clients. It includes a consistent mechanism to query the range of available offsets, as well as to stream from arbitrary positions
 in the target event log.
 
 
@@ -121,35 +124,89 @@ To build a modern WPF user interface in F\#, I also used the [FsXaml](http://fsp
 Although the documentation is sparse, it is a powerful tool with nearly the same flexibility and capability as the well-known C\# tooling in Visual Studio.
 In fact, it supports the same interactive visual designer for Xaml.
 
-A video screenshot of the final interface:
+A video screencast of the final interface:
 
-<video controls>
-  <source src="Annotated-Screenshot.mp4" type="video/mp4"/>
+<video controls poster="Screencast-Poster.png">
+  <source src="Screencast.mp4" type="video/mp4"/>
 </video>
 
-### Result
+### Feature Overview
 
-- copy+paste to excel
-- partial log progress bar
+Many of these features work together to solve the problem outlined above.  These include:
 
-- shows dropdown for both es & kafka connection strings
-- selects stream or topic name
-- provides target date and jsonpath query expression to _possibly_ extract dates from a document (does not need to match all documents!)
-- option to skip fixed-width pre-amble (needed for my use case)
+- Selecting either Kafka or Eventstore with custom host name, and topic or stream.
+- Targetting a `Timestamp`, `Text` or `Numeric` value from a field that increases over time:
+   - Custom JsonPath queries such as `$.envelope.timestamp` to extract this field.
+   - Custom transition threshold from `Seek` to `Scan`.
 
-- when query executes:
-- shows Name of topic+partition (or stream)
-- Range - width of interval to check [From..To]
-- Query+Current position selected by Binary Search
-- Status
-  - Seek (jumps from message to message by offset)
-  - Scan (reads all events sequentially)
-  - Cancelled
-  - Found
+   <img src="SelectTargetType.png"/>
 
-### References
+- Full controls to Start, Stop and Resume multiple searches simultaneously.
+- Visibility into the complete search state and progress.
+- Copy/Paste support into Excel for subsequent analysis.
 
-- log as in linear data store (kafka, eventstore)
-- log as in logarithmic complexity (assuming the monotonic search field exists)
+### Source Code
 
-- https://github.com/j-alexander/binary-log-search
+- **Algorithm**
+
+   The [search algorithm](https://github.com/j-alexander/binary-log-search/blob/master/Algorithm/BinaryLogSearch.fs)
+   is initialized with [connection information](https://github.com/j-alexander/binary-log-search/blob/master/Algorithm/Connection.fs#L9-L11)
+   to query the `indexOf` bounds within the topic or stream, and `readFrom` arbitrary positions within those bounds.
+   When asked to [execute](https://github.com/j-alexander/binary-log-search/blob/master/Algorithm/BinaryLogSearch.fs#L17) it
+   performs the search and emits periodic updates to the [search state](https://github.com/j-alexander/binary-log-search/blob/master/Algorithm/SearchState.fs).
+   Extraction of the `target` is performed using a [codec](https://github.com/j-alexander/binary-log-search/blob/master/Algorithm/Codec.fs)
+   that transforms a raw byte stream into a stream of the desired Json field.
+
+   This algorithm started its life as a simple F\# `.fsx` script.
+
+- **User Interface**
+
+   Originally created using C\#, the [FsXaml](http://fsprojects.github.io/FsXaml/index.html) UI retains all of the original design except for some unneeded
+   code-behind (e.g. `*.xaml.cs`).
+
+   Models use dependency properties to expose [search state](https://github.com/j-alexander/binary-log-search/blob/master/UI/Models/SearchModel.fs)
+   and [query connection settings](https://github.com/j-alexander/binary-log-search/blob/master/UI/Models/QueryModel.fs)
+   for binding.  Views are expressed using the [exact same XAML](https://github.com/j-alexander/binary-log-search/blob/master/UI/Views/MainWindow.xaml)
+   as the original C\# UI, including a composition of user controls for [entering connection settings](https://github.com/j-alexander/binary-log-search/blob/master/UI/Views/QueryView.xaml)
+   and displaying [the grid of search data](https://github.com/j-alexander/binary-log-search/blob/master/UI/Views/SearchView.xaml).  Additional
+   view-models provide the binding and commands for the application to [manage the searches](https://github.com/j-alexander/binary-log-search/blob/master/UI/ViewModels/SearchViewModel.fs)
+   or [connect](https://github.com/j-alexander/binary-log-search/blob/master/UI/ViewModels/QueryViewModel.fs) to data stores.
+
+   The primary difference in F\# is the use of [type providers](https://github.com/j-alexander/binary-log-search/blob/master/UI/Views/Views.fs) to generate type
+   information from the XAML to use in subsequent F\# code.
+
+   Once assembled, the [application](https://github.com/j-alexander/binary-log-search/blob/master/UI/App.fs) is wired up and compiled as an F\# Windows Application.
+
+    <img src="FSharpWindowsApplication.png"/>
+
+- **Life-cycle**
+
+   To better manage the end-user experience of the application over time, I also created a [WiX Toolset](http://wixtoolset.org/)
+   [setup file](https://github.com/j-alexander/binary-log-search/blob/master/Setup/Product.wxs) to create installers.
+   
+   This is paired with a user control to [query the latest version](https://github.com/j-alexander/binary-log-search/blob/master/UI/Models/VersionModel.fs) and
+   provide an unobtrusive notification in the event of a new release.
+
+    <img src="DisplayUpgradeNotice.png"/>
+
+
+### Summary
+
+The resulting application demonstrates how a simple and clean F\# stream-processing algorithm can be exposed with a complete and modern user inteface.
+It pulls together technology for EventStore and Kafka, query capability with JsonPath, view layout with `FsXaml` type providers, and a host of other
+elements designed to make this kind of application easy.
+
+It _performs extremely well_.  In scenarios such as the screencast above, it can locate the lowerbound of a timestamp among four million messages in less
+than three seconds.  Moreover, the logarithmic nature of the algorithm lets us scale to _many many times_ that amount of data with a few extra seek operations.
+For example, *a billion events* requires only 8 extra seeks (typically on the order of a few milliseconds each).
+
+#### Resources
+
+To play with the source code or download a copy, visit me on GitHub:
+
+[https://github.com/j-alexander/binary-log-search](https://github.com/j-alexander/binary-log-search)
+
+_Note that while I've used this tool at Jet, the company makes no warranty with respect to its use in your own environment.  It's open source.  Review and edit to
+meet your own unique needs!  And have **fun**!_
+
+If you'd like to learn more about technology careers at Jet.com, visit [https://tech.jet.com/](https://tech.jet.com/). ☺

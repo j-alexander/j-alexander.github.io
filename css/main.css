@@ -109,6 +109,10 @@ footer ul li:last-child {
 	border-left: none;
 }
 
+.post {
+    padding: 0px 0px 80px 0px;
+}
+
 #container, .post, .meta {
 	/*font-size: 90%;*/
     font-size: 9.7pt;

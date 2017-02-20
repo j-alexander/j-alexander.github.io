@@ -139,7 +139,7 @@ Many of these features work together to solve the problem outlined above.  These
    - Custom JsonPath queries such as `$.envelope.timestamp` to extract this field.
    - Custom transition threshold from `Seek` to `Scan`.
 
-   <img src="SelectTargetType.png"/>
+   [![Updated Query Control](SelectTargetType.png)](SelectTargetType.png)
 
 - Full controls to Start, Stop and Resume multiple searches simultaneously.
 - Visibility into the complete search state and progress.
@@ -177,7 +177,7 @@ Many of these features work together to solve the problem outlined above.  These
 
    Once assembled, the [application](https://github.com/j-alexander/binary-log-search/blob/master/UI/App.fs) is wired up and compiled as an F\# Windows Application.
 
-    <img src="FSharpWindowsApplication.png"/>
+    [![F\# Windows Application](FSharpWindowsApplication.png)](FSharpWindowsApplication.png)
 
 - **Life-cycle**
 
@@ -187,7 +187,7 @@ Many of these features work together to solve the problem outlined above.  These
    This is paired with a user control to [query the latest version](https://github.com/j-alexander/binary-log-search/blob/master/UI/Models/VersionModel.fs) and
    provide an unobtrusive notification in the event of a new release.
 
-    <img src="DisplayUpgradeNotice.png"/>
+    [![Display Upgrade Notice](DisplayUpgradeNotice.png)](DisplayUpgradeNotice.png)
 
 
 ### Summary

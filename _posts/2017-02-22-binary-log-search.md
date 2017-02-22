@@ -3,7 +3,7 @@ layout: post
 title: "Binary Log Search"
 date: 2017-02-22
 comments: true
-publish: false
+publish: true
 ---
 
 Following is a case study on a fun evening project in [F\#](http://fsharp.org/) for [Kafka](https://kafka.apache.org/) and [EventStore](https://geteventstore.com/):

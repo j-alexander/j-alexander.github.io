@@ -1,8 +1,9 @@
 html, body {
 	height: 100%;
-	font-family: sans-serif;
+	font-family: 'Open Sans', serif;
 	background-color: #333;
 	margin: 0px;
+    padding-bottom: 0px;
 }
 body img {
     width: 100%;
@@ -26,17 +27,19 @@ pre {
 #container {
 	top: 0px;
 	bottom: 0px;
-	padding-top: 28px;
-	padding-bottom: 28px;
+	padding-top: 16px;
+	padding-bottom: 32px;
 	background-color: #ddd;
 }
 #bottom {
 	position: fixed;
 	bottom: 0px;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
 }
 nav {
 	background-color: #eee;
-	height: 28px;
+	height: 32px;
 	width: 80%;
 	min-width: 600px; 
 	margin: auto;
@@ -73,7 +76,7 @@ nav ul li:last-child {
 }
 footer {
 	background-color: #eee;
-	height: 28px;
+	height: 32px;
 	width: 80%;
 	min-width: 600px; 
 	margin: auto;

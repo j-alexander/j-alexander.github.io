@@ -92,17 +92,22 @@ footer ul li {
 	height: 100%;
 	float: right;
 	border-left: 1px solid #fff;
+    line-height: 32px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+footer ul li img {
+    height: 32px;
+    width: auto;
 }
 footer ul li a {
-    display: inline-block;
     color: #111;
     text-align: center;
-    padding: 5px 10px;
     text-decoration: none;
     transition: 0.3s;
     font-size: 17px;
 }
-footer ul li a:hover {
+footer ul li:hover {
 	background-color: #bbb;
 }
 footer ul li.icon {

@@ -25,5 +25,5 @@ let generate name =
 #r "packages/RdKafka/lib/net451/RdKafka.dll"
 generate "2016-12-08-rdkafka-for-fsharp-microservices"
 
-#r "packages/FSharp.Data/lib/net40/FSharp.Data.dll"
+#r "packages/FSharp.Data/lib/net45/FSharp.Data.dll"
 generate "2016-12-23-jsonpath-queries-using-fsharpdata"

@@ -39,7 +39,7 @@ open System.Text.RegularExpressions
 
 2. *Reference* and open the FSharp.Data library:
 *)
-#r "packages/FSharp.Data/lib/net40/FSharp.Data.dll"
+#r "packages/FSharp.Data/lib/net45/FSharp.Data.dll"
 open FSharp.Data
 (*** hide ***)
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]

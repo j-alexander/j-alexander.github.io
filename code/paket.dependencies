@@ -1,4 +1,3 @@
-source https://jet.myget.org/F/jenkins/auth/171ef4d0-bb9b-4332-b54b-0f255e105e48
 source https://api.nuget.org/v3/index.json
 framework >= net452
 
